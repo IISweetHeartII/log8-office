@@ -14,6 +14,7 @@ Output:
 """
 from __future__ import annotations
 import os, math
+import numpy as np
 from PIL import Image
 import pixelkit as pk
 from rembg import remove, new_session
@@ -24,7 +25,40 @@ FW = 64                       # frame size (office renders at scale 1.5 ≈ 96px
 FIT = 60                      # max sprite extent inside the frame (leaves bob room)
 COLORS = 30                   # palette size for the pixel-art look
 ORDER = ["rosie", "navi", "kkami", "cheese", "hermes", "buffett", "luna", "gamjaring"]
-_SESS = new_session("u2net")
+MODEL = "isnet-general-use"    # robust on busy/dark scenes (vs u2net)
+_SESS = new_session(MODEL)
+
+
+def _largest_component(alpha, thresh=110):
+    """Boolean mask of the single largest 4-connected blob of alpha>thresh.
+
+    Drops stray background remnants (lanterns, compasses, etc.) that survive
+    matting on busy scenes. Pure numpy + stdlib (iterative flood fill) so the
+    generator never needs scipy.
+    """
+    mask = alpha > thresh
+    h, w = mask.shape
+    labels = np.zeros((h, w), dtype=np.int32)
+    cur, sizes = 0, {}
+    for sy in range(h):
+        for sx in range(w):
+            if mask[sy, sx] and labels[sy, sx] == 0:
+                cur += 1
+                stack = [(sy, sx)]
+                labels[sy, sx] = cur
+                cnt = 0
+                while stack:
+                    y, x = stack.pop()
+                    cnt += 1
+                    for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        ny, nx = y + dy, x + dx
+                        if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and labels[ny, nx] == 0:
+                            labels[ny, nx] = cur
+                            stack.append((ny, nx))
+                sizes[cur] = cnt
+    if not sizes:
+        return mask
+    return labels == max(sizes, key=sizes.get)
 
 
 def _find(name):
@@ -38,6 +72,9 @@ def cutout_sprite(name):
     """rembg cut-out → tight-cropped, pixelated RGBA sprite that fits in FIT×FIT."""
     im = Image.open(_find(name)).convert("RGBA")
     cut = remove(im, session=_SESS)            # transparent background
+    arr = np.array(cut)                         # drop stray background blobs
+    arr[~_largest_component(arr[:, :, 3]), 3] = 0
+    cut = Image.fromarray(arr, "RGBA")
     bbox = cut.getbbox()
     if bbox:
         cut = cut.crop(bbox)

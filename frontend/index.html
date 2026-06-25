@@ -3768,8 +3768,8 @@ function toggleBrokerPanel() {
             // 工作区域范围（190,526）（380,683）
             // error 区域范围（932,275）（1109,327）
             const rects = {
-                work:      { x1: 130, y1: 545, x2: 470, y2: 685 },   // 작업 구역(책상 앞 바닥)
-                breakroom: { x1: 640, y1: 560, x2: 1080, y2: 685 },  // 휴게실(소파 앞 넓은 바닥)
+                work:      { x1: 110, y1: 545, x2: 450, y2: 690 },   // 작업 구역(좌측 책상 앞)
+                breakroom: { x1: 855, y1: 545, x2: 1205, y2: 690 },  // 휴게실(우측 — 중앙 간판/가전 비움)
                 error:     { x1: 930, y1: 270, x2: 1110, y2: 340 }   // 에러(버그 구역)
             };
             return rects[area] || rects.breakroom;
@@ -4508,23 +4508,26 @@ function toggleBrokerPanel() {
 
             // 픽셀 스타일 간판 추가
             const plaqueX = config.width / 2;
-            const plaqueY = config.height - 36;
-            const plaqueBg = game.add.rectangle(plaqueX, plaqueY, 420, 44, 0x5d4037);
+            const plaqueY = config.height - 30;
+            const PLAQUE_DEPTH = 3000; // 항상 위에 — 고양이/러그에 안 가려지게
+            const plaqueBg = game.add.rectangle(plaqueX, plaqueY, 300, 40, 0x5d4037);
             plaqueBg.setStrokeStyle(3, 0x3e2723);
+            plaqueBg.setDepth(PLAQUE_DEPTH);
             const plaqueText = game.add.text(plaqueX, plaqueY, t('officeTitle'), {
                 fontFamily: 'ArkPixel, monospace',
-                fontSize: '18px',
+                fontSize: '17px',
                 fill: '#ffd700',
                 fontWeight: '900',
                 fontStyle: 'bold',
                 stroke: '#000',
                 strokeThickness: 3,
-                wordWrap: { width: 400 },
+                wordWrap: { width: 280 },
                 align: 'center'
             }).setOrigin(0.5);
+            plaqueText.setDepth(PLAQUE_DEPTH + 1);
             // 牌匾两边加个小装饰（跟随牌匾居中）
-            game.add.text(plaqueX - 190, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '20px' }).setOrigin(0.5);
-            game.add.text(plaqueX + 190, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '20px' }).setOrigin(0.5);
+            game.add.text(plaqueX - 138, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '18px' }).setOrigin(0.5).setDepth(PLAQUE_DEPTH + 1);
+            game.add.text(plaqueX + 138, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '18px' }).setOrigin(0.5).setDepth(PLAQUE_DEPTH + 1);
             window.officePlaqueText = plaqueText;
 
             // Random plant at (565,178) (frame 0-15, 160x160 each)
