@@ -73,11 +73,11 @@ WORKING_STATES = frozenset({"talking", "writing", "researching", "executing", "s
 # Each activity has its own office zone so the cat visibly goes to a different spot.
 STATE_TO_AREA_MAP = {
     "idle": "breakroom",        # 휴게실 (소파)
-    "talking": "meeting",       # 주인과 대화 — Star 옆 미팅 자리
-    "writing": "writing",       # 코딩/문서 — 책상
-    "executing": "writing",     # 실행 — 책상
-    "researching": "researching",  # 리서치 — 리서치 코너
-    "syncing": "syncing",       # 동기화 — 서버랙 옆
+    "talking": "work",          # 작업 구역
+    "writing": "work",          # 작업 구역
+    "executing": "work",        # 작업 구역
+    "researching": "work",      # 작업 구역
+    "syncing": "work",          # 작업 구역
     "error": "error",           # 에러 — 버그 구역
 }
 
@@ -188,7 +188,7 @@ def load_state():
                 age = (datetime.now() - dt).total_seconds()
             if age > ttl:
                 state["state"] = "idle"
-                state["detail"] = "待命中（自动回到休息区）"
+                state["detail"] = ""  # language-neutral; UI shows its own localized idle label
                 state["progress"] = 0
                 state["updated_at"] = datetime.now().isoformat()
                 # persist the auto-idle so every client sees it consistently
@@ -276,7 +276,7 @@ DEFAULT_AGENTS = [
         "name": "Star",
         "isMain": True,
         "state": "idle",
-        "detail": "待命中，随时准备为你服务",
+        "detail": "",
         "updated_at": datetime.now().isoformat(),
         "area": "breakroom",
         "source": "local",
@@ -777,7 +777,7 @@ def _generate_rpg_background_to_webp(out_webp_path: str, width: int = 1280, heig
 
 
 def state_to_area(state):
-    """Map agent state to office area (breakroom / writing / error)."""
+    """Map agent state to office area (breakroom / work / error)."""
     return STATE_TO_AREA_MAP.get(state, "breakroom")
 
 

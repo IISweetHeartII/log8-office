@@ -1672,7 +1672,6 @@
                 const on = panBtn.dataset.on === '1';
                 panBtn.textContent = on ? t('lockView') : t('moveView');
             }
-            if (window.zoneLabels) window.zoneLabels.forEach(z => { try { z.txt.setText(tn('stateShort', z.state)); } catch (e) {} });
             ensureMemoBgVisible();
             renderBootLoadingText(Number(loadingProgressBar?.style?.width?.replace('%','') || 0));
         }
@@ -3769,12 +3768,9 @@ function toggleBrokerPanel() {
             // 工作区域范围（190,526）（380,683）
             // error 区域范围（932,275）（1109,327）
             const rects = {
-                breakroom:   { x1: 400, y1: 560, x2: 900, y2: 660 },   // 휴게실(러그 앞 넓은 바닥 — 여러 마리 한 줄)
-                meeting:     { x1: 530, y1: 300, x2: 820, y2: 400 },   // 주인과 대화(Star 옆)
-                writing:     { x1: 160, y1: 560, x2: 430, y2: 680 },   // 코딩/문서(책상)
-                researching: { x1: 140, y1: 380, x2: 380, y2: 480 },   // 리서치 코너(좌측)
-                syncing:     { x1: 940, y1: 380, x2: 1150, y2: 500 },  // 동기화(서버랙 옆)
-                error:       { x1: 930, y1: 270, x2: 1110, y2: 340 }   // 에러(버그 구역)
+                work:      { x1: 130, y1: 545, x2: 470, y2: 685 },   // 작업 구역(책상 앞 바닥)
+                breakroom: { x1: 640, y1: 560, x2: 1080, y2: 685 },  // 휴게실(소파 앞 넓은 바닥)
+                error:     { x1: 930, y1: 270, x2: 1110, y2: 340 }   // 에러(버그 구역)
             };
             return rects[area] || rects.breakroom;
         }
@@ -3799,6 +3795,9 @@ function toggleBrokerPanel() {
             return { x, y };
         }
 
+        const STATE_EMOTE = { idle:'💤', talking:'💬', writing:'📝', executing:'⚙️', researching:'🔍', syncing:'🔄', error:'❗' };
+        function emoteFor(state){ return STATE_EMOTE[state] || '💤'; }
+
         function renderGuestAgentsInScene() {
             if (!game) return;
             const visitors = getMergedVisitors();
@@ -3815,6 +3814,8 @@ function toggleBrokerPanel() {
                     const wantCat = catKeyForAgent(agent);
                     if (wantCat && game.textures.exists(wantCat) && guestSprites[id].catKey !== wantCat) {
                         try { guestSprites[id].sprite.destroy(); guestSprites[id].nameText.destroy(); } catch (e) {}
+                        try { guestSprites[id].emote && guestSprites[id].emote.destroy(); } catch (e) {}
+                        try { guestSprites[id].shadow && guestSprites[id].shadow.destroy(); } catch (e) {}
                         if (guestTweens[id]) {
                             try { guestTweens[id].move && guestTweens[id].move.stop(); } catch (e) {}
                             try { guestTweens[id].name && guestTweens[id].name.stop(); } catch (e) {}
@@ -3825,8 +3826,8 @@ function toggleBrokerPanel() {
                 }
 
                 const isDemo = !!agent.isDemo || (DEMO_MODE && (id === 'demo_nika' || id === 'demo_mercury' || agent.name === '尼卡' || agent.name === '水星'));
-                const STATE_AREA = { idle:'breakroom', talking:'meeting', writing:'writing', executing:'writing', researching:'researching', syncing:'syncing', error:'error' };
-                const area = agent.area || STATE_AREA[agent.state] || 'breakroom';
+                const STATE_AREA = { idle:'breakroom', talking:'work', writing:'work', executing:'work', researching:'work', syncing:'work', error:'error' };
+                const area = STATE_AREA[agent.state] || 'breakroom';
 
                 const idx = (areaIdx[area] = (areaIdx[area] || 0) + 1) - 1;
                 const p = isDemo
@@ -3834,6 +3835,8 @@ function toggleBrokerPanel() {
                     : getAreaPoint(area, idx);
 
                 if (!guestSprites[id]) {
+                    // 발밑 부드러운 그림자(고양이 origin이 하단중앙이라 sprite.y가 발 위치)
+                    const shadow = game.add.ellipse(p.x, p.y, 54, 16, 0x000000, 0.28).setDepth(2599);
                     // 优先用图标：demo visitor 有专门映射
                     let sprite;
                     const isDemoNika = DEMO_MODE && (agent.agentId === 'demo_nika' || agent.name === '尼卡');
@@ -3903,7 +3906,12 @@ function toggleBrokerPanel() {
                     }).setOrigin(0.5);
                     nameText.setDepth(2601);
 
-                    guestSprites[id] = { sprite, nameText, catKey: (catKey && game.textures.exists(catKey)) ? catKey : null };
+                    // 머리 위 개별 상태 이모트(Smallville 스타일)
+                    const emote = game.add.text(p.x, nameTextY - 22, emoteFor(agent.state), {
+                        fontFamily: 'ArkPixel, monospace', fontSize: '20px'
+                    }).setOrigin(0.5).setDepth(2602);
+
+                    guestSprites[id] = { sprite, nameText, emote, shadow, catKey: (catKey && game.textures.exists(catKey)) ? catKey : null };
                 } else {
                     const g = guestSprites[id];
                     const yOffset = (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星')) ? 10 : 0;
@@ -3957,6 +3965,7 @@ function toggleBrokerPanel() {
                     }
 
                     g.nameText.setText(agent.name || t('visitorDefault'));
+                    if (g.emote) g.emote.setText(emoteFor(agent.state));
                 }
             });
 
@@ -3965,6 +3974,8 @@ function toggleBrokerPanel() {
                 if (!seenIds.has(id)) {
                     guestSprites[id].sprite.destroy();
                     guestSprites[id].nameText.destroy();
+                    try { guestSprites[id].emote && guestSprites[id].emote.destroy(); } catch (e) {}
+                    try { guestSprites[id].shadow && guestSprites[id].shadow.destroy(); } catch (e) {}
                     delete guestSprites[id];
                     if (guestBubbles[id]) {
                         guestBubbles[id].destroy();
@@ -4431,17 +4442,56 @@ function toggleBrokerPanel() {
                 }
             });
 
-            // 활동 구역 라벨: 어느 자리가 무슨 활동인지 바닥에 은은하게 표시(언어 전환 시 갱신)
-            window.zoneLabels = [];
-            [['breakroom','idle'],['meeting','talking'],['writing','writing'],['researching','researching'],['syncing','syncing'],['error','error']].forEach(([area, st]) => {
+            // 구역을 '방'처럼 보이게: 은은한 러그 + 텍스트 없는 이모지 표지(언어 의존 X)
+            window.roomDecor = [];
+            [['work', 0x4a5a8c, '💻'], ['breakroom', 0x3f6f6e, '☕']].forEach(([area, tint, emoji]) => {
                 const r = getAreaRect(area);
-                const lbl = game.add.text((r.x1 + r.x2) / 2, r.y1 - 4, tn('stateShort', st), {
-                    fontFamily: 'ArkPixel, monospace', fontSize: '13px', fill: '#aebbd2'
+                const pad = 14;
+                const rugX = r.x1 - pad, rugY = r.y1 - pad;
+                const rugW = (r.x2 - r.x1) + pad * 2, rugH = (r.y2 - r.y1) + pad * 2;
+                const rug = game.add.graphics();
+                rug.fillStyle(tint, 0.30);
+                rug.fillRoundedRect(rugX, rugY, rugW, rugH, 22);
+                rug.lineStyle(2, tint, 0.85);
+                rug.strokeRoundedRect(rugX, rugY, rugW, rugH, 22);
+                rug.setDepth(38);
+                const sign = game.add.text((r.x1 + r.x2) / 2, r.y1 - 6, emoji, {
+                    fontFamily: 'ArkPixel, monospace', fontSize: '22px'
                 }).setOrigin(0.5, 1);
-                lbl.setAlpha(0.4);
-                lbl.setDepth(40);
-                window.zoneLabels.push({ area, state: st, txt: lbl });
+                sign.setAlpha(0.75);
+                sign.setDepth(39);
+                window.roomDecor.push(rug, sign);
             });
+
+            // 아늑한 분위기용 떠다니는 먼지 입자(텍스트 없음, 은은하게)
+            window.ambientParticles = [];
+            for (let i = 0; i < 14; i++) {
+                const px = randomInt(120, 1160);
+                const py = randomInt(200, 700);
+                const mote = game.add.circle(px, py, 2, 0xffffff, 0.18);
+                mote.setDepth(35);
+                const drift = () => {
+                    mote.x = randomInt(120, 1160);
+                    mote.y = 700;
+                    game.tweens.add({
+                        targets: mote,
+                        y: randomInt(180, 320),
+                        x: mote.x + randomInt(-40, 40),
+                        duration: randomInt(6000, 12000),
+                        ease: 'Sine.easeInOut',
+                        onComplete: drift
+                    });
+                };
+                game.tweens.add({
+                    targets: mote,
+                    y: randomInt(180, 320),
+                    x: px + randomInt(-40, 40),
+                    duration: randomInt(6000, 12000),
+                    ease: 'Sine.easeInOut',
+                    onComplete: drift
+                });
+                window.ambientParticles.push(mote);
+            }
 
             star = game.physics.add.sprite(areas.breakroom.x, areas.breakroom.y, 'star_idle');
             star.setOrigin(0.5);
@@ -4934,6 +4984,32 @@ function toggleBrokerPanel() {
 
             // guest 随机想法泡泡
             maybeShowGuestBubble(time);
+
+            // 고양이별 juice: 그림자/이모트 follow + 둥실 + 가끔 깡총(squash&stretch)
+            try {
+                Object.keys(guestSprites).forEach(id => {
+                    const g = guestSprites[id];
+                    if (!g || !g.sprite) return;
+                    const sx = g.sprite.x, sy = g.sprite.y;
+                    if (g.shadow) { g.shadow.x = sx; g.shadow.y = sy; }
+                    if (g.emote) {
+                        g.emote.x = sx;
+                        g.emote.y = sy - 126 + Math.sin(time / 400 + sx) * 3;
+                    }
+                    // 걷는 중이 아닐 때만 가끔 깡총
+                    const walking = guestTweens[id] && guestTweens[id].move && guestTweens[id].move.isPlaying && guestTweens[id].move.isPlaying();
+                    if (g.nextHopAt == null) g.nextHopAt = time + 5000 + Math.random() * 8000;
+                    if (time >= g.nextHopAt) {
+                        g.nextHopAt = time + 5000 + Math.random() * 8000;
+                        if (!walking && !g.hopping) {
+                            g.hopping = true;
+                            const baseY = g.sprite.y;
+                            game.tweens.add({ targets: g.sprite, y: baseY - 12, duration: 180, ease: 'Quad.easeOut', yoyo: true, onComplete: () => { g.sprite.y = baseY; g.hopping = false; } });
+                            game.tweens.add({ targets: g.sprite, scaleY: 1.62, duration: 180, ease: 'Quad.easeOut', yoyo: true, onComplete: () => { g.sprite.scaleY = 1.5; } });
+                        }
+                    }
+                });
+            } catch (e) {}
 
             // demo 平滑移动时：让气泡每帧跟随角色锚点（避免 tween 时气泡滞留在旧位置）
             try {
