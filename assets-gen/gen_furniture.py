@@ -45,56 +45,67 @@ def blurred_shadow(img_size, ex, ey, color=None, blur=4):
 # 1. sofa-idle-v3.png  256×256  single image
 # ─────────────────────────────────────────────────────────────────────────────
 def make_sofa():
-    # Author at 32×32 logical, scale to 256 (×8)
-    LW, LH = 32, 32
+    # Author at 64×64 logical (double old 32×32) → ×4 = 256×256.
+    LW, LH = 64, 64
     c = Canvas(LW, LH)
 
     sofa_color   = P["blue"]
     sofa_hi      = P["blue_hi"]
     sofa_lo      = P["blue_lo"]
     cushion      = shade("blue", 0.15)
+    cushion_hi   = shade("blue", 0.3)
     leg          = P["wood_lo"]
     piping       = P["ink2"]
 
-    # legs (2 px wide, 2 px tall)
-    c.rect(4, 28, 2, 3, leg)
-    c.rect(26, 28, 2, 3, leg)
+    # legs
+    c.rect(8, 56, 4, 6, leg)
+    c.rect(8, 56, 2, 6, P["wood"])
+    c.rect(52, 56, 4, 6, leg)
+    c.rect(52, 56, 2, 6, P["wood"])
 
-    # sofa base / seat
-    c.rect(3, 22, 26, 8, sofa_lo)   # base body
-    c.rect(3, 22, 26, 1, piping)    # top edge piping
+    # sofa base / seat body
+    c.rect(6, 44, 52, 16, sofa_lo)
+    c.rect(6, 44, 52, 2, piping)            # top edge piping
+    c.rect(6, 58, 52, 2, shade("blue_lo", -0.25))   # base shadow
 
     # back cushion strip
-    c.rect(3, 14, 26, 9, sofa_color)
-    c.rect(3, 14, 26, 1, sofa_hi)   # highlight top
+    c.rect(6, 28, 52, 18, sofa_color)
+    c.rect(6, 28, 52, 2, sofa_hi)           # highlight top
+    # tufting seams on the backrest (finer detail)
+    for sx in (18, 32, 46):
+        c.vline(sx, 30, 14, shade("blue_lo", -0.2))
+        c.px(sx, 36, shade("blue", 0.2))    # tuft button glint
 
-    # armrests
-    c.rect(1, 15, 3, 14, sofa_lo)
-    c.rect(28, 15, 3, 14, sofa_lo)
-    c.rect(1, 15, 3, 1, sofa_hi)
-    c.rect(28, 15, 3, 1, sofa_hi)
+    # armrests with rounded top
+    for ax in (2, 56):
+        c.rect(ax, 30, 6, 28, sofa_lo)
+        c.rect(ax, 30, 6, 2, sofa_hi)
+        c.rect(ax, 31, 2, 26, shade("blue", 0.1))   # inner highlight
+    c.rect(2, 30, 6, 1, shade("blue_hi", 0.2))
+    c.rect(56, 30, 6, 1, shade("blue_hi", 0.2))
 
-    # seat cushions (two)
-    c.rect(4, 23, 11, 6, cushion)
-    c.rect(17, 23, 11, 6, cushion)
-    c.vline(16, 23, 6, piping)     # seam between cushions
+    # seat cushions (two) with fabric fold shading
+    for cx0 in (8, 33):
+        c.rect(cx0, 46, 22, 12, cushion)
+        c.rect(cx0, 46, 22, 2, cushion_hi)          # cushion top sheen
+        c.rect(cx0, 56, 22, 1, shade("blue_lo", -0.15))  # fold shadow
+        c.px(cx0 + 4, 49, cushion_hi)
+    c.vline(31, 46, 12, piping)             # seam between cushions
+    c.vline(32, 46, 12, shade("blue_lo", -0.2))
 
-    # cushion highlight dots
-    c.px(8, 24, sofa_hi)
-    c.px(22, 24, sofa_hi)
+    # small back pillow left (amber) with corner seams
+    c.rrect(10, 32, 16, 12, P["amber"], r=2)
+    c.rect(10, 32, 16, 2, P["amber_hi"])
+    c.frame(11, 33, 14, 10, shade("amber_lo", -0.15))
+    c.px(18, 38, P["amber_hi"])
 
-    # small back pillow left
-    c.rect(5, 16, 8, 6, P["amber"])
-    c.rect(5, 16, 8, 1, P["amber_hi"])
-    c.px(9, 19, P["amber_hi"])
+    # small back pillow right (rose)
+    c.rrect(38, 32, 16, 12, P["rose"], r=2)
+    c.rect(38, 32, 16, 2, P["rose_hi"])
+    c.frame(39, 33, 14, 10, shade("rose", -0.2))
+    c.px(46, 38, P["rose_hi"])
 
-    # small back pillow right
-    c.rect(19, 16, 8, 6, P["rose"])
-    c.rect(19, 16, 8, 1, P["rose_hi"])
-    c.px(23, 19, P["rose_hi"])
-
-    # outline
-    scaled = c.scaled(8)
+    scaled = c.scaled(4)
     scaled = outline_alpha(scaled)
 
     path = os.path.join(OUT, "sofa-idle-v3.png")
@@ -119,8 +130,8 @@ def make_sofa_shadow():
 # 3. desk-v3.webp  276×214  WEBP lossless single
 # ─────────────────────────────────────────────────────────────────────────────
 def make_desk():
-    # Logical 46×36 → ×6 = 276×216, then trim to 276×214
-    LW, LH = 46, 36
+    # Author at 92×72 logical (double old 46×36) → ×3 = 276×216, trim to 276×214.
+    LW, LH = 92, 72
     c = Canvas(LW, LH)
 
     wood   = P["wood"]
@@ -128,62 +139,92 @@ def make_desk():
     wood_l = P["wood_lo"]
     leg    = P["wood_lo"]
 
-    # legs (front)
-    c.rect(2, 24, 3, 12, leg)
-    c.rect(41, 24, 3, 12, leg)
+    # legs (front) — with a highlight edge
+    c.rect(4, 48, 6, 24, leg)
+    c.rect(4, 48, 2, 24, wood)
+    c.rect(82, 48, 6, 24, leg)
+    c.rect(82, 48, 2, 24, wood)
     # back legs (shorter visible)
-    c.rect(6, 22, 2, 5, wood_l)
-    c.rect(38, 22, 2, 5, wood_l)
+    c.rect(12, 44, 4, 10, shade("wood_lo", -0.15))
+    c.rect(76, 44, 4, 10, shade("wood_lo", -0.15))
 
-    # desk surface (isometric-ish flat top)
-    c.rect(1, 18, 44, 7, wood)
-    c.hline(1, 18, 44, wood_h)   # top highlight
-    c.hline(1, 24, 44, wood_l)   # bottom edge
+    # desk surface (flat top slab) with finer grain
+    c.rect(2, 36, 88, 14, wood)
+    c.hline(2, 36, 88, wood_h)            # top highlight
+    c.hline(2, 37, 88, shade("wood_hi", 0.15))
+    c.rect(2, 48, 88, 2, wood_l)          # front lip / edge shadow
+    # subtle wood grain streaks
+    for gy, gx0, gx1 in ((40, 6, 40), (43, 20, 60), (46, 50, 84), (41, 60, 86)):
+        c.hline(gx0, gy, gx1 - gx0, shade("wood", -0.12))
+    c.hline(8, 38, 70, shade("wood", 0.08))
 
     # under-desk shelf
-    c.rect(5, 28, 36, 3, wood_l)
+    c.rect(10, 56, 72, 6, wood_l)
+    c.hline(10, 56, 72, wood)
+    c.rect(14, 58, 64, 2, shade("wood_lo", -0.2))   # shelf recess
 
-    # monitor (small, on desk)
-    # screen base
-    c.rect(17, 8, 14, 11, P["metal_lo"])
-    c.rect(18, 9, 12, 9, P["screen"])   # screen area
-    c.rect(18, 9, 12, 1, P["screen2"])  # screen hi
-    # teal glow pixels
-    for px_x in range(19, 29, 2):
-        c.px(px_x, 11, P["teal"])
-        c.px(px_x + 1, 13, P["teal_lo"])
+    # monitor (on desk) — finer bezel + screen
+    mb_x, mb_y, mb_w, mb_h = 34, 14, 28, 24
+    c.rect(mb_x, mb_y, mb_w, mb_h, P["metal_lo"])
+    c.rect(mb_x, mb_y, mb_w, 1, P["metal_hi"])           # bezel top hi
+    c.rect(mb_x, mb_y + mb_h - 1, mb_w, 1, P["glass"])   # bezel bottom
+    # screen
+    c.rect(mb_x + 2, mb_y + 2, mb_w - 4, mb_h - 5, P["screen"])
+    c.rect(mb_x + 2, mb_y + 2, mb_w - 4, 1, P["screen2"])   # screen top glow
+    # finer UI on screen: code-ish lines + teal accent rows
+    for i, ry in enumerate(range(mb_y + 5, mb_y + mb_h - 5, 3)):
+        lw = (mb_w - 10) if i % 2 == 0 else (mb_w - 16)
+        c.hline(mb_x + 4, ry, lw, P["teal_lo"] if i % 3 else P["teal"])
+        c.px(mb_x + 4 + lw, ry, P["amber"])
+    c.rect(mb_x + 4, mb_y + 4, 6, 2, P["teal_hi"])        # window title bar
     # monitor stand
-    c.rect(22, 19, 4, 1, P["metal"])
-    c.rect(20, 20, 8, 1, P["metal_lo"])
+    c.rect(mb_x + mb_w // 2 - 2, mb_y + mb_h, 4, 2, P["metal"])
+    c.rect(mb_x + mb_w // 2 - 6, mb_y + mb_h + 2, 12, 2, P["metal_lo"])
 
     # keyboard (flat on desk)
-    c.rect(10, 20, 16, 3, P["metal"])
-    c.rect(10, 20, 16, 1, P["metal_hi"])
-    # key dots
-    for kx in range(11, 26, 2):
-        c.px(kx, 21, P["metal_hi"])
+    c.rect(20, 40, 32, 6, P["metal"])
+    c.rect(20, 40, 32, 1, P["metal_hi"])
+    c.rect(20, 45, 32, 1, shade("metal_lo", -0.2))
+    # key rows (finer dots)
+    for ky in (42, 44):
+        for kx in range(22, 51, 2):
+            c.px(kx, ky, P["metal_hi"])
 
-    # mug (right of keyboard)
-    c.rect(30, 17, 5, 5, P["amber"])
-    c.rect(30, 17, 5, 1, P["amber_hi"])
-    c.rect(31, 18, 3, 3, P["amber_lo"])   # mug inside
-    c.px(35, 19, P["amber_lo"])           # handle nub
+    # mouse beside keyboard
+    c.rrect(54, 42, 5, 4, P["metal"], r=1)
+    c.px(56, 43, P["metal_hi"])
+
+    # mug (right side) — finer body + handle + steam
+    c.rect(62, 32, 9, 10, P["amber"])
+    c.rect(62, 32, 9, 1, P["amber_hi"])
+    c.rect(63, 33, 7, 6, P["amber_lo"])     # mug inside / coffee
+    c.rect(63, 33, 7, 1, shade("amber_lo", -0.25))
+    c.frame(71, 34, 3, 5, P["amber"])       # handle
     # steam wisps
-    c.px(31, 15, shade("white", -0.1))
-    c.px(33, 14, shade("white", -0.1))
+    c.px(64, 29, shade("white", -0.1))
+    c.px(66, 27, shade("white", -0.05))
+    c.px(67, 30, shade("white", -0.15))
 
-    # small plant / pencil cup top-left
-    c.rect(3, 15, 4, 4, P["teal_lo"])
-    c.rect(3, 15, 4, 1, P["teal"])
-    c.vline(4, 12, 3, P["leaf"])
-    c.vline(6, 11, 4, P["leaf_hi"])
+    # small plant / pencil cup top-left — finer pot + leaves
+    c.rect(6, 28, 9, 8, P["teal_lo"])
+    c.rect(6, 28, 9, 1, P["teal"])
+    c.rect(6, 35, 9, 1, shade("teal_lo", -0.25))
+    c.vline(8, 22, 7, P["leaf"])
+    c.vline(10, 20, 9, P["leaf_hi"])
+    c.vline(12, 23, 6, P["leaf_lo"])
+    c.px(8, 22, P["leaf_hi"]); c.px(10, 20, shade("leaf_hi", 0.2))
 
-    scaled = c.scaled(6)
+    # a few loose papers + pen on the desk
+    c.rect(20, 50, 12, 4, P["paper"])
+    c.hline(22, 51, 8, shade("ink", 0.4))
+    c.hline(22, 52, 6, shade("ink", 0.45))
+    c.line(34, 53, 40, 49, P["rose"])       # pen
+
+    scaled = c.scaled(3)
     scaled = outline_alpha(scaled)
 
-    # Crop to 276x214
+    # Crop to 276x214 (drop 2px top, matching old composition)
     scaled = scaled.crop((0, 2, 276, 216))
-    # Ensure exact 276x214
     final = Image.new("RGBA", (276, 214), (0, 0, 0, 0))
     final.alpha_composite(scaled, (0, 0))
 
@@ -196,100 +237,121 @@ def make_desk():
 # 4. coffee-machine-v3-grid.webp  2760×1840  frames 230×230  12×8=96 frames
 # ─────────────────────────────────────────────────────────────────────────────
 def draw_coffee_machine_base(c: Canvas):
-    """Draw static machine body on a 23×23 canvas (upscaled ×10 → 230)."""
+    """Draw static machine body on a 46×46 canvas (×5 → 230). Double-res, with
+    finer panel seams, button bezels, a portafilter group head and water tank."""
     # machine body
-    c.rect(4, 4, 15, 16, P["metal"])
-    c.rect(4, 4, 15, 1, P["metal_hi"])
-    c.rect(4, 19, 15, 1, P["metal_lo"])
+    c.rect(8, 8, 30, 32, P["metal"])
+    c.rect(8, 8, 30, 2, P["metal_hi"])           # top sheen
+    c.rect(8, 38, 30, 2, P["metal_lo"])          # bottom shade
+    c.vline(8, 8, 32, P["metal_hi"])             # left edge light
+    c.vline(37, 8, 32, shade("metal_lo", -0.15)) # right edge shade
 
-    # panel face
-    c.rect(6, 6, 11, 10, P["metal_lo"])
-    c.rect(6, 6, 11, 1, P["glass"])
+    # rounded top cap
+    c.rrect(10, 6, 26, 4, P["metal_hi"], r=1)
 
-    # brand stripe (teal)
-    c.rect(6, 7, 11, 2, P["teal_lo"])
+    # inset front panel face
+    c.rect(12, 12, 22, 20, P["metal_lo"])
+    c.rect(12, 12, 22, 1, P["glass"])
+    c.vline(12, 12, 20, shade("metal_lo", -0.25))
 
-    # water tank (right side bump)
-    c.rect(18, 5, 2, 12, P["glass"])
-    c.rect(18, 5, 2, 1, P["glasshi"])
+    # brand stripe (teal) with a thin highlight
+    c.rect(12, 14, 22, 4, P["teal_lo"])
+    c.rect(12, 14, 22, 1, P["teal"])
+    c.rect(12, 17, 22, 1, shade("teal_lo", -0.3))
+
+    # pressure gauge dial on the panel
+    c.disc(30, 24, 3, P["white"])
+    c.disc(30, 24, 2, P["paper"])
+    c.line(30, 24, 31, 22, P["red_lo"])
+    c.px(30, 24, P["ink"])
+
+    # water tank (right side, translucent)
+    c.rect(38, 10, 4, 24, P["glass"])
+    c.rect(38, 10, 4, 2, P["glasshi"])
+    water = (P["teal_hi"][0], P["teal_hi"][1], P["teal_hi"][2], 130)
+    c.rect(38, 18, 4, 16, water)
+    c.px(39, 20, P["white"])                      # glint
 
     # drip tray
-    c.rect(3, 20, 17, 2, P["metal_lo"])
-    c.rect(3, 20, 17, 1, P["metal"])
+    c.rect(6, 40, 34, 4, P["metal_lo"])
+    c.rect(6, 40, 34, 1, P["metal"])
+    for gx in range(10, 36, 3):                   # tray grille slots
+        c.px(gx, 42, shade("metal_lo", -0.3))
 
     # base feet
-    c.rect(4, 22, 3, 1, P["metal_lo"])
-    c.rect(16, 22, 3, 1, P["metal_lo"])
+    c.rect(8, 44, 5, 2, shade("metal_lo", -0.3))
+    c.rect(33, 44, 5, 2, shade("metal_lo", -0.3))
 
-    # nozzle / brew head (centered top of tray)
-    c.rect(10, 16, 3, 4, P["metal_lo"])
-    c.px(11, 20, P["metal"])
+    # group head / brew nozzle (portafilter)
+    c.rect(20, 32, 6, 6, P["metal_lo"])
+    c.rect(20, 32, 6, 1, P["metal_hi"])
+    c.rect(22, 38, 2, 2, P["metal"])              # spout
+    c.px(22, 39, shade("metal_lo", -0.3))
+    c.px(23, 39, shade("metal_lo", -0.3))
 
-    # buttons row
-    c.rect(7, 10, 2, 2, P["amber"])
-    c.rect(10, 10, 2, 2, P["blue_lo"])
-    c.rect(13, 10, 2, 2, P["rose"])
+    # buttons row (finer, with bezels)
+    for bx, bc in ((14, "amber"), (20, "blue_lo"), (26, "rose")):
+        c.rect(bx, 20, 4, 4, shade(bc, -0.3))     # bezel
+        c.rect(bx + 1, 21, 2, 2, P[bc])           # cap
+        c.px(bx + 1, 21, shade(bc, 0.3))
 
 
 def draw_cup(c: Canvas, fill_level: int):
-    """Draw cup with fill_level (0-5) rows of coffee filled."""
+    """Draw cup (46×46 logical) with fill_level (0-10) of coffee filled."""
     # cup body
-    c.rect(8, 18, 7, 5, P["white"])
-    c.rect(8, 18, 7, 1, P["paper"])
-    c.rect(8, 22, 7, 1, P["paper"])    # cup base
-    c.px(15, 20, P["paper"])           # handle
+    c.rect(16, 36, 14, 9, P["white"])
+    c.rect(16, 36, 14, 2, P["paper"])           # rim
+    c.rect(16, 43, 14, 2, P["paper"])           # base
+    c.vline(16, 37, 8, shade("white", -0.1))    # left shade
+    c.frame(30, 38, 4, 5, P["paper"])           # handle
     # fill (amber = coffee)
     if fill_level > 0:
-        fill_y = 22 - fill_level
-        c.rect(9, fill_y, 5, fill_level, P["amber_lo"])
+        fill_y = 44 - fill_level
+        c.rect(18, fill_y, 10, fill_level, P["amber_lo"])
+        c.rect(18, fill_y, 10, 1, P["amber"])    # crema surface
 
 
 def draw_steam(c: Canvas, frame: int, n: int):
-    """Animated steam wisps above nozzle."""
+    """Animated steam wisps above the brew head."""
     t = frame / n
-    # two wisps offset in phase
-    for i, (sx, phase) in enumerate([(10, 0.0), (12, 0.5)]):
-        for row in range(4):
-            alpha_row = 1.0 - row / 4.0
-            offset = int(math.sin(2 * math.pi * (t + phase + row * 0.1)) * 1)
-            sy = 12 - row * 2 - int(t * 4) % 4
+    for i, (sx, phase) in enumerate([(20, 0.0), (24, 0.5)]):
+        for row in range(7):
+            alpha_row = 1.0 - row / 7.0
+            offset = int(math.sin(2 * math.pi * (t + phase + row * 0.1)) * 2)
+            sy = 24 - row * 2 - int(t * 8) % 6
             if 0 <= sy < c.h and 0 <= sx + offset < c.w:
-                alpha = int(180 * alpha_row * (0.5 + 0.5 * math.sin(2 * math.pi * t + phase)))
+                alpha = int(170 * alpha_row * (0.5 + 0.5 * math.sin(2 * math.pi * t + phase)))
                 if alpha > 20:
-                    col = (244, 246, 251, alpha)
-                    c.px(sx + offset, sy, col)
+                    c.px(sx + offset, sy, (244, 246, 251, alpha))
 
 
 def draw_drip(c: Canvas, frame: int, n: int):
-    """A droplet falling from nozzle into cup."""
-    # drip appears mid-cycle
+    """Droplets falling from the spout into the cup."""
     t = (frame / n) % 1.0
-    drip_y_start = 17
-    drip_y_end   = 18
-    drip_t = (t * 2) % 1.0   # twice per cycle
-    dy = drip_y_start + int(drip_t * (drip_y_end - drip_y_start + 1))
+    drip_t = (t * 2) % 1.0
+    dy = 33 + int(drip_t * 4)
     if drip_t < 0.8:
-        c.px(11, dy, P["amber"])
+        c.px(22, dy, P["amber"])
+        c.px(23, dy, P["amber"])
 
 
 def draw_status_light(c: Canvas, frame: int, n: int):
-    """Blinking green status LED."""
+    """Blinking green status LED on the panel."""
     t = frame / n
     on = math.sin(2 * math.pi * t * 2) > 0
-    color = P["teal"] if on else P["teal_lo"]
-    c.px(14, 8, color)
+    c.rect(15, 28, 2, 2, P["teal"] if on else shade("teal_lo", -0.3))
 
 
 def make_coffee_machine():
     COLS, ROWS = 12, 8
     N_FRAMES   = COLS * ROWS   # 96
-    CELL       = 23            # logical size
-    SCALE      = 10            # 23*10=230
+    CELL       = 46            # logical size (double old 23)
+    SCALE      = 5             # 46*5=230
     sheet = Sheet(COLS, ROWS, 230, 230)
 
     for f in range(N_FRAMES):
-        # fill level ramps up over first ~60 frames then resets
-        fill = min(5, int(f / (N_FRAMES - 1) * 6))
+        # fill level ramps up over the cycle then resets
+        fill = min(10, int(f / (N_FRAMES - 1) * 11))
 
         c = Canvas(CELL, CELL)
         draw_coffee_machine_base(c)
@@ -323,70 +385,106 @@ def make_coffee_shadow():
 # 6. serverroom-spritesheet.webp  7200×251  frames 180×251  40×1=40 frames
 # ─────────────────────────────────────────────────────────────────────────────
 def draw_server_rack_base(c: Canvas):
-    """Draw static rack body on 18×26 logical canvas."""
+    """Draw static rack body on a 36×52 logical canvas (×5 → 180×260).
+
+    Authored at double the old resolution so panel seams, vents, mounting
+    screws and bezels are crisp and fine instead of chunky 10px blocks.
+    """
     W, H = c.w, c.h
-    # rack cabinet body
-    c.rect(1, 0, W - 2, H - 1, P["metal_lo"])
-    c.rect(1, 0, W - 2, 1, P["metal"])        # top edge
-    c.rect(1, H - 1, W - 2, 1, P["metal_lo"]) # base
 
-    # door panel (front face)
-    c.rect(2, 1, W - 4, H - 3, P["metal"])
+    # cabinet outer shell
+    c.rect(2, 0, W - 4, H - 1, P["metal_lo"])
+    c.rect(2, 0, W - 4, 1, P["metal"])          # top edge highlight
     c.rect(2, 1, W - 4, 1, P["metal_hi"])
+    c.rect(2, H - 2, W - 4, 2, shade("metal_lo", -0.2))   # base shadow
 
-    # rack units (horizontal lines dividing units)
-    for ry in range(3, H - 4, 3):
-        c.hline(3, ry, W - 6, P["metal_lo"])
+    # side frame rails (left/right) with subtle bevel
+    c.rect(2, 1, 3, H - 3, P["metal"])
+    c.rect(2, 1, 1, H - 3, P["metal_hi"])
+    c.rect(W - 5, 1, 3, H - 3, P["metal"])
+    c.rect(W - 4, 1, 1, H - 3, shade("metal_lo", -0.15))
 
-    # ventilation slots right edge
-    for vy in range(2, H - 3, 2):
-        c.px(W - 2, vy, P["metal_hi"])
+    # inset front face (where the units live)
+    fx, fw = 6, W - 12
+    c.rect(fx, 3, fw, H - 7, shade("metal_lo", -0.12))
+    c.rect(fx, 3, fw, 1, shade("metal_lo", -0.3))   # top inner shadow
+    c.vline(fx, 3, H - 7, shade("metal_lo", -0.3))  # left inner shadow
 
-    # rack ears (mounting rails)
-    c.vline(2, 2, H - 4, P["metal_hi"])
-    c.vline(W - 3, 2, H - 4, P["metal_hi"])
+    # brand strip header
+    c.rect(fx, 4, fw, 3, P["blue_lo"])
+    c.rect(fx, 4, fw, 1, P["blue"])
+    c.rect(fx, 6, fw, 1, shade("blue_lo", -0.3))
+    # tiny logo notch
+    c.rect(fx + 2, 5, 2, 1, P["blue_hi"])
 
-    # brand strip top
-    c.rect(3, 2, W - 6, 2, P["blue_lo"])
-    c.rect(3, 2, W - 6, 1, P["blue"])
+    # 8 rack units, each a thin bezel + dark slot — finer seams
+    unit_top = 9
+    unit_h = 5
+    for u in range(8):
+        uy = unit_top + u * unit_h
+        # unit faceplate
+        c.rect(fx + 1, uy, fw - 2, unit_h - 1, P["metal"])
+        c.rect(fx + 1, uy, fw - 2, 1, P["metal_hi"])      # top highlight
+        c.rect(fx + 1, uy + unit_h - 2, fw - 2, 1, shade("metal_lo", -0.2))  # seam
+        # handle slot on the left of each unit
+        c.rect(fx + 2, uy + 1, 3, 1, P["glass"])
+        # mounting screws (left + right rail)
+        c.px(fx, uy + 1, P["metal_hi"])
+        c.px(fx + fw - 1, uy + 1, P["metal_hi"])
+
+    # ventilation grille (fine vertical slats) on right portion of each unit
+    for u in range(8):
+        uy = unit_top + u * unit_h + 1
+        for vx in range(fx + fw - 9, fx + fw - 2, 2):
+            c.vline(vx, uy, 2, shade("metal_lo", -0.25))
+
+    # side exhaust vents (right outer rail)
+    for vy in range(4, H - 4, 2):
+        c.px(W - 3, vy, shade("metal_lo", -0.3))
+        c.px(W - 4, vy, P["metal_hi"])
+
+    # feet
+    c.rect(4, H - 2, 4, 2, shade("metal_lo", -0.35))
+    c.rect(W - 8, H - 2, 4, 2, shade("metal_lo", -0.35))
 
 
 def draw_rack_leds(c: Canvas, frame: int, n: int):
-    """Animate LEDs across rack units."""
+    """Animate fine LEDs across the rack units (36×52 logical)."""
     W, H = c.w, c.h
     t = frame / n
+    fx, fw = 6, W - 12
+    unit_top = 9
+    unit_h = 5
 
-    # 8 rack units, each with 3 LEDs
+    # each unit gets a small cluster of tiny status LEDs near its left edge
     for unit in range(8):
-        uy = 4 + unit * 3
-        # Active/idle pattern shifts per frame
-        for li in range(3):
-            lx = 4 + li * 3
+        uy = unit_top + unit * unit_h + 1
+        for li in range(4):
+            lx = fx + 7 + li * 2
             phase = (unit * 0.3 + li * 0.15 + t * 2.5)
             val = math.sin(2 * math.pi * phase)
-            if lx < W - 4:
-                if li == 0:   # power/status: green
-                    color = P["teal"] if val > -0.3 else P["teal_lo"]
-                elif li == 1: # activity: amber blink
-                    color = P["amber"] if val > 0.2 else P["metal_lo"]
-                else:          # error: red (rare)
-                    color = P["red"] if val > 0.85 else P["metal_lo"]
-                c.px(lx, uy, color)
+            if li == 0:        # power: steady-ish green
+                color = P["teal"] if val > -0.5 else P["teal_lo"]
+            elif li == 1:      # activity: green blink
+                color = P["teal_hi"] if val > 0.2 else shade("teal_lo", -0.3)
+            elif li == 2:      # io: amber blink
+                color = P["amber"] if val > 0.3 else shade("amber_lo", -0.4)
+            else:              # error: red (rare)
+                color = P["red"] if val > 0.88 else shade("metal_lo", -0.3)
+            c.px(lx, uy, color)
 
-    # scrolling activity bar at top panel
-    bar_x = int((t * (W - 8)) % (W - 8)) + 4
-    if bar_x < W - 3:
-        c.px(bar_x, 3, P["teal"])
-        if bar_x + 1 < W - 3:
-            c.px(bar_x + 1, 3, P["teal_lo"])
+    # scrolling activity sweep across the brand header
+    bar_x = int((t * (fw - 4)) % (fw - 4)) + fx + 2
+    c.px(bar_x, 5, P["teal_hi"])
+    if bar_x + 1 < fx + fw - 1:
+        c.px(bar_x + 1, 5, P["teal"])
 
 
 def make_server_rack():
     N_FRAMES = 40
-    # Logical: 18 wide × 26 tall → ×10 = 180×260, but target cell is 180×251
-    # Author at 18×26, scale ×10=180×260, then crop to 180×251
-    LOG_W, LOG_H = 18, 26
-    SCALE = 10
+    # Author at 36×52 logical (double old 18×26) → ×5 = 180×260, crop to 180×251.
+    LOG_W, LOG_H = 36, 52
+    SCALE = 5
     sheet = Sheet(N_FRAMES, 1, 180, 251)
 
     for f in range(N_FRAMES):
@@ -411,9 +509,21 @@ def make_server_rack():
 # 7. plants-spritesheet.webp  640×640  frames 160×160  4×4=16 frames
 #    16 DISTINCT potted plants
 # ─────────────────────────────────────────────────────────────────────────────
+def _plant_pot(c: Canvas, pot_c):
+    """Shared finely-detailed pot on a 32×32 logical canvas (rim, body, soil)."""
+    # tapered pot body
+    c.rect(10, 22, 12, 8, pot_c)
+    c.rect(9, 20, 14, 3, pot_c)              # rim band
+    c.rect(9, 20, 14, 1, shade("white", -0.12))     # rim highlight
+    c.vline(10, 22, 8, shade("white", -0.18))        # left highlight edge
+    c.vline(21, 22, 8, shade("wood_lo", -0.25))      # right shadow edge
+    c.rect(10, 29, 12, 1, shade("wood_lo", -0.3))    # base shadow
+    # soil line
+    c.rect(11, 21, 10, 1, P["soil"])
+
+
 def draw_plant(c: Canvas, kind: int):
-    """Draw one of 16 distinct plants on a 16×16 logical canvas."""
-    # Pot (shared base, slight color variation)
+    """Draw one of 16 distinct plants on a 32×32 logical canvas (double-res)."""
     pot_colors = [
         P["amber_lo"], P["soil"], P["metal_lo"], P["rose"],
         P["teal_lo"],  P["amber"], P["blue_lo"],  P["wood_lo"],
@@ -421,151 +531,174 @@ def draw_plant(c: Canvas, kind: int):
         P["soil"],     P["blue_lo"], P["amber_lo"], P["wood"],
     ]
     pot_c = pot_colors[kind % len(pot_colors)]
-    c.rect(5, 11, 6, 4, pot_c)
-    c.rect(4, 10, 8, 2, pot_c)
-    c.rect(4, 10, 8, 1, shade("white", -0.15))  # rim highlight
-    c.rect(5, 14, 6, 1, shade("wood_lo", -0.2)) # base shadow
+    _plant_pot(c, pot_c)
 
     if kind == 0:   # tall leafy
-        c.rect(7, 3, 2, 8, P["leaf_lo"])
-        c.rect(5, 4, 5, 4, P["leaf"])
-        c.rect(4, 6, 8, 3, P["leaf_hi"])
-        c.px(7, 3, P["leaf_hi"])
+        c.rect(14, 6, 4, 16, P["leaf_lo"])      # central mass / stems
+        for lx, ly, lw, lh in ((10, 8, 10, 8), (8, 12, 14, 6)):
+            c.rect(lx, ly, lw, lh, P["leaf"])
+        c.rect(9, 13, 14, 4, P["leaf_hi"])
+        # leaf tips
+        for tx in (10, 14, 18, 22):
+            c.px(tx, 7, P["leaf_hi"]); c.px(tx, 6, P["leaf"])
+        c.vline(16, 8, 12, shade("leaf_lo", -0.2))   # midrib
 
     elif kind == 1: # round bush
-        c.disc(8, 7, 4, P["leaf"])
-        c.disc(8, 7, 3, P["leaf_hi"])
-        c.px(9, 6, P["white"])
+        c.disc(16, 14, 8, P["leaf"])
+        c.disc(16, 14, 6, P["leaf_hi"])
+        c.disc(15, 12, 3, shade("leaf_hi", 0.2))
+        # dappled texture
+        for dx, dy in ((12, 16), (20, 15), (16, 18), (18, 11)):
+            c.px(dx, dy, P["leaf_lo"])
+        c.px(18, 11, P["white"])
 
     elif kind == 2: # cactus
-        c.rect(7, 4, 2, 7, P["teal_lo"])
-        c.rect(5, 6, 2, 3, P["teal_lo"])
-        c.rect(9, 7, 2, 3, P["teal_lo"])
-        c.vline(7, 4, 7, P["teal"])
-        c.px(5, 6, P["teal_hi"])
-        c.px(9, 7, P["teal_hi"])
+        c.rect(14, 8, 4, 14, P["teal_lo"])
+        c.rect(10, 12, 4, 6, P["teal_lo"])
+        c.rect(18, 14, 4, 6, P["teal_lo"])
+        c.vline(15, 8, 14, P["teal"])           # ridges
+        c.vline(16, 8, 14, P["teal_hi"])
+        c.vline(11, 12, 6, P["teal"])
+        c.vline(20, 14, 6, P["teal"])
+        # spines
+        for sy in range(9, 21, 2):
+            c.px(13, sy, P["paper"]); c.px(18, sy, P["paper"])
 
     elif kind == 3: # hanging vine
-        c.rect(6, 3, 4, 3, P["leaf"])
-        c.rect(5, 5, 6, 2, P["leaf_hi"])
-        # vines hanging
-        for vx, phase in [(5, 0), (7, 1), (9, 0.5)]:
-            for vy in range(7, 12):
+        c.rect(12, 6, 8, 6, P["leaf"])
+        c.rect(10, 9, 12, 4, P["leaf_hi"])
+        c.disc(16, 8, 3, shade("leaf_hi", 0.15))
+        for vx, phase in [(10, 0), (14, 1), (18, 0.5), (22, 0)]:
+            for vy in range(13, 22):
                 c.px(vx, vy, P["leaf"] if (vy + phase) % 2 == 0 else P["leaf_lo"])
+            c.px(vx, 22, P["leaf_hi"])          # vine tip
 
     elif kind == 4: # flowering
-        c.rect(7, 5, 2, 6, P["leaf_lo"])
-        c.rect(5, 7, 6, 3, P["leaf"])
+        c.rect(14, 10, 4, 12, P["leaf_lo"])
+        c.rect(10, 14, 12, 6, P["leaf"])
+        c.vline(16, 10, 10, shade("leaf_lo", -0.2))
         # flowers
-        c.disc(6, 5, 2, P["rose"])
-        c.disc(10, 6, 2, P["amber"])
-        c.px(6, 5, P["white"])
-        c.px(10, 6, P["white"])
+        for fx, fy, fc in ((12, 10, P["rose"]), (20, 12, P["amber"]), (16, 8, P["blue"])):
+            c.disc(fx, fy, 2, fc)
+            c.px(fx, fy, P["white"])
+            c.disc(fx, fy, 1, shade(("rose" if fc==P["rose"] else "amber" if fc==P["amber"] else "blue"), 0.25))
 
     elif kind == 5: # fern
-        c.vline(8, 4, 7, P["leaf_lo"])
-        for i in range(5):
-            fry = 5 + i
-            c.px(8 - i, fry, P["leaf"])
-            c.px(8 + i, fry, P["leaf_hi"])
+        c.vline(16, 8, 14, P["leaf_lo"])
+        for i in range(10):
+            fry = 9 + i
+            w = max(1, 9 - i)
+            c.hline(16 - w // 2, fry, w, P["leaf"] if i % 2 else P["leaf_hi"])
+        c.px(16, 8, P["leaf_hi"])
 
-    elif kind == 6: # succulent
-        c.disc(8, 9, 3, P["teal_lo"])
-        c.disc(8, 9, 2, P["teal"])
-        c.disc(8, 9, 1, P["teal_hi"])
-        for angle in range(0, 360, 60):
+    elif kind == 6: # succulent rosette
+        c.disc(16, 17, 6, P["teal_lo"])
+        c.disc(16, 17, 4, P["teal"])
+        c.disc(16, 17, 2, P["teal_hi"])
+        for angle in range(0, 360, 45):
             rad = math.radians(angle)
-            lx = int(8 + 3 * math.cos(rad))
-            ly = int(9 + 3 * math.sin(rad))
+            lx = int(16 + 6 * math.cos(rad))
+            ly = int(17 + 6 * math.sin(rad))
             c.px(lx, ly, P["leaf"])
+            c.px(int(16 + 4 * math.cos(rad)), int(17 + 4 * math.sin(rad)), shade("teal", 0.2))
 
     elif kind == 7: # bonsai
-        c.rect(7, 8, 2, 3, P["wood_lo"])
-        c.rect(5, 5, 6, 4, P["leaf"])
-        c.rect(6, 4, 4, 2, P["leaf"])
-        c.rect(4, 6, 3, 2, P["leaf_lo"])
-        c.rect(9, 6, 3, 2, P["leaf_lo"])
-        c.px(8, 4, P["leaf_hi"])
+        c.rect(14, 14, 4, 8, P["wood_lo"])
+        c.vline(14, 14, 8, P["wood"])           # trunk highlight
+        for lx, ly, lw, lh in ((9, 8, 14, 6), (11, 6, 10, 4), (7, 11, 7, 4), (18, 11, 7, 4)):
+            c.rect(lx, ly, lw, lh, P["leaf"])
+        c.rect(11, 7, 10, 3, P["leaf_hi"])
+        c.px(16, 6, P["leaf_hi"])
 
     elif kind == 8: # snake plant (tall spikes)
-        for sx, sw in [(6, 2), (9, 2), (7, 2)]:
-            c.rect(sx, 3, sw, 8, P["leaf"])
-            c.vline(sx, 3, 8, P["leaf_hi"])
-            c.vline(sx + sw - 1, 3, 8, P["leaf_lo"])
+        for sx, sw in [(11, 3), (18, 3), (14, 4)]:
+            c.rect(sx, 5, sw, 17, P["leaf"])
+            c.vline(sx, 5, 17, P["leaf_hi"])
+            c.vline(sx + sw - 1, 5, 17, P["leaf_lo"])
+            c.px(sx + sw // 2, 5, P["amber"])    # variegated tip
+        c.rect(15, 5, 1, 17, shade("leaf", 0.25))
 
     elif kind == 9: # round cactus (barrel)
-        c.disc(8, 8, 4, P["teal_lo"])
-        c.disc(8, 8, 3, P["teal"])
-        for i in range(-3, 4):
-            c.px(8 + i, 8 - abs(i), P["teal_hi"])
-        # spines
-        for si in range(0, 360, 45):
+        c.disc(16, 16, 8, P["teal_lo"])
+        c.disc(16, 16, 6, P["teal"])
+        for i in range(-6, 7):
+            c.px(16 + i, 16 - abs(i) // 2, shade("teal", 0.18))   # ridges
+        for si in range(0, 360, 30):
             r2 = math.radians(si)
-            c.px(int(8 + 4 * math.cos(r2)), int(8 + 4 * math.sin(r2)), P["paper"])
+            c.px(int(16 + 8 * math.cos(r2)), int(16 + 8 * math.sin(r2)), P["paper"])
+        c.disc(16, 11, 1, P["amber"])           # tiny flower bud
 
     elif kind == 10: # ivy trailing right
-        c.rect(7, 4, 3, 5, P["leaf_lo"])
-        for iy in range(5, 11):
-            c.px(9 + (iy - 5), iy, P["leaf"])
-            c.px(10 + (iy - 5), iy + 1, P["leaf_hi"])
+        c.rect(14, 8, 6, 10, P["leaf_lo"])
+        c.rect(13, 10, 8, 5, P["leaf"])
+        for iy in range(10, 22):
+            off = (iy - 10)
+            c.px(18 + off // 2, iy, P["leaf"])
+            c.px(19 + off // 2, iy + 1, P["leaf_hi"])
+            if iy % 3 == 0:
+                c.px(17 + off // 2, iy, P["leaf_hi"])   # little leaf
 
     elif kind == 11: # palm / tropical
-        c.rect(7, 6, 2, 5, P["wood"])
-        for angle, length in [(210, 4), (170, 5), (130, 4), (250, 3), (290, 4)]:
+        c.rect(14, 12, 4, 10, P["wood"])
+        c.vline(15, 12, 10, P["wood_hi"])
+        for angle, length in [(210, 8), (170, 10), (130, 8), (250, 6), (290, 8), (200, 9)]:
             rad = math.radians(angle)
             for s in range(1, length + 1):
-                lx = int(8 + s * math.cos(rad))
-                ly = int(6 + s * math.sin(rad))
+                lx = int(16 + s * math.cos(rad))
+                ly = int(12 + s * math.sin(rad))
                 if 0 <= lx < c.w and 0 <= ly < c.h:
                     c.px(lx, ly, P["leaf"] if s % 2 == 0 else P["leaf_hi"])
 
     elif kind == 12: # air plant (no soil, bare)
-        for angle in range(0, 360, 40):
+        for angle in range(0, 360, 30):
             rad = math.radians(angle)
-            for s in range(2, 5):
-                lx = int(8 + s * math.cos(rad))
-                ly = int(8 + s * math.sin(rad))
+            for s in range(3, 9):
+                lx = int(16 + s * math.cos(rad))
+                ly = int(16 + s * math.sin(rad))
                 if 0 <= lx < c.w and 0 <= ly < c.h:
-                    c.px(lx, ly, P["teal"] if s == 4 else P["leaf"])
+                    c.px(lx, ly, P["teal"] if s >= 7 else P["leaf"])
 
     elif kind == 13: # mushroom cluster
-        c.rect(7, 9, 2, 2, P["wood"])
-        c.disc(8, 7, 3, P["rose"])
-        c.px(8, 6, P["white"])
-        c.px(7, 8, P["white"])
-        c.px(9, 8, P["white"])
-        # small mushroom next to
-        c.px(11, 10, P["wood"])
-        c.disc(11, 8, 2, P["amber"])
-        c.px(11, 7, P["white"])
+        c.rect(13, 17, 4, 5, P["white"])        # stem
+        c.vline(13, 17, 5, P["paper"])
+        c.disc(15, 13, 6, P["rose"])
+        c.disc(15, 13, 4, shade("rose", 0.15))
+        for sx, sy in ((13, 11), (17, 12), (15, 14), (18, 14)):
+            c.px(sx, sy, P["white"])             # spots
+        # small mushroom
+        c.rect(21, 19, 2, 3, P["white"])
+        c.disc(22, 16, 3, P["amber"])
+        c.px(22, 15, P["white"]); c.px(23, 17, P["white"])
 
     elif kind == 14: # cherry blossom mini
-        c.rect(7, 7, 2, 4, P["wood_lo"])
-        c.rect(5, 4, 6, 4, P["rose"])
-        c.disc(8, 5, 3, P["rose_hi"])
-        for px_coords in [(6, 4), (10, 5), (7, 7), (9, 7)]:
-            c.px(px_coords[0], px_coords[1], P["white"])
+        c.rect(14, 14, 4, 8, P["wood_lo"])
+        c.vline(14, 14, 8, P["wood"])
+        c.disc(15, 9, 6, P["rose"])
+        c.disc(15, 9, 4, P["rose_hi"])
+        for bx, by in ((11, 8), (20, 9), (14, 5), (18, 13), (13, 13)):
+            c.px(bx, by, P["white"])
+            c.px(bx, by + 1, shade("rose_hi", 0.2))
 
     else:            # 15 — zen rock garden (novelty)
-        # rocks
-        c.disc(6, 10, 2, P["metal"])
-        c.disc(10, 11, 2, P["metal_hi"])
-        c.disc(8, 9, 1, P["metal_lo"])
-        # rake lines
-        for rl in range(4, 14, 2):
-            c.hline(3, rl + 1, 10, (P["paper"][0], P["paper"][1], P["paper"][2], 80))
+        c.disc(11, 20, 3, P["metal"])
+        c.disc(11, 19, 2, P["metal_hi"])
+        c.disc(20, 21, 3, P["metal_hi"])
+        c.disc(16, 18, 2, P["metal_lo"])
+        # rake lines (raked sand)
+        sand = (P["paper"][0], P["paper"][1], P["paper"][2], 90)
+        for rl in range(8, 27, 3):
+            c.hline(7, rl, 18, sand)
         # tiny plant
-        c.vline(12, 7, 3, P["leaf"])
-        c.px(11, 7, P["leaf_hi"])
-        c.px(13, 8, P["leaf_hi"])
+        c.vline(24, 13, 6, P["leaf"])
+        c.px(23, 13, P["leaf_hi"]); c.px(25, 15, P["leaf_hi"])
 
 
 def make_plants():
     sheet = Sheet(4, 4, 160, 160)
     for i in range(16):
-        c = Canvas(16, 16)
+        c = Canvas(32, 32)
         draw_plant(c, i)
-        scaled = c.scaled(10)    # 160×160
+        scaled = c.scaled(5)     # 160×160
         scaled = outline_alpha(scaled)
         sheet.place(scaled)
     path = os.path.join(OUT, "plants-spritesheet.webp")
@@ -576,17 +709,67 @@ def make_plants():
 # ─────────────────────────────────────────────────────────────────────────────
 # 8. posters-spritesheet.webp  640×1280  frames 160×160  4×8=32 frames
 # ─────────────────────────────────────────────────────────────────────────────
-def draw_poster(c: Canvas, kind: int):
-    """Draw one of 32 framed wall posters on a 16×16 logical canvas."""
-    # Frame (consistent across all posters)
+class _ScaleCanvas:
+    """Coordinate-scaling proxy: forwards drawing to a real Canvas, multiplying
+    every coordinate/size by `s`. Lets us run art code authored for a 16×16 grid
+    on a 32×32 canvas unchanged, so each old art-pixel becomes an s×s block while
+    the surrounding frame/mat is drawn finer directly on the real canvas."""
+
+    def __init__(self, canvas: Canvas, s: int):
+        self._c = canvas
+        self.s = s
+        self.w = canvas.w // s
+        self.h = canvas.h // s
+
+    def px(self, x, y, c):
+        self._c.rect(int(x) * self.s, int(y) * self.s, self.s, self.s, c)
+
+    def rect(self, x, y, w, h, c):
+        self._c.rect(int(x) * self.s, int(y) * self.s, w * self.s, h * self.s, c)
+
+    def frame(self, x, y, w, h, c):
+        s = self.s
+        self._c.rect(x * s, y * s, w * s, s, c)
+        self._c.rect(x * s, (y + h - 1) * s, w * s, s, c)
+        self._c.rect(x * s, y * s, s, h * s, c)
+        self._c.rect((x + w - 1) * s, y * s, s, h * s, c)
+
+    def hline(self, x, y, w, c):
+        self.rect(x, y, w, 1, c)
+
+    def vline(self, x, y, h, c):
+        self.rect(x, y, 1, h, c)
+
+    def line(self, x0, y0, x1, y1, c):
+        self._c.line(x0 * self.s, y0 * self.s, x1 * self.s, y1 * self.s, c)
+
+    def disc(self, cx, cy, r, c):
+        s = self.s
+        self._c.disc(cx * s + s // 2, cy * s + s // 2, r * s + s // 2 - 1, c)
+
+
+def draw_poster(c32: Canvas, kind: int):
+    """Draw one of 32 framed wall posters on a 32×32 logical canvas.
+
+    The shared frame/mat/canvas are drawn finely at full 32-res; the per-kind
+    artwork runs through a ×2 coordinate proxy so all 32 original designs are
+    preserved while bezels/edges are crisp at the finer pixel density."""
     frame_colors = [
         P["wood"], P["metal"], P["ink2"], P["amber_lo"],
         P["wood_lo"], P["metal_hi"], P["rose"], P["teal_lo"],
     ]
     fc = frame_colors[kind % len(frame_colors)]
-    c.rect(0, 0, 16, 16, fc)    # frame body
-    c.rect(1, 1, 14, 14, P["paper"])  # mat / inner
-    c.rect(2, 2, 12, 12, P["white"])  # canvas
+    # fine outer frame (2px), mat (2px), then canvas
+    c32.rect(0, 0, 32, 32, fc)                      # frame body
+    c32.rect(0, 0, 32, 1, shade("white", -0.2))    # frame top highlight
+    c32.rect(0, 31, 32, 1, shade("wood_lo", -0.3)) # frame bottom shadow
+    c32.frame(1, 1, 30, 30, shade("white", -0.25)) # inner bevel line
+    c32.rect(2, 2, 28, 28, P["paper"])             # mat
+    c32.rect(4, 4, 24, 24, P["white"])             # canvas
+    c32.rect(4, 4, 24, 1, shade("white", 0.05))    # canvas top sheen
+
+    # per-kind artwork via ×2 proxy (operates on the 16×16 inner art region)
+    c = _ScaleCanvas(c32, 2)
 
     if kind == 0:   # abstract — colored circles
         c.disc(7, 7, 4, P["blue"])
@@ -898,9 +1081,9 @@ def draw_poster(c: Canvas, kind: int):
 def make_posters():
     sheet = Sheet(4, 8, 160, 160)
     for i in range(32):
-        c = Canvas(16, 16)
+        c = Canvas(32, 32)
         draw_poster(c, i)
-        scaled = c.scaled(10)    # 160×160
+        scaled = c.scaled(5)     # 160×160
         scaled = outline_alpha(scaled)
         sheet.place(scaled)
     path = os.path.join(OUT, "posters-spritesheet.webp")
@@ -912,68 +1095,72 @@ def make_posters():
 # 9. flowers-bloom-v2.webp  512×512  frames 128×128  4×4=16 frames
 # ─────────────────────────────────────────────────────────────────────────────
 def make_flowers_bloom():
-    # Logical 13×13, scaled ×10 = 130×130 → fit in 128 cell
-    # Actually: 128/10 = 12.8, so author at 12×12, scale ×10 = 120×120, center in 128
-    LW = 12
+    # Author at 24×24 logical (double old 12×12) → ×5 = 120×120, center in 128.
+    LW = 24
     sheet = Sheet(4, 4, 128, 128)
 
     for f in range(16):
         t = f / 15.0   # 0..1 bloom progress
         c = Canvas(LW, LW)
 
-        # stem
-        stem_h = max(1, int(5 * min(t * 2, 1.0)))
-        c.rect(5, LW - stem_h - 1, 2, stem_h + 1, P["leaf_lo"])
-        c.px(5, LW - stem_h - 1, P["leaf"])
+        # stem (finer, with a highlight edge)
+        stem_h = max(2, int(10 * min(t * 2, 1.0)))
+        sy = LW - stem_h - 2
+        c.rect(11, sy, 3, stem_h + 2, P["leaf_lo"])
+        c.vline(11, sy, stem_h + 2, P["leaf"])      # lit edge
+        c.px(11, sy, P["leaf_hi"])
 
-        # leaves (appear from t=0.2)
+        # leaves (appear from t=0.2) — pointed, two-tone
         if t > 0.2:
             lt = min(1.0, (t - 0.2) / 0.3)
-            lw = max(1, int(3 * lt))
-            c.rect(3, LW - 4, lw, 1, P["leaf"])
-            c.rect(8, LW - 5, lw, 1, P["leaf"])
+            lw = max(1, int(6 * lt))
+            for ly, sgn, x0 in ((LW - 8, -1, 10), (LW - 11, 1, 13)):
+                for k in range(lw):
+                    c.px(x0 + sgn * k, ly - k // 2, P["leaf"] if k % 2 else P["leaf_hi"])
+                c.px(x0 + sgn * (lw - 1), ly - (lw - 1) // 2, P["leaf_lo"])
 
         # bud / bloom
         if t < 0.3:
-            # tight bud
-            bud_h = max(1, int(3 * (t / 0.3)))
-            c.rect(5, LW - stem_h - 1 - bud_h, 2, bud_h, P["leaf"])
+            bud_h = max(1, int(6 * (t / 0.3)))
+            c.rect(11, sy - bud_h, 3, bud_h, P["leaf"])
+            c.px(12, sy - bud_h, P["leaf_hi"])
         elif t < 0.6:
-            # opening: petals emerge
             pt = (t - 0.3) / 0.3
-            petal_r = max(1, int(4 * pt))
-            c.disc(6, LW - stem_h - 2 - petal_r, petal_r, P["rose"])
-            c.px(6, LW - stem_h - 2 - petal_r, P["amber"])  # center
-        elif t < 0.85:
-            # full bloom
-            pt = min(1.0, (t - 0.6) / 0.25)
-            pr = max(1, int(4 + pt * 1))
-            c.disc(6, LW - stem_h - pr - 1, pr, P["rose"])
-            c.disc(6, LW - stem_h - pr - 1, max(1, pr - 2), P["amber_hi"])
-            c.px(6, LW - stem_h - pr - 1, P["white"])
-            # petal tips
-            for angle in range(0, 360, 45):
-                rad = math.radians(angle)
-                tx2 = int(6 + (pr + 1) * math.cos(rad))
-                ty2 = int(LW - stem_h - pr - 1 + (pr + 1) * math.sin(rad))
-                if 0 <= tx2 < LW and 0 <= ty2 < LW:
-                    c.px(tx2, ty2, P["rose_hi"])
+            petal_r = max(1, int(7 * pt))
+            cy = sy - 2 - petal_r
+            c.disc(12, cy, petal_r, P["rose"])
+            c.disc(12, cy, max(1, petal_r - 2), P["rose_hi"])
+            c.disc(12, cy, max(1, petal_r - 4), P["amber"])   # center
         else:
-            # gentle sway — full bloom with slight lean
-            sway = int(math.sin(2 * math.pi * (t - 0.85) / 0.15) * 1)
-            pr = 5
-            bx = 6 + sway
-            c.disc(bx, LW - stem_h - pr - 1, pr, P["rose"])
-            c.disc(bx, LW - stem_h - pr - 1, pr - 2, P["amber_hi"])
-            c.px(bx, LW - stem_h - pr - 1, P["white"])
+            if t < 0.85:
+                pt = min(1.0, (t - 0.6) / 0.25)
+                pr = max(2, int(8 + pt * 2))
+                bx = 12
+            else:
+                # gentle sway — full bloom with slight lean
+                pr = 10
+                bx = 12 + int(math.sin(2 * math.pi * (t - 0.85) / 0.15) * 2)
+            cy = sy - pr - 1
+            # layered petals
+            c.disc(bx, cy, pr, P["rose"])
+            c.disc(bx, cy, pr - 2, P["rose_hi"])
+            c.disc(bx, cy, max(1, pr - 5), P["amber_hi"])
+            c.disc(bx, cy, max(1, pr - 7), P["amber"])
+            c.px(bx, cy, P["white"])
+            # 8 petal tips + inner shading
             for angle in range(0, 360, 45):
                 rad = math.radians(angle)
                 tx2 = int(bx + (pr + 1) * math.cos(rad))
-                ty2 = int(LW - stem_h - pr - 1 + (pr + 1) * math.sin(rad))
+                ty2 = int(cy + (pr + 1) * math.sin(rad))
                 if 0 <= tx2 < LW and 0 <= ty2 < LW:
                     c.px(tx2, ty2, P["rose_hi"])
+                # petal seam shading
+                ix = int(bx + (pr - 1) * math.cos(rad + 0.39))
+                iy = int(cy + (pr - 1) * math.sin(rad + 0.39))
+                if 0 <= ix < LW and 0 <= iy < LW:
+                    c.px(ix, iy, shade("rose", -0.2))
 
-        scaled = c.scaled(10)   # 120×120
+        scaled = c.scaled(5)    # 120×120
         scaled = outline_alpha(scaled)
         # center in 128×128 cell
         frame_img = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
