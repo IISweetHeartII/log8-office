@@ -1,0 +1,19 @@
+[project]
+name = "log8-office"
+version = "0.1.0"
+description = "log8-office — a pixel-art AI office dashboard. Visualizes AI agents' live work state as pixel cats moving between office zones. Korean-first, multilingual, fully free (code MIT / art CC0 / fonts OFL)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "log8-office contributors" }]
+keywords = ["pixel-art", "ai-agent", "dashboard", "flask", "phaser", "openclaw", "i18n"]
+dependencies = [
+    "flask>=3.0.0",
+    "pillow>=10.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/IISweetHeartII/log8-office"
+Repository = "https://github.com/IISweetHeartII/log8-office"
+Issues = "https://github.com/IISweetHeartII/log8-office/issues"
+Changelog = "https://github.com/IISweetHeartII/log8-office/blob/main/CHANGELOG.md"

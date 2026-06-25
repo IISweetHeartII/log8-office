@@ -1,0 +1,6 @@
+blank_issues_enabled: true
+
+contact_links:
+  - name: 질문 / Questions
+    url: https://github.com/IISweetHeartII/log8-office/discussions
+    about: 버그·기능 제안이 아닌 일반 질문은 Discussions를 이용해 주세요. / For general questions (not bugs or feature requests), please use Discussions.

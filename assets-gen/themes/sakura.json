@@ -1,0 +1,31 @@
+{
+  "name": "sakura",
+  "description": "Soft pastel cherry-blossom office — pink/cream walls, blush rugs, warm light wood.",
+  "palette": {
+    "wall": "#f3d9e2",
+    "wallhi": "#fbe8ef",
+    "wall_lo": "#e6c2d0",
+    "floor": "#d8b89c",
+    "floor_hi": "#e8cdb4",
+    "floor_lo": "#c2a285",
+    "rug": "#e79bb4",
+    "rug_hi": "#f3b6cb",
+    "blue": "#9aa6ff",
+    "blue_hi": "#bcc4ff",
+    "blue_lo": "#7782e6",
+    "teal": "#7fd9c4",
+    "teal_hi": "#a3ecdd",
+    "teal_lo": "#5fb8a3",
+    "amber": "#ffd98c",
+    "amber_hi": "#ffeab5",
+    "amber_lo": "#e6b25f",
+    "rose": "#ff8fae",
+    "rose_hi": "#ffb3c9",
+    "leaf": "#8fcf8a",
+    "leaf_hi": "#a9e0a3",
+    "leaf_lo": "#6fab6a",
+    "wood": "#cfa07a",
+    "wood_hi": "#e0bb98",
+    "wood_lo": "#b07f58"
+  }
+}

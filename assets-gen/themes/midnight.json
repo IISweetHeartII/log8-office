@@ -1,0 +1,33 @@
+{
+  "name": "midnight",
+  "description": "Dark cool night office — deep indigo walls, cyan/teal accents, cool slate floor.",
+  "palette": {
+    "wall": "#23263f",
+    "wallhi": "#2f3357",
+    "wall_lo": "#191b30",
+    "floor": "#2c3350",
+    "floor_hi": "#3a4366",
+    "floor_lo": "#222740",
+    "rug": "#1f5a63",
+    "rug_hi": "#2c7b85",
+    "blue": "#6c8bff",
+    "blue_hi": "#93acff",
+    "blue_lo": "#4a63d6",
+    "teal": "#2fe6e0",
+    "teal_hi": "#6cf4ef",
+    "teal_lo": "#1fb3ae",
+    "amber": "#ffcf6b",
+    "amber_hi": "#ffe39a",
+    "amber_lo": "#d99a2b",
+    "rose": "#ff7aa8",
+    "rose_hi": "#ff9ec2",
+    "leaf": "#3fa88f",
+    "leaf_hi": "#5fc7ad",
+    "leaf_lo": "#2c8071",
+    "wood": "#4a5a72",
+    "wood_hi": "#5f7088",
+    "wood_lo": "#36435a",
+    "screen": "#1a6f8f",
+    "screen2": "#2aa0b8"
+  }
+}

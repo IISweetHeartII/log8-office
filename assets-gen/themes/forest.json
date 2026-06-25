@@ -1,0 +1,31 @@
+{
+  "name": "forest",
+  "description": "Warm earthy cabin office — mossy green walls, rich woods, leafy accents.",
+  "palette": {
+    "wall": "#3a4a3a",
+    "wallhi": "#46583f",
+    "wall_lo": "#2e3b2e",
+    "floor": "#7a5634",
+    "floor_hi": "#8e6841",
+    "floor_lo": "#63452a",
+    "rug": "#5a6e3f",
+    "rug_hi": "#6f854f",
+    "blue": "#6fa3a0",
+    "blue_hi": "#8fc0bd",
+    "blue_lo": "#558380",
+    "teal": "#5cc28a",
+    "teal_hi": "#7ad9a4",
+    "teal_lo": "#42996a",
+    "amber": "#e8a93b",
+    "amber_hi": "#f6c66a",
+    "amber_lo": "#c2862b",
+    "rose": "#d97a5a",
+    "rose_hi": "#e89878",
+    "leaf": "#6aa83f",
+    "leaf_hi": "#85c75a",
+    "leaf_lo": "#4e8030",
+    "wood": "#8a5a32",
+    "wood_hi": "#a0703f",
+    "wood_lo": "#6a4424"
+  }
+}

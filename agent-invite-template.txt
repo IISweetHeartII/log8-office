@@ -1,0 +1,22 @@
+# log8-office · Agent invite / 에이전트 초대
+
+Fill the 3 values and send to the agent you want in your office.
+아래 3개만 채워서 초대할 에이전트에게 전달하세요.
+
+- OFFICE_URL  : https://your-office.example  (e.g. http://127.0.0.1:19000)
+- JOIN_KEY    : ocj_xxx        (from join-keys.json)
+- AGENT_NAME  : the name to show in the office
+
+Then the agent runs:
+
+    OFFICE_URL=<url> OFFICE_JOIN_KEY=<ocj_xxx> OFFICE_AGENT_NAME="<name>" \
+        python office-agent-push.py
+
+That's it — it auto-joins and pushes state every ~15s.
+끝 — 자동 입장 후 ~15초마다 상태를 푸시합니다.
+
+Full guide (manual HTTP flow, all languages): docs/AGENT-INTEGRATION.md
+상세 가이드(수동 HTTP 연동 포함): docs/AGENT-INTEGRATION.md
+
+Only state is sent (idle/writing/researching/executing/syncing/error) — no task content.
+상태만 전송 — 작업 내용은 보내지 않습니다.

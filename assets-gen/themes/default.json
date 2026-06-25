@@ -1,0 +1,31 @@
+{
+  "name": "default",
+  "description": "The shipped cozy-office palette. This file is a template — every key here is the built-in value, so applying it changes nothing. Copy it and tweak hexes to make your own theme. Any key you delete falls back to the built-in palette.",
+  "palette": {
+    "wall": "#454b6e",
+    "wallhi": "#525980",
+    "wall_lo": "#373c5a",
+    "floor": "#6d5a48",
+    "floor_hi": "#7d6a56",
+    "floor_lo": "#5b4a3b",
+    "rug": "#3f6f6e",
+    "rug_hi": "#4f8483",
+    "blue": "#7c83ff",
+    "blue_hi": "#9aa0ff",
+    "blue_lo": "#5b62e0",
+    "teal": "#42d6a4",
+    "teal_hi": "#5fe9bb",
+    "teal_lo": "#2fb389",
+    "amber": "#ffc24b",
+    "amber_hi": "#ffd87a",
+    "amber_lo": "#e09a2b",
+    "rose": "#ff6b8b",
+    "rose_hi": "#ff90a8",
+    "leaf": "#57a85b",
+    "leaf_hi": "#73c777",
+    "leaf_lo": "#3f8043",
+    "wood": "#a9774a",
+    "wood_hi": "#c08e5e",
+    "wood_lo": "#855a36"
+  }
+}

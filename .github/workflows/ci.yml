@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend smoke test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Prepare runtime config files
+        run: |
+          cp state.sample.json state.json || true
+          cp join-keys.sample.json join-keys.json || true
+
+      - name: Start server in background
+        run: python backend/app.py &
+
+      - name: Wait for server to be ready
+        run: |
+          for i in $(seq 1 15); do
+            if python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:19000/health', timeout=2)" 2>/dev/null; then
+              echo "Server is up."
+              break
+            fi
+            echo "Waiting... ($i/15)"
+            sleep 1
+          done
+
+      - name: Run smoke test
+        run: python3 scripts/smoke_test.py --base-url http://127.0.0.1:19000
+
+  frontend-syntax:
+    name: Frontend JS syntax check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check frontend/game.js syntax
+        run: node --check frontend/game.js
+
+      - name: Check frontend/layout.js syntax
+        run: node --check frontend/layout.js

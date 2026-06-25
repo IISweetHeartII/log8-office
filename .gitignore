@@ -1,0 +1,43 @@
+# Python environment
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+.env
+
+# OS/editor
+.DS_Store
+
+# Runtime state (local only)
+state.json
+agents-state.json
+runtime-config.json
+*.log
+*.out
+*.pid
+*.backup*
+*.original
+cloudflared.pid
+cloudflared.out
+healthcheck.log
+backend.log
+
+# Generated / mutable assets (local only)
+assets/bg-history/
+assets/home-favorites/
+frontend/office_bg.png
+frontend/*.bak
+layers/
+
+# assets-gen intermediate output (regenerate via `python3 gen_*.py`; final art lives in frontend/)
+assets-gen/out/
+assets-gen/__pycache__/
+desktop-pet/src-tauri/icons/*Logo.png
+
+# Electron local build artifacts
+electron-shell/node_modules/
+electron-shell/release/
+join-keys.json

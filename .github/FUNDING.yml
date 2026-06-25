@@ -1,0 +1,17 @@
+# Funding configuration for log8-office
+# Uncomment and fill in the platforms you want to enable.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# github: []                 # GitHub Sponsors username(s)
+# patreon:                   # Patreon username
+# open_collective:           # Open Collective username
+# ko_fi:                     # Ko-fi username
+# tidelift:                  # Tidelift package name (e.g. npm/package-name)
+# community_bridge:          # LFX Community Bridge project name
+# liberapay:                 # Liberapay username
+# issuehunt:                 # IssueHunt username
+# lfx_crowdfunding:          # LFX Crowdfunding project link
+# polar:                     # Polar username
+# buy_me_a_coffee:           # Buy Me a Coffee username
+# thanks_dev:                # thanks.dev username
+# custom: []                 # Custom sponsorship URL(s)
