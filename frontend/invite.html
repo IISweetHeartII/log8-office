@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>log8 office · Join / 입장 초대</title>
+    <title data-i18n="title">log8 office · 입장 초대</title>
     <style>
         body {
             margin: 0;
             padding: 40px;
-            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-family: "Apple SD Gothic Neo", "Noto Sans KR", "PingFang SC", "Hiragino Sans", sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
             min-height: 100vh;
             box-sizing: border-box;
@@ -20,6 +20,27 @@
             padding: 48px;
             border-radius: 16px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+        .lang-switch {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+        .lang-switch button {
+            padding: 6px 12px;
+            font-size: 13px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            background: #f3f4f6;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .lang-switch button.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: #fff;
         }
         h1 {
             margin-top: 0;
@@ -111,49 +132,134 @@
 </head>
 <body>
     <div class="card">
-        <h1>✨ log8 office · 입장 초대 / Join Invite</h1>
-        <p>픽셀 오피스 보드에 오신 걸 환영합니다! / Welcome to the pixel office board!</p>
+        <div class="lang-switch" id="lang-switch">
+            <button data-lang="ko">한국어</button>
+            <button data-lang="en">EN</button>
+            <button data-lang="ja">日本語</button>
+            <button data-lang="zh">中文</button>
+        </div>
+        <h1 data-i18n="heading">✨ log8 office · 입장 초대</h1>
+        <p data-i18n="intro">픽셀 오피스 보드에 오신 걸 환영합니다!</p>
 
-        <h2>加入步骤（一共 3 步）</h2>
+        <h2 data-i18n="stepsTitle">합류 단계 (총 3단계)</h2>
         <div class="steps">
             <div class="step">
                 <div class="step-num">1</div>
-                <div class="step-text">
-                    <strong>确认信息</strong><br>
-                    你应该已经收到两样东西：
+                <div class="step-text" data-i18n-html="step1">
+                    <strong>정보 확인</strong><br>
+                    이미 두 가지를 받으셨을 거예요:
                     <ul>
-                        <li>邀请链接：<code>https://office.example.com/join</code></li>
-                        <li>一次性接入密钥（join key）：<code>ocj_xxx</code></li>
+                        <li>초대 링크: <code>https://office.example.com/join</code></li>
+                        <li>일회성 접속 키 (join key): <code>ocj_xxx</code></li>
                     </ul>
                 </div>
             </div>
             <div class="step">
                 <div class="step-num">2</div>
-                <div class="step-text">
-                    <strong>把邀请信息交给你的 Agent</strong><br>
-                    把邀请链接 + join key 一起发给你的 Agent，并说“帮我加入这个办公室”。
+                <div class="step-text" data-i18n-html="step2">
+                    <strong>Agent에게 초대 정보 전달</strong><br>
+                    초대 링크 + join key를 Agent에게 함께 보내고 "이 오피스에 합류해 줘"라고 말하세요.
                 </div>
             </div>
             <div class="step">
                 <div class="step-num">3</div>
-                <div class="step-text">
-                    <strong>在你这边授权</strong><br>
-                    你的 Agent 会在对话里向你要授权；同意后，它就会开始自动把工作状态推送到办公室看板啦！
+                <div class="step-text" data-i18n-html="step3">
+                    <strong>내 쪽에서 승인</strong><br>
+                    Agent가 대화에서 승인을 요청해요. 동의하면 작업 상태를 오피스 보드에 자동으로 보내기 시작합니다!
                 </div>
             </div>
         </div>
 
-        <div class="note">
-            <strong>⚠️  隐私说明</strong><br>
-            只推送状态（idle/writing/researching/executing/syncing/error），不含任何具体内容/隐私；随时可停。
+        <div class="note" data-i18n-html="note">
+            <strong>⚠️ 개인정보 안내</strong><br>
+            상태(idle/writing/researching/executing/syncing/error)만 전송하고, 구체적 내용/개인정보는 포함하지 않아요. 언제든 중단 가능.
         </div>
 
-        <a href="/" class="back-btn">← 回到办公室 / Back to office</a>
+        <a href="/" class="back-btn" data-i18n="backBtn">← 오피스로 돌아가기</a>
 
-        <div class="footer">
+        <div class="footer" data-i18n-html="footer">
             log8 office · 픽셀 오피스 보드<br>
             powered by log8-office 😊
         </div>
     </div>
+
+    <script>
+        const I18N = {
+            ko: {
+                title: 'log8 office · 입장 초대',
+                heading: '✨ log8 office · 입장 초대',
+                intro: '픽셀 오피스 보드에 오신 걸 환영합니다!',
+                stepsTitle: '합류 단계 (총 3단계)',
+                step1: '<strong>정보 확인</strong><br>이미 두 가지를 받으셨을 거예요:<ul><li>초대 링크: <code>https://office.example.com/join</code></li><li>일회성 접속 키 (join key): <code>ocj_xxx</code></li></ul>',
+                step2: '<strong>Agent에게 초대 정보 전달</strong><br>초대 링크 + join key를 Agent에게 함께 보내고 "이 오피스에 합류해 줘"라고 말하세요.',
+                step3: '<strong>내 쪽에서 승인</strong><br>Agent가 대화에서 승인을 요청해요. 동의하면 작업 상태를 오피스 보드에 자동으로 보내기 시작합니다!',
+                note: '<strong>⚠️ 개인정보 안내</strong><br>상태(idle/writing/researching/executing/syncing/error)만 전송하고, 구체적 내용/개인정보는 포함하지 않아요. 언제든 중단 가능.',
+                backBtn: '← 오피스로 돌아가기',
+                footer: 'log8 office · 픽셀 오피스 보드<br>powered by log8-office 😊'
+            },
+            en: {
+                title: 'log8 office · Join Invite',
+                heading: '✨ log8 office · Join Invite',
+                intro: 'Welcome to the pixel office board!',
+                stepsTitle: 'Join steps (3 in total)',
+                step1: '<strong>Check what you received</strong><br>You should already have two things:<ul><li>Invite link: <code>https://office.example.com/join</code></li><li>One-time join key: <code>ocj_xxx</code></li></ul>',
+                step2: '<strong>Hand the invite to your Agent</strong><br>Send the invite link + join key to your Agent and say "help me join this office".',
+                step3: '<strong>Approve on your side</strong><br>Your Agent will ask you for approval in the chat. Once you agree, it starts pushing its work status to the office board automatically!',
+                note: '<strong>⚠️ Privacy note</strong><br>Only status (idle/writing/researching/executing/syncing/error) is pushed — no specific content or private data. Stop anytime.',
+                backBtn: '← Back to office',
+                footer: 'log8 office · pixel office board<br>powered by log8-office 😊'
+            },
+            ja: {
+                title: 'log8 office · 参加への招待',
+                heading: '✨ log8 office · 参加への招待',
+                intro: 'ピクセルオフィスボードへようこそ！',
+                stepsTitle: '参加ステップ（全3ステップ）',
+                step1: '<strong>受け取ったものを確認</strong><br>すでに2つ受け取っているはずです：<ul><li>招待リンク：<code>https://office.example.com/join</code></li><li>使い切りの接続キー（join key）：<code>ocj_xxx</code></li></ul>',
+                step2: '<strong>招待情報を Agent に渡す</strong><br>招待リンク + join key を Agent に送り、「このオフィスに参加して」と伝えてください。',
+                step3: '<strong>あなたの側で承認</strong><br>Agent が会話の中で承認を求めます。同意すると、作業状態をオフィスボードへ自動で送り始めます！',
+                note: '<strong>⚠️ プライバシーについて</strong><br>状態（idle/writing/researching/executing/syncing/error）のみを送信し、具体的な内容や個人情報は含みません。いつでも停止できます。',
+                backBtn: '← オフィスに戻る',
+                footer: 'log8 office · ピクセルオフィスボード<br>powered by log8-office 😊'
+            },
+            zh: {
+                title: 'log8 office · 加入邀请',
+                heading: '✨ log8 office · 加入邀请',
+                intro: '欢迎来到像素办公室看板！',
+                stepsTitle: '加入步骤（一共 3 步）',
+                step1: '<strong>确认信息</strong><br>你应该已经收到两样东西：<ul><li>邀请链接：<code>https://office.example.com/join</code></li><li>一次性接入密钥（join key）：<code>ocj_xxx</code></li></ul>',
+                step2: '<strong>把邀请信息交给你的 Agent</strong><br>把邀请链接 + join key 一起发给你的 Agent，并说“帮我加入这个办公室”。',
+                step3: '<strong>在你这边授权</strong><br>你的 Agent 会在对话里向你要授权；同意后，它就会开始自动把工作状态推送到办公室看板啦！',
+                note: '<strong>⚠️ 隐私说明</strong><br>只推送状态（idle/writing/researching/executing/syncing/error），不含任何具体内容/隐私；随时可停。',
+                backBtn: '← 回到办公室',
+                footer: 'log8 office · 像素办公室看板<br>powered by log8-office 😊'
+            }
+        };
+
+        let uiLang = localStorage.getItem('uiLang') || 'ko';
+        if (!I18N[uiLang]) uiLang = 'ko';
+        const t = (key) => (I18N[uiLang] && I18N[uiLang][key]) || (I18N.ko && I18N.ko[key]) || key;
+
+        function applyI18n() {
+            document.documentElement.lang = uiLang === 'zh' ? 'zh-CN' : (uiLang === 'ja' ? 'ja' : (uiLang === 'en' ? 'en' : 'ko'));
+            document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+            document.querySelectorAll('[data-i18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
+            document.querySelectorAll('#lang-switch button').forEach((btn) => {
+                btn.classList.toggle('active', btn.dataset.lang === uiLang);
+            });
+        }
+
+        function setLang(lang) {
+            if (!I18N[lang]) return;
+            uiLang = lang;
+            localStorage.setItem('uiLang', uiLang);
+            applyI18n();
+        }
+
+        document.querySelectorAll('#lang-switch button').forEach((btn) => {
+            btn.addEventListener('click', () => setLang(btn.dataset.lang));
+        });
+
+        applyI18n();
+    </script>
 </body>
 </html>

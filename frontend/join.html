@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>加入 Star 的像素办公室</title>
+    <title data-i18n="title">log8 픽셀 오피스 합류</title>
     <style>
+        /* Ark Pixel multilingual pixel-font stack (all SIL OFL 1.1). */
+        @font-face {
+            font-family: 'ArkPixel';
+            src: url('/static/fonts/ark-pixel-12px-proportional-ko.ttf.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'ArkPixel';
+            src: url('/static/fonts/ark-pixel-12px-proportional-latin.ttf.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'ArkPixel';
+            src: url('/static/fonts/ark-pixel-12px-proportional-ja.ttf.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
         @font-face {
             font-family: 'ArkPixel';
             src: url('/static/fonts/ark-pixel-12px-proportional-zh_cn.ttf.woff2') format('woff2');
@@ -21,13 +40,32 @@
             min-height: 100vh;
             font-family: 'ArkPixel', 'Courier New', monospace;
             padding: 40px 20px;
-            gap: 30px;
+            gap: 24px;
             color: #fff;
         }
         h1 {
             color: #ffd700;
             font-size: 24px;
             text-align: center;
+        }
+        .lang-switch {
+            display: flex;
+            gap: 8px;
+        }
+        .lang-switch button {
+            padding: 6px 12px;
+            font-family: 'ArkPixel', monospace;
+            font-size: 13px;
+            border: 2px solid #333;
+            border-radius: 6px;
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .lang-switch button.active {
+            background: #22c55e;
+            border-color: #22c55e;
         }
         .container {
             background: #2c2f3a;
@@ -57,7 +95,7 @@
             background: #3a3f4f;
             color: #fff;
         }
-        button {
+        button.submit {
             width: 100%;
             padding: 12px;
             font-family: 'ArkPixel', monospace;
@@ -69,7 +107,7 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        button:hover {
+        button.submit:hover {
             background: #ff6b81;
         }
         .status {
@@ -100,30 +138,146 @@
     </style>
 </head>
 <body>
-    <h1>⭐ 加入 log8 像素办公室</h1>
+    <div class="lang-switch" id="lang-switch">
+        <button data-lang="ko">한국어</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="ja">日本語</button>
+        <button data-lang="zh">中文</button>
+    </div>
+    <h1 data-i18n="heading">⭐ log8 픽셀 오피스 합류</h1>
     <div class="container">
         <div class="form-group">
-            <label>你的名字（会显示在办公室）</label>
-            <input type="text" id="agentName" placeholder="例如：my-agent" maxlength="20">
+            <label data-i18n="nameLabel">이름 (오피스에 표시돼요)</label>
+            <input type="text" id="agentName" data-i18n-ph="namePlaceholder" placeholder="예: my-agent" maxlength="20">
         </div>
-        <!-- 状态与细节改为自动同步，不在 join 页面填写 -->
         <div class="form-group">
-            <label>Agent 接入密钥（一次性）</label>
-            <input type="text" id="joinKey" placeholder="请输入你拿到的 join key" maxlength="64">
+            <label data-i18n="keyLabel">Agent 접속 키 (일회성)</label>
+            <input type="text" id="joinKey" data-i18n-ph="keyPlaceholder" placeholder="받은 join key를 입력하세요" maxlength="64">
         </div>
-        <button id="joinBtn">加入办公室</button>
-        <button id="leaveBtn" style="margin-top:10px; background:#555; border-color:#555;">离开办公室</button>
+        <button class="submit" id="joinBtn" data-i18n="joinBtn">오피스 합류</button>
+        <button class="submit" id="leaveBtn" data-i18n="leaveBtn" style="margin-top:10px; background:#555; border-color:#555;">오피스 나가기</button>
         <div id="status" class="status" style="display:none;"></div>
     </div>
     <div class="note">
-        ⚠️ 注意：join 页面仅需要名字 + 一次性 join key<br>
-        状态与状态细节会由 agent 后续自动推送同步
+        <span data-i18n="note1">⚠️ 안내: join 페이지는 이름 + 일회성 join key만 필요해요</span><br>
+        <span data-i18n="note2">상태와 세부 정보는 agent가 이후 자동으로 동기화해요</span>
         <br><br>
-        📌 邀请说明：
+        <span data-i18n="inviteLabel">📌 초대 안내:</span>
         <a href="/invite" style="color:#ffd700; text-decoration: underline;">https://office.example.com/invite</a>
     </div>
 
     <script>
+        const I18N = {
+            ko: {
+                title: 'log8 픽셀 오피스 합류',
+                heading: '⭐ log8 픽셀 오피스 합류',
+                nameLabel: '이름 (오피스에 표시돼요)',
+                namePlaceholder: '예: my-agent',
+                keyLabel: 'Agent 접속 키 (일회성)',
+                keyPlaceholder: '받은 join key를 입력하세요',
+                joinBtn: '오피스 합류',
+                leaveBtn: '오피스 나가기',
+                note1: '⚠️ 안내: join 페이지는 이름 + 일회성 join key만 필요해요',
+                note2: '상태와 세부 정보는 agent가 이후 자동으로 동기화해요',
+                inviteLabel: '📌 초대 안내:',
+                nameRequired: '이름을 먼저 입력해 주세요~',
+                keyRequired: 'Agent 접속 키를 먼저 입력해 주세요~',
+                joinSuccess: '합류 성공! 오피스를 새로고침하면 보여요 ✨',
+                joinFail: '합류 실패',
+                leaveNameRequired: '나갈 이름을 먼저 입력해 주세요~',
+                leaveSuccess: '오피스에서 나갔어요 👋',
+                leaveFail: '나가기 실패',
+                netError: '네트워크 오류, 다시 시도해 주세요'
+            },
+            en: {
+                title: 'Join the log8 Pixel Office',
+                heading: '⭐ Join the log8 Pixel Office',
+                nameLabel: 'Your name (shown in the office)',
+                namePlaceholder: 'e.g. my-agent',
+                keyLabel: 'Agent join key (one-time)',
+                keyPlaceholder: 'Enter the join key you received',
+                joinBtn: 'Join the office',
+                leaveBtn: 'Leave the office',
+                note1: '⚠️ Note: the join page only needs a name + one-time join key',
+                note2: 'Status and details are synced automatically by the agent afterward',
+                inviteLabel: '📌 Invite guide:',
+                nameRequired: 'Please enter your name first~',
+                keyRequired: 'Please enter the agent join key first~',
+                joinSuccess: 'Joined! Refresh the office and you will see yourself ✨',
+                joinFail: 'Join failed',
+                leaveNameRequired: 'Please enter the name to leave first~',
+                leaveSuccess: 'Left the office 👋',
+                leaveFail: 'Leave failed',
+                netError: 'Network error, please try again'
+            },
+            ja: {
+                title: 'log8 ピクセルオフィスに参加',
+                heading: '⭐ log8 ピクセルオフィスに参加',
+                nameLabel: 'あなたの名前（オフィスに表示されます）',
+                namePlaceholder: '例：my-agent',
+                keyLabel: 'Agent 接続キー（使い切り）',
+                keyPlaceholder: '受け取った join key を入力',
+                joinBtn: 'オフィスに参加',
+                leaveBtn: 'オフィスを退出',
+                note1: '⚠️ 注意：join ページは名前 + 使い切り join key だけでOK',
+                note2: '状態と詳細はその後 agent が自動で同期します',
+                inviteLabel: '📌 招待ガイド：',
+                nameRequired: 'まず名前を入力してください～',
+                keyRequired: 'まず Agent 接続キーを入力してください～',
+                joinSuccess: '参加成功！オフィスを更新すると表示されます ✨',
+                joinFail: '参加失敗',
+                leaveNameRequired: 'まず退出する名前を入力してください～',
+                leaveSuccess: 'オフィスを退出しました 👋',
+                leaveFail: '退出失敗',
+                netError: 'ネットワークエラー、もう一度お試しください'
+            },
+            zh: {
+                title: '加入 log8 像素办公室',
+                heading: '⭐ 加入 log8 像素办公室',
+                nameLabel: '你的名字（会显示在办公室）',
+                namePlaceholder: '例如：my-agent',
+                keyLabel: 'Agent 接入密钥（一次性）',
+                keyPlaceholder: '请输入你拿到的 join key',
+                joinBtn: '加入办公室',
+                leaveBtn: '离开办公室',
+                note1: '⚠️ 注意：join 页面仅需要名字 + 一次性 join key',
+                note2: '状态与状态细节会由 agent 后续自动推送同步',
+                inviteLabel: '📌 邀请说明：',
+                nameRequired: '请先输入你的名字～',
+                keyRequired: '请先输入 Agent 接入密钥～',
+                joinSuccess: '加入成功！刷新办公室就能看到你啦 ✨',
+                joinFail: '加入失败',
+                leaveNameRequired: '请先输入你要离开的名字～',
+                leaveSuccess: '已离开办公室 👋',
+                leaveFail: '离开失败',
+                netError: '网络出错，请重试'
+            }
+        };
+
+        let uiLang = localStorage.getItem('uiLang') || 'ko';
+        if (!I18N[uiLang]) uiLang = 'ko';
+        const t = (key) => (I18N[uiLang] && I18N[uiLang][key]) || (I18N.ko && I18N.ko[key]) || key;
+
+        function applyI18n() {
+            document.documentElement.lang = uiLang === 'zh' ? 'zh-CN' : (uiLang === 'ja' ? 'ja' : (uiLang === 'en' ? 'en' : 'ko'));
+            document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+            document.querySelectorAll('[data-i18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+            document.querySelectorAll('#lang-switch button').forEach((btn) => {
+                btn.classList.toggle('active', btn.dataset.lang === uiLang);
+            });
+        }
+
+        function setLang(lang) {
+            if (!I18N[lang]) return;
+            uiLang = lang;
+            localStorage.setItem('uiLang', uiLang);
+            applyI18n();
+        }
+
+        document.querySelectorAll('#lang-switch button').forEach((btn) => {
+            btn.addEventListener('click', () => setLang(btn.dataset.lang));
+        });
+
         const joinBtn = document.getElementById('joinBtn');
         const leaveBtn = document.getElementById('leaveBtn');
         const statusDiv = document.getElementById('status');
@@ -140,11 +294,11 @@
             const name = agentNameInput.value.trim();
             const joinKey = joinKeyInput.value.trim();
             if (!name) {
-                showStatus('请先输入你的名字～', false);
+                showStatus(t('nameRequired'), false);
                 return;
             }
             if (!joinKey) {
-                showStatus('请先输入 Agent 接入密钥～', false);
+                showStatus(t('keyRequired'), false);
                 return;
             }
             try {
@@ -155,19 +309,19 @@
                 });
                 const data = await response.json();
                 if (data.ok) {
-                    showStatus('加入成功！刷新办公室就能看到你啦 ✨', true);
+                    showStatus(t('joinSuccess'), true);
                 } else {
-                    showStatus(data.msg || '加入失败', false);
+                    showStatus(data.msg || t('joinFail'), false);
                 }
             } catch (e) {
-                showStatus('网络出错，请重试', false);
+                showStatus(t('netError'), false);
             }
         }
 
         async function leave() {
             const name = agentNameInput.value.trim();
             if (!name) {
-                showStatus('请先输入你要离开的名字～', false);
+                showStatus(t('leaveNameRequired'), false);
                 return;
             }
             try {
@@ -178,17 +332,19 @@
                 });
                 const data = await response.json();
                 if (data.ok) {
-                    showStatus('已离开办公室 👋', true);
+                    showStatus(t('leaveSuccess'), true);
                 } else {
-                    showStatus(data.msg || '离开失败', false);
+                    showStatus(data.msg || t('leaveFail'), false);
                 }
             } catch (e) {
-                showStatus('网络出错，请重试', false);
+                showStatus(t('netError'), false);
             }
         }
 
         joinBtn.addEventListener('click', join);
         leaveBtn.addEventListener('click', leave);
+
+        applyI18n();
     </script>
 </body>
 </html>

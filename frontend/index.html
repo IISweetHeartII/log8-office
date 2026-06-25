@@ -1575,7 +1575,7 @@
 
         function t(key) { return (I18N[uiLang] && I18N[uiLang][key]) || key; }
         function tn(group, key) {
-            const g = (I18N[uiLang] && I18N[uiLang][group]) || (I18N.zh && I18N.zh[group]) || {};
+            const g = (I18N[uiLang] && I18N[uiLang][group]) || (I18N.ko && I18N.ko[group]) || {};
             return g[key] || key;
         }
         function stateName(stateKey) { return tn('stateNames', stateKey); }
@@ -2027,7 +2027,7 @@
 
         function getAssetDisplayName(path) {
             const stem = toAssetStem(path);
-            const lang = (uiLang || 'zh');
+            const lang = (uiLang || 'ko');
             const nameMap = {
                 ko: {
                     'star-idle-v5': '주인공·대기 상태',
@@ -2126,7 +2126,7 @@
                     'guest_anim_6': '訪客アニメ 6'
                 }
             };
-            const langMap = nameMap[lang] || nameMap.zh;
+            const langMap = nameMap[lang] || nameMap.ko;
             return langMap[stem] || stem;
         }
 
@@ -2267,8 +2267,8 @@
 
         function getAssetHelpText(path) {
             const stem = toAssetStem(path);
-            const lang = (uiLang || 'zh');
-            const map = ASSET_HELP_TEXT_MAP[lang] || ASSET_HELP_TEXT_MAP.zh;
+            const lang = (uiLang || 'ko');
+            const map = ASSET_HELP_TEXT_MAP[lang] || ASSET_HELP_TEXT_MAP.ko;
             return map[stem] || t('assetHintDefault');
         }
 

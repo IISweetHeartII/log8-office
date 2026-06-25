@@ -924,7 +924,7 @@ def join_agent():
     try:
         data = request.get_json()
         if not isinstance(data, dict) or not data.get("name"):
-            return jsonify({"ok": False, "msg": "请提供名字"}), 400
+            return jsonify({"ok": False, "msg": "이름을 입력해 주세요"}), 400
 
         name = data["name"].strip()
         state = data.get("state", "idle")
@@ -935,12 +935,12 @@ def join_agent():
         state = normalize_agent_state(state)
 
         if not join_key:
-            return jsonify({"ok": False, "msg": "请提供接入密钥"}), 400
+            return jsonify({"ok": False, "msg": "접속 키를 입력해 주세요"}), 400
 
         keys_data = load_join_keys()
         key_item = next((k for k in keys_data.get("keys", []) if k.get("key") == join_key), None)
         if not key_item:
-            return jsonify({"ok": False, "msg": "接入密钥无效"}), 403
+            return jsonify({"ok": False, "msg": "접속 키가 올바르지 않아요"}), 403
         # key 可复用：不再因为 used=true 拒绝
 
         with join_lock:
@@ -948,7 +948,7 @@ def join_agent():
             keys_data = load_join_keys()
             key_item = next((k for k in keys_data.get("keys", []) if k.get("key") == join_key), None)
             if not key_item:
-                return jsonify({"ok": False, "msg": "接入密钥无效"}), 403
+                return jsonify({"ok": False, "msg": "접속 키가 올바르지 않아요"}), 403
 
             # Key-level expiration check
             key_expires_at_str = key_item.get("expiresAt")
@@ -956,7 +956,7 @@ def join_agent():
                 try:
                     key_expires_at = datetime.fromisoformat(key_expires_at_str)
                     if datetime.now() > key_expires_at:
-                        return jsonify({"ok": False, "msg": "该接入密钥已过期，活动已结束 🎉"}), 403
+                        return jsonify({"ok": False, "msg": "이 접속 키는 만료됐어요 (행사 종료) 🎉"}), 403
                 except Exception:
                     pass
 
@@ -1008,7 +1008,7 @@ def join_agent():
 
             if active_count >= max_concurrent:
                 save_agents_state(agents)
-                return jsonify({"ok": False, "msg": f"该接入密钥当前并发已达上限（{max_concurrent}），请稍后或换另一个 key"}), 429
+                return jsonify({"ok": False, "msg": f"이 접속 키의 동시 접속 한도({max_concurrent})에 도달했어요. 잠시 후 다시 시도하거나 다른 키를 사용하세요"}), 429
 
             if existing:
                 existing["state"] = state
@@ -1058,7 +1058,7 @@ def join_agent():
             save_agents_state(agents)
             save_join_keys(keys_data)
 
-        return jsonify({"ok": True, "agentId": agent_id, "authStatus": "approved", "nextStep": "已自动批准，立即开始推送状态"})
+        return jsonify({"ok": True, "agentId": agent_id, "authStatus": "approved", "nextStep": "자동 승인됐어요. 바로 상태 전송을 시작합니다"})
     except Exception as e:
         return jsonify({"ok": False, "msg": str(e)}), 500
 
@@ -1077,7 +1077,7 @@ def leave_agent():
         agent_id = (data.get("agentId") or "").strip()
         name = (data.get("name") or "").strip()
         if not agent_id and not name:
-            return jsonify({"ok": False, "msg": "请提供 agentId 或名字"}), 400
+            return jsonify({"ok": False, "msg": "agentId 또는 이름을 입력해 주세요"}), 400
 
         agents = load_agents_state()
 
@@ -1089,7 +1089,7 @@ def leave_agent():
             target = next((a for a in agents if a.get("name") == name and not a.get("isMain")), None)
 
         if not target:
-            return jsonify({"ok": False, "msg": "没有找到要离开的 agent"}), 404
+            return jsonify({"ok": False, "msg": "나갈 agent를 찾지 못했어요"}), 404
 
         join_key = target.get("joinKey")
         new_agents = [a for a in agents if a.get("isMain") or a.get("agentId") != target.get("agentId")]
