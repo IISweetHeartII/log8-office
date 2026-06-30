@@ -1,7 +1,7 @@
 """
 gen_cats.py — background-removed pixel sprites of the 8 real agent avatars.
 
-Each agent (rosie / navi / kkami / cheese / hermes / mover / luna / gamjaring)
+Each agent (rosie / navi / kkami / hermes / mover / luna / gamjaring)
 has its own AI-made cat avatar. This cuts out the subject (rembg), pixelates it,
 and bottom-anchors it so the cat stands on the office floor as a real character
 (transparent background, gentle idle bob). All distinct, all faithful.
@@ -24,7 +24,7 @@ SRC = os.path.expanduser("~/Pictures/openclaw-cat-avatars")
 FW = 64                       # frame size (office renders at scale 1.5 ≈ 96px)
 FIT = 60                      # max sprite extent inside the frame (leaves bob room)
 COLORS = 30                   # palette size for the pixel-art look
-ORDER = ["rosie", "navi", "kkami", "cheese", "hermes", "mover", "luna", "gamjaring"]
+ORDER = ["rosie", "navi", "kkami", "hermes", "mover", "luna", "gamjaring"]
 MODEL = "isnet-general-use"    # robust on busy/dark scenes (vs u2net)
 _SESS = new_session(MODEL)
 
