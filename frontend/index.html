@@ -3777,7 +3777,7 @@ function toggleBrokerPanel() {
                 work:      { x1: 390, y1: 545, x2: 620, y2: 690 },   // 중앙 작업 바닥(running/waving/jumping)
                 desk:      { x1: 110, y1: 545, x2: 340, y2: 690 },   // 좌측 책상 앞(review — 검토/조사)
                 wait:      { x1: 660, y1: 545, x2: 820, y2: 690 },   // 입구/문 근처 대기(waiting)
-                breakroom: { x1: 860, y1: 545, x2: 1205, y2: 690 },  // 휴게실(우측 소파)
+                breakroom: { x1: 170, y1: 622, x2: 1200, y2: 686 },  // 휴게(idle): 바닥 전체 폭 한 줄 → 안 겹침
                 error:     { x1: 930, y1: 270, x2: 1110, y2: 340 }   // 에러(버그 구역)
             };
             return rects[area] || rects.breakroom;
@@ -3791,16 +3791,24 @@ function toggleBrokerPanel() {
             return { x: randomInt(rect.x1, rect.x2), y: randomInt(rect.y1, rect.y2) };
         }
 
-        function getAreaPoint(area, idx) {
-            // rect 안에 바닥 기준 격자로 배치. step ≥ 아바타 크기(96px)+여백 → 가로/세로 겹침 없음. 결정적(안 흔들림).
+        function getAreaPoint(area, idx, total) {
+            // 존 안에 겹치지 않게 배치. 폭에 맞춰 열 수 결정 → 되도록 한 줄, 넘치면 뒤로 줄 쌓기.
+            // 각 줄은 자기 인원 기준 중앙 정렬. y-depth 정렬(update)로 뒷줄이 앞줄에 자연스럽게 가려짐.
             const r = getAreaRect(area);
-            const step = 104;                                  // 고양이(≈96px) 사이 간격
             const w = r.x2 - r.x1;
-            const cols = Math.max(1, Math.floor(w / step));    // rect에 들어가는 칸 수
-            const col = idx % cols, row = Math.floor(idx / cols);
-            const x = Math.round(r.x1 + step * col + step / 2);
-            const y = Math.round(r.y2 - row * step);           // 바닥에서 위로 줄 쌓기(줄 간격 step=겹침없음)
-            return { x, y };
+            const minStep = 118;                                        // 고양이(petdex ≈110px) 최소 간격
+            const n = Math.max(1, total || 1);
+            const cols = Math.max(1, Math.min(n, Math.floor(w / minStep) || 1));
+            const stepX = (cols > 1) ? Math.min(minStep, w / cols) : 0;
+            const rowStep = 72;                                         // 앞뒤 줄 간격
+            const cx = (r.x1 + r.x2) / 2;
+            const row = Math.floor(idx / cols), col = idx % cols;
+            const fullRows = Math.floor(n / cols);
+            const cntThisRow = (row < fullRows) ? cols : (n - fullRows * cols);
+            const rowW = stepX * (cntThisRow - 1);
+            const x = cx - rowW / 2 + stepX * col;
+            const y = r.y2 - row * rowStep;
+            return { x: Math.round(x), y: Math.round(y) };
         }
 
         const STATE_EMOTE = { idle:'💤', running:'⚙️', review:'🔍', waving:'💬', waiting:'⏳', failed:'❗', jumping:'🎉' };
@@ -3814,6 +3822,10 @@ function toggleBrokerPanel() {
             const visitors = getMergedVisitors();
             const seenIds = new Set();
             const areaIdx = {};   // 구역별 점유 인덱스(여러 명이 같은 구역이면 서로 안 겹치게 배치)
+            const STATE_AREA = { idle:'breakroom', running:'work', review:'desk', waving:'work', waiting:'wait', jumping:'work', failed:'error' };
+            // 사전 집계: 구역별 총 인원 → getAreaPoint가 폭에 맞춰 한 줄로 펼치도록(겹침 방지)
+            const areaCounts = {};
+            visitors.forEach(a => { const ar = STATE_AREA[a.state] || 'breakroom'; areaCounts[ar] = (areaCounts[ar] || 0) + 1; });
 
             visitors.forEach(agent => {
                 const id = agent.agentId;
@@ -3837,13 +3849,12 @@ function toggleBrokerPanel() {
                 }
 
                 const isDemo = !!agent.isDemo || (DEMO_MODE && (id === 'demo_nika' || id === 'demo_mercury' || agent.name === '尼卡' || agent.name === '水星'));
-                const STATE_AREA = { idle:'breakroom', running:'work', review:'desk', waving:'work', waiting:'wait', jumping:'work', failed:'error' };
                 const area = STATE_AREA[agent.state] || 'breakroom';
 
                 const idx = (areaIdx[area] = (areaIdx[area] || 0) + 1) - 1;
                 const p = isDemo
                     ? randomPointInRect(getAreaRect(area))
-                    : getAreaPoint(area, idx);
+                    : getAreaPoint(area, idx, areaCounts[area]);
 
                 if (!guestSprites[id]) {
                     // 발밑 부드러운 그림자(고양이 origin이 하단중앙이라 sprite.y가 발 위치)
@@ -4010,8 +4021,8 @@ function toggleBrokerPanel() {
                     }
                     if (g.petBase) g.prevState = agent.state;
                 }
-                // 어슬렁거림(ambient wander)용: 현재 배정 존 + 상태 저장(create/update 양쪽 공통)
-                if (guestSprites[id]) { guestSprites[id].area = area; guestSprites[id].curState = agent.state; }
+                // 어슬렁거림(ambient wander)용: 현재 배정 존/상태 + 홈 슬롯 좌표 저장(create/update 공통)
+                if (guestSprites[id]) { guestSprites[id].area = area; guestSprites[id].curState = agent.state; guestSprites[id].homeX = p.x; guestSprites[id].homeY = p.y; }
             });
 
             // 删除消失的 agent + 清理其气泡/tween
@@ -4450,29 +4461,24 @@ function toggleBrokerPanel() {
             hideGameSkeleton();
             officeBgSprite = this.add.image(640, 360, 'office_bg');
 
-            // ── 구역 러그(zone mats): 4개 활동 존을 바닥에 색으로 구분. getAreaRect와 좌표 정렬 →
-            //    고양이가 서는 위치와 100% 일치. depth 3 = 배경 위, 가구/고양이 아래. ──
+            // ── 작업존 카펫(zone rugs): 작업 성격의 3존만 은은한 카펫으로 표시(라벨 없음).
+            //    휴게(idle)는 바닥 전체 폭이라 카펫 없이 깔끔하게. depth 3 = 배경 위, 가구/고양이 아래. ──
             (function drawZoneRugs(scene) {
                 const ZONES = [
-                    { area: 'desk',      color: 0x5b8def, label: '검토' },  // review (좌측 책상)
-                    { area: 'work',      color: 0xf0a840, label: '작업' },  // running (중앙)
-                    { area: 'wait',      color: 0x39c0c8, label: '대기' },  // waiting (문 근처)
-                    { area: 'breakroom', color: 0x5fd08a, label: '휴게' }   // idle (우측 소파)
+                    { area: 'desk', color: 0x5b8def },  // review (좌측 책상)
+                    { area: 'work', color: 0xf0a840 },  // running (중앙)
+                    { area: 'wait', color: 0x39c0c8 }   // waiting (문 근처)
                 ];
                 const gfx = scene.add.graphics().setDepth(3);
                 ZONES.forEach(z => {
                     const r = getAreaRect(z.area);
-                    const pad = 18;
+                    const pad = 14;
                     const x = r.x1 - pad, y = r.y1 - pad;
                     const w = (r.x2 - r.x1) + pad * 2, h = (r.y2 - r.y1) + pad * 2;
-                    gfx.fillStyle(z.color, 0.13);
-                    gfx.fillRoundedRect(x, y, w, h, 20);
-                    gfx.lineStyle(3, z.color, 0.40);
-                    gfx.strokeRoundedRect(x, y, w, h, 20);
-                    // 은은한 구역 라벨(좌상단)
-                    scene.add.text(x + 12, y + 7, z.label, {
-                        fontFamily: 'ArkPixel, monospace', fontSize: '14px', color: '#ffffff'
-                    }).setOrigin(0, 0).setDepth(4).setAlpha(0.55);
+                    gfx.fillStyle(0x000000, 0.08); gfx.fillRoundedRect(x + 3, y + 5, w, h, 16);  // 바닥 그림자
+                    gfx.fillStyle(z.color, 0.15);  gfx.fillRoundedRect(x, y, w, h, 16);          // 카펫 본체
+                    gfx.lineStyle(2, 0xffffff, 0.10); gfx.strokeRoundedRect(x + 5, y + 5, w - 10, h - 10, 12);  // 안쪽 밝은 테두리
+                    gfx.lineStyle(2, z.color, 0.30);  gfx.strokeRoundedRect(x, y, w, h, 16);     // 바깥 컬러 테두리
                 });
             })(this);
 
@@ -5115,6 +5121,12 @@ function toggleBrokerPanel() {
                         g.emote.x = sx;
                         g.emote.y = sy - 126 + Math.sin(time / 400 + sx) * 3;
                     }
+                    // y-depth 정렬: 화면 아래(앞) 고양이가 위(뒤) 고양이를 자연스럽게 가림 → 겹쳐도 안 지저분
+                    const dep = 2600 + Math.round(sy);
+                    if (g.shadow) g.shadow.setDepth(dep - 1);
+                    g.sprite.setDepth(dep);
+                    if (g.nameText) g.nameText.setDepth(dep + 1);
+                    if (g.emote) g.emote.setDepth(dep + 2);
                     // 걷는 중이 아닐 때만 가끔 깡총
                     const walking = guestTweens[id] && guestTweens[id].move && guestTweens[id].move.isPlaying && guestTweens[id].move.isPlaying();
                     if (g.nextHopAt == null) g.nextHopAt = time + 5000 + Math.random() * 8000;
@@ -5135,9 +5147,14 @@ function toggleBrokerPanel() {
                         if (g.nextWanderAt == null) g.nextWanderAt = time + 3000 + Math.random() * 4000;
                         if (time >= g.nextWanderAt) {
                             g.nextWanderAt = time + 4000 + Math.random() * 5000;
-                            const wp = randomPointInRect(getAreaRect(g.area || 'breakroom'));
+                            // 홈 슬롯 근처 소폭 orbit(멀리 안 감) → 이웃과 안 겹침. y는 납작하게(바닥感).
+                            const hx = (g.homeX != null) ? g.homeX : g.sprite.x;
+                            const hy = (g.homeY != null) ? g.homeY : g.sprite.y;
+                            const ang = Math.random() * Math.PI * 2;
+                            const rad = 12 + Math.random() * 22;
+                            const wp = { x: Math.round(hx + Math.cos(ang) * rad), y: Math.round(hy + Math.sin(ang) * rad * 0.55) };
                             const dist = Math.hypot(wp.x - g.sprite.x, wp.y - g.sprite.y);
-                            if (dist > 34) {
+                            if (dist > 12) {
                                 const dir = (wp.x >= g.sprite.x) ? 'running_right' : 'running_left';
                                 const wa = petdexAnimFor(g.petBase, dir);
                                 if (game.anims.exists(wa)) { g.busyAnim = true; g.sprite.play(wa, true); }
