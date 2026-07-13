@@ -1942,6 +1942,7 @@
         let hiddenDemoNames = new Set();
         const DEMO_MODE = new URLSearchParams(window.location.search).get('demo') === '1';
         const STATE_DEMO = new URLSearchParams(window.location.search).get('statedemo') === '1';  // 9상태 순환 데모
+        const POS_DEBUG = new URLSearchParams(window.location.search).get('posdebug') === '1';  // TEMP: 좌표 실측 디버그
         const FETCH_INTERVAL = 1000;
         const GUEST_AGENTS_FETCH_INTERVAL = 3500;
         const BLINK_INTERVAL = 2500;
@@ -4025,6 +4026,20 @@ function toggleBrokerPanel() {
                 // 어슬렁거림(ambient wander)용: 현재 배정 존/상태 + 홈 슬롯 좌표 저장(create/update 공통)
                 if (guestSprites[id]) { guestSprites[id].area = area; guestSprites[id].curState = agent.state; guestSprites[id].homeX = p.x; guestSprites[id].homeY = p.y; }
             });
+
+            // TEMP posdebug: 실측 좌표 덤프(#posdebug div → --dump-dom으로 읽음)
+            if (POS_DEBUG) {
+                let el = document.getElementById('posdebug');
+                if (!el) { el = document.createElement('div'); el.id = 'posdebug'; el.style.cssText = 'position:fixed;left:0;top:120px;z-index:99999;background:#000;color:#0f0;font:11px monospace;white-space:pre;padding:4px'; document.body.appendChild(el); }
+                const lines = [`visitors=${visitors.length} areaCounts=${JSON.stringify(areaCounts)}`];
+                visitors.forEach((a, i) => {
+                    const g = guestSprites[a.agentId];
+                    const ar = STATE_AREA[a.state] || 'breakroom';
+                    const exp = getAreaPoint(ar, i, areaCounts[ar]);
+                    lines.push(`${a.name}|st=${a.state}|expX=${exp.x}|actX=${g && g.sprite ? Math.round(g.sprite.x) : '?'}|homeX=${g ? g.homeX : '?'}|tgtX=${g ? g.targetX : '?'}`);
+                });
+                el.textContent = lines.join('\n');
+            }
 
             // 删除消失的 agent + 清理其气泡/tween
             Object.keys(guestSprites).forEach(id => {
