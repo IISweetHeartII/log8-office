@@ -20,13 +20,12 @@ STATE_FILE = (
 
 VALID_STATES = [
     "idle",
-    "writing",
-    "receiving",
-    "replying",
-    "researching",
-    "executing",
-    "syncing",
-    "error"
+    "running",
+    "review",
+    "waving",
+    "waiting",
+    "failed",
+    "jumping"
 ]
 
 def load_state():

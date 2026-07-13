@@ -68,17 +68,17 @@ ASSET_DEFAULTS_FILE = os.path.join(ROOT_DIR, "asset-defaults.json")
 RUNTIME_CONFIG_FILE = os.path.join(ROOT_DIR, "runtime-config.json")
 
 # Canonical agent states: single source of truth for validation and mapping
-VALID_AGENT_STATES = frozenset({"idle", "talking", "writing", "researching", "executing", "syncing", "error"})
-WORKING_STATES = frozenset({"talking", "writing", "researching", "executing", "syncing"})  # auto-idle TTL subset
+VALID_AGENT_STATES = frozenset({"idle", "running", "review", "waving", "waiting", "failed", "jumping"})
+WORKING_STATES = frozenset({"running", "review", "waving", "waiting", "jumping"})  # auto-idle TTL subset
 # Each activity has its own office zone so the cat visibly goes to a different spot.
 STATE_TO_AREA_MAP = {
     "idle": "breakroom",        # 휴게실 (소파)
-    "talking": "work",          # 작업 구역
-    "writing": "work",          # 작업 구역
-    "executing": "work",        # 작업 구역
-    "researching": "work",      # 작업 구역
-    "syncing": "work",          # 작업 구역
-    "error": "error",           # 에러 — 버그 구역
+    "running": "work",          # 중앙 작업 바닥
+    "review": "desk",           # 좌측 책상(검토/조사)
+    "waving": "work",           # 중앙 작업 바닥
+    "waiting": "wait",          # 입구/문 근처 대기
+    "jumping": "work",          # 중앙 작업 바닥
+    "failed": "error",          # 에러 — 버그 구역
 }
 
 
@@ -527,25 +527,30 @@ def _animated_to_spritesheet(
 
 
 def normalize_agent_state(s):
-    """Normalize agent state for compatibility.
-    Maps synonyms (e.g. working/busy -> writing, run/running -> executing) into VALID_AGENT_STATES.
+    """Normalize agent state (petdex vocabulary) for compatibility.
+    Maps legacy state names (talking/writing/researching/executing/syncing/error)
+    onto the canonical petdex states in VALID_AGENT_STATES, and passes new names through.
     Returns 'idle' for unknown values.
     """
     if not s:
         return 'idle'
     s_lower = s.lower().strip()
-    if s_lower in {'working', 'busy', 'write'}:
-        return 'writing'
-    if s_lower in {'run', 'running', 'execute', 'exec'}:
-        return 'executing'
-    if s_lower in {'sync'}:
-        return 'syncing'
-    if s_lower in {'research', 'search'}:
-        return 'researching'
-    if s_lower in {'talk', 'talking', 'chat', 'chatting', 'meeting', 'meet', 'discuss'}:
-        return 'talking'
     if s_lower in VALID_AGENT_STATES:
         return s_lower
+    if s_lower in {'rest', 'sleep', 'unknown'}:
+        return 'idle'
+    if s_lower in {'talking', 'talk', 'chat', 'chatting', 'meeting', 'meet', 'discuss'}:
+        return 'waving'
+    if s_lower in {'writing', 'write'}:
+        return 'review'
+    if s_lower in {'researching', 'research', 'search'}:
+        return 'review'
+    if s_lower in {'executing', 'execute', 'run', 'working', 'busy', 'work', 'exec'}:
+        return 'running'
+    if s_lower in {'syncing', 'sync'}:
+        return 'waiting'
+    if s_lower in {'error', 'err', 'fail'}:
+        return 'failed'
     return 'idle'
 
 
@@ -777,7 +782,7 @@ def _generate_rpg_background_to_webp(out_webp_path: str, width: int = 1280, heig
 
 
 def state_to_area(state):
-    """Map agent state to office area (breakroom / work / error)."""
+    """Map agent state to office area (breakroom / work / desk / wait / error)."""
     return STATE_TO_AREA_MAP.get(state, "breakroom")
 
 

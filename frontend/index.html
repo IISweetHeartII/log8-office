@@ -671,9 +671,9 @@
         }
         /* Star 状态四按钮（不含装修）使用像素精灵皮肤 */
         #control-bar #btn-state-idle,
-        #control-bar #btn-state-writing,
-        #control-bar #btn-state-syncing,
-        #control-bar #btn-state-error {
+        #control-bar #btn-state-review,
+        #control-bar #btn-state-waiting,
+        #control-bar #btn-state-failed {
             background-image: url('/static/btn-state-sprite.png?v={{VERSION_TIMESTAMP}}');
             background-color: transparent !important;
             background-repeat: no-repeat;
@@ -692,16 +692,16 @@
             transition: padding-top .08s ease, padding-bottom .08s ease, filter .12s ease;
         }
         #control-bar #btn-state-idle:hover,
-        #control-bar #btn-state-writing:hover,
-        #control-bar #btn-state-syncing:hover,
-        #control-bar #btn-state-error:hover {
+        #control-bar #btn-state-review:hover,
+        #control-bar #btn-state-waiting:hover,
+        #control-bar #btn-state-failed:hover {
             background-color: transparent !important;
             filter: brightness(1.04);
         }
         #control-bar #btn-state-idle:active,
-        #control-bar #btn-state-writing:active,
-        #control-bar #btn-state-syncing:active,
-        #control-bar #btn-state-error:active {
+        #control-bar #btn-state-review:active,
+        #control-bar #btn-state-waiting:active,
+        #control-bar #btn-state-failed:active {
             background-position: 50% 0;
             padding-top: 5px;
             padding-bottom: 0;
@@ -1189,9 +1189,9 @@
             <div id="control-bar-title">Star 상태</div>
             <div id="control-buttons">
                 <button id="btn-state-idle" onclick="setStateBtn('idle','detailIdle')">대기</button>
-                <button id="btn-state-writing" onclick="setStateBtn('writing','detailWorking')">작업</button>
-                <button id="btn-state-syncing" onclick="setStateBtn('syncing','detailSyncing')">동기화</button>
-                <button id="btn-state-error" onclick="setStateBtn('error','detailError')">경보</button>
+                <button id="btn-state-review" onclick="setStateBtn('review','detailWorking')">작업</button>
+                <button id="btn-state-waiting" onclick="setStateBtn('waiting','detailSyncing')">동기화</button>
+                <button id="btn-state-failed" onclick="setStateBtn('failed','detailError')">경보</button>
                 <button id="btn-open-drawer" onclick="toggleAssetDrawer()">방 꾸미기</button>
             </div>
         </div>
@@ -1347,8 +1347,8 @@
                 memoTitle: '어 제 의 메 모', guestTitle: '방 문 자 목 록', officeTitle: 'log8 픽셀 오피스',
                 loadingOffice: 'log8 픽셀 오피스를 불러오는 중...',
                 statusPrefix: '상태',
-                stateNames: { idle: '대기', talking: '주인과 대화', writing: '문서 정리', researching: '정보 검색', executing: '작업 실행', syncing: '동기화 백업', error: '오류 발생' },
-                stateShort: { idle: '대기', talking: '대화', writing: '작업', researching: '조사', executing: '실행', syncing: '동기화', error: '경보' },
+                stateNames: { idle: '대기', running: '작업 실행', review: '검토·조사', waving: '대화', waiting: '입력 대기', failed: '오류 발생', jumping: '완료' },
+                stateShort: { idle: '대기', running: '실행', review: '검토', waving: '대화', waiting: '대기중', failed: '경보', jumping: '완료' },
                 authStatus: { approved: '승인됨', pending: '승인 대기', rejected: '거부됨', offline: '오프라인' },
                 detailIdle: '대기', detailWorking: '작업 중', detailSyncing: '동기화 중', detailError: '경보 중',
                 memoEmpty: '어제의 일기가 없어요', memoLoadFail: '불러오기 실패', loadingText: '불러오는 중...',
@@ -1410,8 +1410,8 @@
                 memoTitle: '昨 日 小 记', guestTitle: '访 客 列 表', officeTitle: 'log8 像素办公室',
                 loadingOffice: '正在加载 log8 像素办公室...',
                 statusPrefix: '状态',
-                stateNames: { idle: '待命', talking: '与主人对话', writing: '整理文档', researching: '搜索信息', executing: '执行任务', syncing: '同步备份', error: '出错了' },
-                stateShort: { idle: '待命', talking: '对话', writing: '工作', researching: '调研', executing: '执行', syncing: '同步', error: '报警' },
+                stateNames: { idle: '待命', running: '执行任务', review: '检查调研', waving: '对话', waiting: '等待输入', failed: '出错了', jumping: '完成' },
+                stateShort: { idle: '待命', running: '执行', review: '检查', waving: '对话', waiting: '等待', failed: '报警', jumping: '完成' },
                 authStatus: { approved: '已授权', pending: '待授权', rejected: '已拒绝', offline: '离线' },
                 detailIdle: '待命', detailWorking: '工作中', detailSyncing: '同步中', detailError: '报警中',
                 memoEmpty: '暂无昨日日记', memoLoadFail: '加载失败', loadingText: '加载中...',
@@ -1473,8 +1473,8 @@
                 memoTitle: 'YESTERDAY NOTES', guestTitle: 'VISITOR LIST', officeTitle: 'log8 Pixel Office',
                 loadingOffice: 'Loading log8 pixel office...',
                 statusPrefix: 'Status',
-                stateNames: { idle: 'Idle', talking: 'Talking', writing: 'Writing Docs', researching: 'Researching', executing: 'Executing', syncing: 'Syncing Backup', error: 'Error' },
-                stateShort: { idle: 'Idle', talking: 'Talk', writing: 'Work', researching: 'Research', executing: 'Execute', syncing: 'Sync', error: 'Alert' },
+                stateNames: { idle: 'Idle', running: 'Running', review: 'Reviewing', waving: 'Waving', waiting: 'Waiting', failed: 'Failed', jumping: 'Done' },
+                stateShort: { idle: 'Idle', running: 'Run', review: 'Review', waving: 'Wave', waiting: 'Wait', failed: 'Failed', jumping: 'Done' },
                 authStatus: { approved: 'Approved', pending: 'Pending', rejected: 'Rejected', offline: 'Offline' },
                 detailIdle: 'Idle', detailWorking: 'Working', detailSyncing: 'Syncing', detailError: 'Alert',
                 memoEmpty: 'No diary yesterday', memoLoadFail: 'Load failed', loadingText: 'Loading...',
@@ -1536,8 +1536,8 @@
                 memoTitle: '昨日のメモ', guestTitle: '訪問者リスト', officeTitle: 'log8 ピクセルオフィス',
                 loadingOffice: 'log8 ピクセルオフィスを読み込み中...',
                 statusPrefix: '状態',
-                stateNames: { idle: '待機', talking: '主人と対話', writing: '文書整理', researching: '情報検索', executing: 'タスク実行', syncing: '同期バックアップ', error: 'エラー発生' },
-                stateShort: { idle: '待機', talking: '対話', writing: '作業', researching: '調査', executing: '実行', syncing: '同期', error: '警報' },
+                stateNames: { idle: '待機', running: 'タスク実行', review: '検討・調査', waving: '対話', waiting: '入力待ち', failed: 'エラー発生', jumping: '完了' },
+                stateShort: { idle: '待機', running: '実行', review: '検討', waving: '対話', waiting: '待機中', failed: '警報', jumping: '完了' },
                 authStatus: { approved: '承認済み', pending: '承認待ち', rejected: '却下', offline: 'オフライン' },
                 detailIdle: '待機', detailWorking: '作業中', detailSyncing: '同期中', detailError: '警報中',
                 memoEmpty: '昨日の日記はありません', memoLoadFail: '読み込み失敗', loadingText: '読み込み中...',
@@ -1600,9 +1600,9 @@
 
             setText('control-bar-title', 'controlTitle');
             setText('btn-state-idle', 'btnIdle');
-            setText('btn-state-writing', 'btnWork');
-            setText('btn-state-syncing', 'btnSync');
-            setText('btn-state-error', 'btnError');
+            setText('btn-state-review', 'btnWork');
+            setText('btn-state-waiting', 'btnSync');
+            setText('btn-state-failed', 'btnError');
             setText('btn-open-drawer', 'btnDecor');
             const langButtons = [
                 { id: 'lang-btn-ko', lang: 'ko' },
@@ -1816,49 +1816,54 @@
         // Human-readable state names are language-aware (see I18N[lang].stateNames). Here we only keep the scene area.
         const STATES = {
             idle: { area: 'breakroom' },
-            talking: { area: 'meeting' },
-            writing: { area: 'writing' },
-            researching: { area: 'researching' },
-            executing: { area: 'writing' },
-            syncing: { area: 'syncing' },
-            error: { area: 'error' }
+            running: { area: 'work' },
+            review: { area: 'desk' },
+            waving: { area: 'work' },
+            waiting: { area: 'wait' },
+            jumping: { area: 'work' },
+            failed: { area: 'error' }
         };
 
+        // petdex 상태별 말풍선(idle/running/review/waving/waiting/failed/jumping + cat). review=구 writing+researching, running=구 executing, waiting=구 syncing, failed=구 error.
         const BUBBLE_TEXTS = {
             ko: {
                 idle: ['대기 중: 귀를 쫑긋 세웠어요','여기 있어요, 언제든 시작 OK','먼저 책상부터 정리할게요','후— 머리에 바람 좀 쐬고','오늘도 우아하게 효율적으로','기다림은 더 정확한 한 방을 위해','커피도 영감도 아직 따뜻해요','뒤에서 살짝 버프 거는 중','상태: 평정 / 충전','고양이 왈: 천천히 해도 괜찮아'],
-                writing: ['집중 모드: 방해 금지','먼저 크리티컬 패스부터 통과','복잡한 걸 단순하게','버그는 우리에 가둘게요','쓰다 말고 일단 저장','모든 단계를 롤백 가능하게','오늘의 진척은 내일의 자신감','먼저 수렴, 다음에 발산','시스템을 더 설명 가능하게','침착하게, 우린 이길 수 있어'],
-                researching: ['증거 사슬을 캐는 중','정보를 결론까지 졸여낼게요','찾았다: 핵심은 여기','먼저 변수를 통제','왜 이렇게 되는지 조사 중','직감을 검증으로','먼저 위치 파악, 다음 최적화','서두르지 말고 인과도부터'],
-                executing: ['실행 중: 눈 깜빡 금지','작업을 잘게 쪼개 각개격파','파이프라인 가동','원클릭 추진: 가즈아','결과가 말하게 하자','먼저 MVP, 다음 가장 예쁘게'],
-                syncing: ['동기화 중: 오늘을 클라우드에 봉인','백업은 의식이 아니라 안심','쓰는 중… 전원 끄지 마세요','변경은 타임스탬프에','클라우드 정렬: 딸깍','동기화 끝나기 전엔 만지지 마세요','미래의 나를 재난에서 구해요','백업 하나 더, 후회 하나 덜'],
-                error: ['경보 울림: 일단 침착','버그 냄새가 나는데요','먼저 재현, 그다음 수정','로그 주세요, 사람 말로 풀어드릴게요','오류는 적이 아니라 단서','영향 범위부터 둘러쳐요','지혈 먼저, 그다음 수술','지금: 바로 근본 원인 추적 중','걱정 마요, 이런 거 많이 봤어요','경보 모드: 문제를 드러나게 하자'],
+                running: ['실행 중: 눈 깜빡 금지','작업을 잘게 쪼개 각개격파','파이프라인 가동','원클릭 추진: 가즈아','결과가 말하게 하자','먼저 MVP, 다음 가장 예쁘게'],
+                review: ['집중 모드: 방해 금지','먼저 크리티컬 패스부터 통과','복잡한 걸 단순하게','버그는 우리에 가둘게요','쓰다 말고 일단 저장','모든 단계를 롤백 가능하게','증거 사슬을 캐는 중','정보를 결론까지 졸여낼게요','찾았다: 핵심은 여기','먼저 변수를 통제','왜 이렇게 되는지 조사 중','직감을 검증으로'],
+                waving: ['안녕하세요! 잠깐 이야기해요','네, 듣고 있어요','반가워요 — 무엇을 도와드릴까요','메시지 주고받는 중'],
+                waiting: ['입력 대기 중: 다음 지시를 기다려요','동기화 중: 오늘을 클라우드에 봉인','백업은 의식이 아니라 안심','변경은 타임스탬프에','대기 중, 곧 이어서 진행','서두르지 않아요, 준비되면 시작'],
+                failed: ['경보 울림: 일단 침착','버그 냄새가 나는데요','먼저 재현, 그다음 수정','로그 주세요, 사람 말로 풀어드릴게요','오류는 적이 아니라 단서','영향 범위부터 둘러쳐요','지혈 먼저, 그다음 수술','지금: 바로 근본 원인 추적 중','걱정 마요, 이런 거 많이 봤어요','경보 모드: 문제를 드러나게 하자'],
+                jumping: ['해냈다! 작업 완료','성공! 다음으로 갈게요','끝! 아주 매끄럽게','완료 — 잠깐 신나서 폴짝'],
                 cat: ['야옹~','고로롱…','꼬리 살랑살랑','햇볕 쬐는 게 최고','누가 보러 왔다!','이 오피스의 마스코트예요','쭉— 기지개','오늘 간식 준비됐나요','드르렁 골골','이 자리가 전망 최고']
             },
             zh: {
                 idle: ['待命中：耳朵竖起来了','我在这儿，随时可以开工','先把桌面收拾干净再说','呼——给大脑放个风','今天也要优雅地高效','等待，是为了更准确的一击','咖啡还热，灵感也还在','我在后台给你加 Buff','状态：静心 / 充电','小猫说：慢一点也没关系'],
-                writing: ['进入专注模式：勿扰','先把关键路径跑通','我来把复杂变简单','把 bug 关进笼子里','写到一半，先保存','把每一步都做成可回滚','今天的进度，明天的底气','先收敛，再发散','让系统变得更可解释','稳住，我们能赢'],
-                researching: ['我在挖证据链','让我把信息熬成结论','找到了：关键在这里','先把变量控制住','我在查：它为什么会这样','把直觉写成验证','先定位，再优化','别急，先画因果图'],
-                executing: ['执行中：不要眨眼','把任务切成小块逐个击破','开始跑 pipeline','一键推进：走你','让结果自己说话','先做最小可行，再做最美版本'],
-                syncing: ['同步中：把今天锁进云里','备份不是仪式，是安全感','写入中…别断电','把变更交给时间戳','云端对齐：咔哒','同步完成前先别乱动','把未来的自己从灾难里救出来','多一份备份，少一份后悔'],
-                error: ['警报响了：先别慌','我闻到 bug 的味道了','先复现，再谈修复','把日志给我，我会说人话','错误不是敌人，是线索','把影响面圈起来','先止血，再手术','我在：马上定位根因','别怕，这种我见多了','报警中：让问题自己现形'],
+                running: ['执行中：不要眨眼','把任务切成小块逐个击破','开始跑 pipeline','一键推进：走你','让结果自己说话','先做最小可行，再做最美版本'],
+                review: ['进入专注模式：勿扰','先把关键路径跑通','我来把复杂变简单','把 bug 关进笼子里','写到一半，先保存','把每一步都做成可回滚','我在挖证据链','让我把信息熬成结论','找到了：关键在这里','先把变量控制住','我在查：它为什么会这样','把直觉写成验证'],
+                waving: ['你好！我们聊两句','嗯，我在听','很高兴见到你 — 需要帮忙吗','正在收发消息'],
+                waiting: ['等待输入中：等下一步指令','同步中：把今天锁进云里','备份不是仪式，是安全感','把变更交给时间戳','待命中，马上继续','不着急，准备好就开始'],
+                failed: ['警报响了：先别慌','我闻到 bug 的味道了','先复现，再谈修复','把日志给我，我会说人话','错误不是敌人，是线索','把影响面圈起来','先止血，再手术','我在：马上定位根因','别怕，这种我见多了','报警中：让问题自己现形'],
+                jumping: ['搞定！任务完成','成功！进入下一步','完成啦，非常顺利','太棒了，蹦一下庆祝'],
                 cat: ['喵~','咕噜咕噜…','尾巴摇一摇','晒太阳最开心','有人来看我啦','我是这个办公室的吉祥物','伸个懒腰','今天的罐罐准备好了吗','呼噜呼噜','这个位置视野最好']
             },
             en: {
                 idle: ['On standby: ears up.','I’m here, ready to roll.','Let’s tidy the desk first.','Taking a quick brain breeze.','Efficient and elegant, as always.','Waiting for a more precise strike.','Coffee is warm, ideas too.','Giving you a quiet backstage buff.','Status: calm / charging.','Cat says: no rush, we’re good.'],
-                writing: ['Focus mode on: do not disturb.','Let’s clear the critical path first.','I’ll make the complex simple.','Putting bugs in a cage.','Save first, then continue.','Every step should be rollback-safe.','Today’s progress is tomorrow’s confidence.','Converge first, then diverge.','Making the system more explainable.','Steady—this is winnable.'],
-                researching: ['Digging the evidence chain.','Let me boil info into conclusions.','Found it: key clue here.','Control variables first.','Checking why this happens.','Turn intuition into verification.','Locate first, optimize next.','No rush—draw the causality map first.'],
-                executing: ['Executing—don’t blink.','Split tasks, conquer one by one.','Pipeline is running.','One-click push: go go.','Let the results speak.','Build MVP first, then craft beauty.'],
-                syncing: ['Syncing: lock today into the cloud.','Backup is safety, not ceremony.','Writing… don’t cut power.','Handing changes to timestamps.','Cloud alignment: click.','Don’t shake it before sync finishes.','Saving future-us from disasters.','One more backup, one less regret.'],
-                error: ['Alarm on—stay calm.','I can smell a bug.','Reproduce first, then fix.','Give me logs; I’ll translate.','Errors are clues, not enemies.','Circle the impact area first.','Stop the bleeding, then surgery.','On it: tracing root cause now.','Don’t worry, seen this many times.','Alert mode: make the issue reveal itself.'],
+                running: ['Executing—don’t blink.','Split tasks, conquer one by one.','Pipeline is running.','One-click push: go go.','Let the results speak.','Build MVP first, then craft beauty.'],
+                review: ['Focus mode on: do not disturb.','Let’s clear the critical path first.','I’ll make the complex simple.','Putting bugs in a cage.','Save first, then continue.','Every step should be rollback-safe.','Digging the evidence chain.','Let me boil info into conclusions.','Found it: key clue here.','Control variables first.','Checking why this happens.','Turn intuition into verification.'],
+                waving: ['Hi there! Let’s chat a sec.','Yep, I’m listening.','Nice to see you—need anything?','Exchanging messages now.'],
+                waiting: ['Waiting for input: next instruction, please.','Syncing: lock today into the cloud.','Backup is safety, not ceremony.','Handing changes to timestamps.','On standby, will continue soon.','No rush—starting when ready.'],
+                failed: ['Alarm on—stay calm.','I can smell a bug.','Reproduce first, then fix.','Give me logs; I’ll translate.','Errors are clues, not enemies.','Circle the impact area first.','Stop the bleeding, then surgery.','On it: tracing root cause now.','Don’t worry, seen this many times.','Alert mode: make the issue reveal itself.'],
+                jumping: ['Nailed it! Task complete.','Success! Moving on.','Done—smooth as butter.','Finished, doing a happy hop.'],
                 cat: ['Meow~','Purr purr…','Tail wiggle activated.','Sunbathing is the best.','Someone came to see me!','I’m the office mascot.','Big stretch~','Is today’s snack ready yet?','Rrrrr purr…','Best view spot secured.']
             },
             ja: {
                 idle: ['待機中：耳はピン。','ここにいるよ、いつでも開始OK。','まず机を整えよう。','ふー、頭に風を通す。','今日も上品に高効率で。','待つのは、より正確な一撃のため。','コーヒーも発想もまだ温かい。','裏側でそっとバフ中。','状態：静心 / 充電。','猫より：ゆっくりでも大丈夫。'],
-                writing: ['集中モード：お静かに。','まずはクリティカルパスを通す。','複雑をシンプルにする。','バグはケージへ。','途中でもまず保存。','すべてをロールバック可能に。','今日の進捗は明日の自信。','まず収束、次に発散。','システムをより説明可能に。','落ち着いて、勝てる。'],
-                researching: ['証拠チェーンを掘っています。','情報を結論まで煮詰めます。','見つけた：鍵はここ。','まず変数を制御。','なぜこうなるか調査中。','直感を検証へ。','先に特定、次に最適化。','急がず因果マップから。'],
-                executing: ['実行中：まばたき厳禁。','タスクを分割して各個撃破。','パイプライン起動。','ワンクリック前進：いくぞ。','結果に語らせる。','まず最小実用、次に美しさ。'],
-                syncing: ['同期中：今日をクラウドに封印。','バックアップは儀式じゃなく安心。','書き込み中…電源オフ厳禁。','変更はタイムスタンプへ。','クラウド整列：カチッ。','同期完了まで触らないで。','未来の自分を災害から救う。','バックアップ一つ、後悔一つ減る。'],
-                error: ['警報：まず落ち着いて。','バグの気配を感じる。','再現してから修正へ。','ログをください、人語にします。','エラーは敵ではなく手がかり。','まず影響範囲を囲う。','止血してから手術。','今すぐ根因を追跡中。','大丈夫、よくある案件。','警戒モード：問題を可視化する。'],
+                running: ['実行中：まばたき厳禁。','タスクを分割して各個撃破。','パイプライン起動。','ワンクリック前進：いくぞ。','結果に語らせる。','まず最小実用、次に美しさ。'],
+                review: ['集中モード：お静かに。','まずはクリティカルパスを通す。','複雑をシンプルにする。','バグはケージへ。','途中でもまず保存。','すべてをロールバック可能に。','証拠チェーンを掘っています。','情報を結論まで煮詰めます。','見つけた：鍵はここ。','まず変数を制御。','なぜこうなるか調査中。','直感を検証へ。'],
+                waving: ['やあ！少しお話しましょう。','はい、聞いてますよ。','会えてうれしい — 何かご用ですか。','メッセージをやり取り中。'],
+                waiting: ['入力待ち中：次の指示をどうぞ。','同期中：今日をクラウドに封印。','バックアップは儀式じゃなく安心。','変更はタイムスタンプへ。','待機中、すぐ続けます。','急がず、準備ができたら始めます。'],
+                failed: ['警報：まず落ち着いて。','バグの気配を感じる。','再現してから修正へ。','ログをください、人語にします。','エラーは敵ではなく手がかり。','まず影響範囲を囲う。','止血してから手術。','今すぐ根因を追跡中。','大丈夫、よくある案件。','警戒モード：問題を可視化する。'],
+                jumping: ['やった！作業完了。','成功！次へ進みます。','完了、とてもスムーズ。','終わった — うれしくてジャンプ。'],
                 cat: ['ニャー','ゴロゴロ…','しっぽフリフリ。','ひなたぼっこ最高。','見に来てくれた！','このオフィスのマスコットです。','ぐーっと伸び。','今日のおやつ、準備できた？','ゴロゴロ。','ここ、いちばん見晴らしがいい。']
             }
         };
@@ -3704,14 +3709,14 @@ function toggleBrokerPanel() {
             if (!DEMO_MODE) return;
             if (!Array.isArray(window.__demoVisitors) || window.__demoVisitors.length === 0) {
                 const demoBubble = {
-                    ko: { writing: '작업 중이에요', idle: '휴게실에 좀 누워있을게요' },
-                    zh: { writing: '我在工作中', idle: '我去休息区躺一下' },
-                    en: { writing: 'I am working now.', idle: 'Taking a break in the lounge.' },
-                    ja: { writing: '作業中です。', idle: '休憩エリアでひと休み。' }
+                    ko: { review: '자료를 검토·조사 중이에요', idle: '휴게실에 좀 누워있을게요' },
+                    zh: { review: '我在检查和调研', idle: '我去休息区躺一下' },
+                    en: { review: 'Reviewing and researching.', idle: 'Taking a break in the lounge.' },
+                    ja: { review: '資料を検討・調査中です。', idle: '休憩エリアでひと休み。' }
                 };
                 const db = demoBubble[uiLang] || demoBubble.zh;
                 window.__demoVisitors = [
-                    { agentId: 'demo_nika', name: '尼卡', authStatus: 'approved', state: 'writing', bubbleText: db.writing, isDemo: true, updated_at: new Date().toISOString() },
+                    { agentId: 'demo_nika', name: '尼卡', authStatus: 'approved', state: 'review', bubbleText: db.review, isDemo: true, updated_at: new Date().toISOString() },
                     { agentId: 'demo_mercury', name: '水星', authStatus: 'approved', state: 'idle', bubbleText: db.idle, isDemo: true, updated_at: new Date().toISOString() }
                 ];
             }
@@ -3768,8 +3773,10 @@ function toggleBrokerPanel() {
             // 工作区域范围（190,526）（380,683）
             // error 区域范围（932,275）（1109,327）
             const rects = {
-                work:      { x1: 110, y1: 545, x2: 450, y2: 690 },   // 작업 구역(좌측 책상 앞)
-                breakroom: { x1: 855, y1: 545, x2: 1205, y2: 690 },  // 휴게실(우측 — 중앙 간판/가전 비움)
+                work:      { x1: 390, y1: 545, x2: 620, y2: 690 },   // 중앙 작업 바닥(running/waving/jumping)
+                desk:      { x1: 110, y1: 545, x2: 340, y2: 690 },   // 좌측 책상 앞(review — 검토/조사)
+                wait:      { x1: 660, y1: 545, x2: 820, y2: 690 },   // 입구/문 근처 대기(waiting)
+                breakroom: { x1: 860, y1: 545, x2: 1205, y2: 690 },  // 휴게실(우측 소파)
                 error:     { x1: 930, y1: 270, x2: 1110, y2: 340 }   // 에러(버그 구역)
             };
             return rects[area] || rects.breakroom;
@@ -3795,12 +3802,11 @@ function toggleBrokerPanel() {
             return { x, y };
         }
 
-        const STATE_EMOTE = { idle:'💤', talking:'💬', writing:'📝', executing:'⚙️', researching:'🔍', syncing:'🔄', error:'❗' };
+        const STATE_EMOTE = { idle:'💤', running:'⚙️', review:'🔍', waving:'💬', waiting:'⏳', failed:'❗', jumping:'🎉' };
         function emoteFor(state){ return STATE_EMOTE[state] || '💤'; }
 
-        // rosie petdex: 오피스 7상태 → petdex 9상태 애니 매핑
-        const PETDEX_STATE_ANIM = { idle:'idle', talking:'waving', writing:'review', researching:'review', executing:'running', syncing:'waiting', error:'failed' };
-        function petdexAnimFor(state) { return 'rosiepx_' + (PETDEX_STATE_ANIM[state] || 'idle'); }
+        // agent.state IS a petdex name → anim key는 <base>px_<state>. 애니 존재 여부는 호출부에서 game.anims.exists로 가드.
+        function petdexAnimFor(base, state) { return base + 'px_' + (state || 'idle'); }
 
         function renderGuestAgentsInScene() {
             if (!game) return;
@@ -3830,7 +3836,7 @@ function toggleBrokerPanel() {
                 }
 
                 const isDemo = !!agent.isDemo || (DEMO_MODE && (id === 'demo_nika' || id === 'demo_mercury' || agent.name === '尼卡' || agent.name === '水星'));
-                const STATE_AREA = { idle:'breakroom', talking:'work', writing:'work', executing:'work', researching:'work', syncing:'work', error:'error' };
+                const STATE_AREA = { idle:'breakroom', running:'work', review:'desk', waving:'work', waiting:'wait', jumping:'work', failed:'error' };
                 const area = STATE_AREA[agent.state] || 'breakroom';
 
                 const idx = (areaIdx[area] = (areaIdx[area] || 0) + 1) - 1;
@@ -3846,13 +3852,14 @@ function toggleBrokerPanel() {
                     const isDemoNika = DEMO_MODE && (agent.agentId === 'demo_nika' || agent.name === '尼卡');
                     const isDemoMercury = DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星');
                     const catKey = catKeyForAgent(agent);
-                    const useRosiePx = catKey === 'cat_rosie' && game.textures.exists('rosie_petdex');
+                    const petBase = (catKey && catKey.startsWith('cat_')) ? catKey.slice(4) : null;
+                    const usePetdex = petBase && game.textures.exists(petBase + '_petdex');
 
-                    if (useRosiePx) {
-                        // rosie: petdex 9상태 스프라이트 (상태별 애니, 나머지 고양이는 idle bob 유지)
-                        sprite = game.add.sprite(p.x, p.y, 'rosie_petdex').setOrigin(0.5, 1).setScale(0.55);
-                        const rpAnim = petdexAnimFor(agent.state);
-                        if (game.anims.exists(rpAnim)) sprite.anims.play(rpAnim, true);
+                    if (usePetdex) {
+                        // petdex 9상태 스프라이트 (상태별 애니). petdex 시트 없는 고양이는 아래 idle bob 유지.
+                        sprite = game.add.sprite(p.x, p.y, petBase + '_petdex').setOrigin(0.5, 1).setScale(0.55);
+                        const a = petdexAnimFor(petBase, agent.state);
+                        if (game.anims.exists(a)) sprite.anims.play(a, true);
                     } else if (catKey && game.textures.exists(catKey)) {
                         // 명명된 고양이 에이전트: 전용 픽셀 고양이 + idle/walk 루프
                         sprite = game.add.sprite(p.x, p.y, catKey).setOrigin(0.5, 1).setScale(1.5);
@@ -3921,7 +3928,7 @@ function toggleBrokerPanel() {
                         fontFamily: 'ArkPixel, monospace', fontSize: '20px'
                     }).setOrigin(0.5).setDepth(2602);
 
-                    guestSprites[id] = { sprite, nameText, emote, shadow, catKey: (catKey && game.textures.exists(catKey)) ? catKey : null, isRosiePx: useRosiePx };
+                    guestSprites[id] = { sprite, nameText, emote, shadow, catKey: (catKey && game.textures.exists(catKey)) ? catKey : null, petBase: usePetdex ? petBase : null };
                 } else {
                     const g = guestSprites[id];
                     const yOffset = (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星')) ? 10 : 0;
@@ -3976,10 +3983,10 @@ function toggleBrokerPanel() {
 
                     g.nameText.setText(agent.name || t('visitorDefault'));
                     if (g.emote) g.emote.setText(emoteFor(agent.state));
-                    if (g.isRosiePx && g.sprite.anims) {
-                        const rpAnim = petdexAnimFor(agent.state);
-                        if (g.sprite.anims.getName() !== rpAnim && game.anims.exists(rpAnim)) {
-                            g.sprite.play(rpAnim, true);
+                    if (g.petBase && g.sprite.anims) {
+                        const a = petdexAnimFor(g.petBase, agent.state);
+                        if (g.sprite.anims.getName() !== a && game.anims.exists(a)) {
+                            g.sprite.play(a, true);
                         }
                     }
                 }
@@ -4022,35 +4029,39 @@ function toggleBrokerPanel() {
             const statusThoughtsMapByLang = {
                 ko: {
                     idle: ['휴게실에서 대기 중', '잠깐 쉬며 다음 작업 대기', '휴식하며 충전 중'],
-                    writing: ['작업 구역에서 처리 중', '문서 정리와 실행 진행 중', '작업 구역에서 집중 추진 중'],
-                    researching: ['조사 모드, 정보 수집 중', '자료 확인하고 단서 검증 중', '연구 중, 곧 결론 공유'],
-                    executing: ['실행 중, 프로세스 가동', '작업 구역에서 태스크 추진', '계획을 실제로 옮기는 중'],
-                    syncing: ['동기화 중, 곧 상태 갱신', '진척을 시스템에 동기화 중', '데이터 동기화 중, 잠시만요'],
-                    error: ['버그 구역에서 점검 중', '이상 감지, 수정 중', '경보 중, 먼저 위치 파악 후 처리']
+                    running: ['실행 중, 프로세스 가동', '작업 구역에서 태스크 실행 중', '계획을 실제로 옮기는 중'],
+                    review: ['자료 검토·조사 중', '자료 확인하고 단서 검증 중', '조사 모드, 정보 수집 중'],
+                    waving: ['대화 중, 메시지 주고받는 중', '지금 이야기 나누는 중', '소통 중, 잠시만요'],
+                    waiting: ['입력 대기 중', '다음 지시를 기다리는 중', '대기 중, 곧 이어서 진행'],
+                    failed: ['오류 발생 — 복구 중', '이상 감지, 수정 중', '버그 구역에서 점검 중'],
+                    jumping: ['작업 완료!', '완료! 다음으로 넘어갈게요', '끝냈어요, 성공!']
                 },
                 zh: {
-                idle: ['我在休息区待命', '先放松一下，等下一步任务', '我在休息充电中'],
-                writing: ['我在工作区处理任务', '正在整理文档与执行中', '工作区专注推进中'],
-                researching: ['我在调研模式，搜集信息', '正在查资料和验证线索', '研究中，稍后同步结论'],
-                executing: ['执行中，正在跑流程', '我在工作区推进任务', '正在把计划落地执行'],
-                syncing: ['同步中，马上更新状态', '正在同步进度到系统', '数据同步中请稍候'],
-                error: ['我在 bug 区排查问题', '检测到异常，正在修复', '报警中，先定位再处理']
+                    idle: ['我在休息区待命', '先放松一下，等下一步任务', '我在休息充电中'],
+                    running: ['执行中，正在跑流程', '我在工作区执行任务', '正在把计划落地执行'],
+                    review: ['正在检查资料、做调研', '正在查资料和验证线索', '我在调研模式，搜集信息'],
+                    waving: ['对话中，正在收发消息', '正在交流沟通中', '沟通中，请稍候'],
+                    waiting: ['等待输入中', '等待下一步指令', '待命中，马上继续'],
+                    failed: ['出错了 — 正在恢复', '检测到异常，正在修复', '我在 bug 区排查问题'],
+                    jumping: ['任务完成！', '搞定！进入下一步', '完成啦，成功！']
                 },
                 en: {
                     idle: ['On standby in the lounge', 'Relaxing, waiting for the next task', 'Resting and recharging'],
-                    writing: ['Handling tasks in the work area', 'Organizing docs and executing', 'Focused and pushing forward'],
-                    researching: ['In research mode, gathering info', 'Checking materials and verifying leads', 'Researching, will share conclusions soon'],
-                    executing: ['Executing, running the pipeline', 'Pushing tasks in the work area', 'Turning the plan into action'],
-                    syncing: ['Syncing, updating status soon', 'Syncing progress to the system', 'Data syncing, please wait'],
-                    error: ['Debugging in the bug zone', 'Anomaly detected, fixing it', 'Alert: locate first, then handle']
+                    running: ['Executing, running the pipeline', 'Running the task in the work area', 'Turning the plan into action'],
+                    review: ['Reviewing materials and researching', 'Checking materials and verifying leads', 'In research mode, gathering info'],
+                    waving: ['Chatting, exchanging messages', 'Talking things through', 'Communicating, one moment'],
+                    waiting: ['Waiting for input', 'Awaiting the next instruction', 'On standby, will continue soon'],
+                    failed: ['Error hit — recovering now', 'Anomaly detected, fixing it', 'Debugging in the bug zone'],
+                    jumping: ['Task complete!', 'Done! Moving on', 'Finished, success!']
                 },
                 ja: {
                     idle: ['休憩エリアで待機中', 'ひと休みして次のタスク待ち', '休んで充電中'],
-                    writing: ['作業エリアでタスク処理中', '文書整理と実行を進行中', '作業エリアで集中推進中'],
-                    researching: ['調査モードで情報収集中', '資料確認と手がかり検証中', '研究中、後で結論を共有'],
-                    executing: ['実行中、フロー稼働', '作業エリアでタスク推進', '計画を実行に落とし込み中'],
-                    syncing: ['同期中、すぐ状態更新', '進捗をシステムに同期中', 'データ同期中、お待ちを'],
-                    error: ['バグ区で問題を点検中', '異常検知、修正中', '警報中、まず特定して対処']
+                    running: ['実行中、フロー稼働', '作業エリアでタスク実行中', '計画を実行に落とし込み中'],
+                    review: ['資料の検討・調査中', '資料確認と手がかり検証中', '調査モードで情報収集中'],
+                    waving: ['会話中、メッセージやり取り中', '今お話し中です', 'やり取り中、少々お待ちを'],
+                    waiting: ['入力待ち中', '次の指示を待っています', '待機中、すぐ続けます'],
+                    failed: ['エラー発生 — 復旧中', '異常検知、修正中', 'バグ区で問題を点検中'],
+                    jumping: ['作業完了！', '完了！次へ進みます', '終わりました、成功！']
                 }
             };
             const statusThoughtsMap = statusThoughtsMapByLang[uiLang] || statusThoughtsMapByLang.zh;
@@ -4097,39 +4108,43 @@ function toggleBrokerPanel() {
             if (now < window.__demoNextAt) return;
             window.__demoNextAt = now + 8000;
 
-            const states = ['idle', 'writing', 'researching', 'executing', 'syncing', 'error'];
+            const states = ['idle', 'running', 'review', 'waving', 'waiting', 'failed', 'jumping'];
             const bubbleTextMapByLang = {
                 ko: {
                     idle: '휴게실에 좀 누워있을게요',
-                    writing: '작업 중이에요',
-                    researching: '조사 중이에요',
-                    executing: '작업을 실행 중이에요',
-                    syncing: '상태를 동기화 중이에요',
-                    error: '오류 발생! 경보 구역으로 갈게요'
+                    running: '작업을 실행 중이에요',
+                    review: '자료를 검토·조사 중이에요',
+                    waving: '잠깐 이야기 나누는 중이에요',
+                    waiting: '입력을 기다리는 중이에요',
+                    failed: '오류 발생! 경보 구역으로 갈게요',
+                    jumping: '작업 완료! 신나요'
                 },
                 zh: {
                 idle: '我去休息区躺一下',
-                writing: '我在工作中',
-                researching: '我在调研中',
-                executing: '我在执行任务',
-                syncing: '我在同步状态',
-                error: '出错了！我去报警区'
+                running: '我在执行任务',
+                review: '我在检查和调研',
+                waving: '我在聊两句',
+                waiting: '我在等待输入',
+                failed: '出错了！我去报警区',
+                jumping: '任务完成！好开心'
                 },
                 en: {
                     idle: 'Taking a break in the lounge.',
-                    writing: 'I am working now.',
-                    researching: 'I am researching now.',
-                    executing: 'I am executing tasks.',
-                    syncing: 'I am syncing status.',
-                    error: 'Something broke! Heading to alert zone.'
+                    running: 'I am executing tasks.',
+                    review: 'Reviewing and researching.',
+                    waving: 'Chatting for a moment.',
+                    waiting: 'Waiting for input.',
+                    failed: 'Something broke! Heading to alert zone.',
+                    jumping: 'Task complete! So happy.'
                 },
                 ja: {
                     idle: '休憩エリアでひと休み。',
-                    writing: '作業中です。',
-                    researching: '調査中です。',
-                    executing: 'タスクを実行中です。',
-                    syncing: '状態を同期中です。',
-                    error: 'エラー発生！アラートエリアへ。'
+                    running: 'タスクを実行中です。',
+                    review: '資料を検討・調査中です。',
+                    waving: '少しお話し中です。',
+                    waiting: '入力を待っています。',
+                    failed: 'エラー発生！アラートエリアへ。',
+                    jumping: '作業完了！うれしい。'
                 }
             };
             const bubbleTextMap = bubbleTextMapByLang[uiLang] || bubbleTextMapByLang.zh;
@@ -4232,9 +4247,9 @@ function toggleBrokerPanel() {
                                 // 只欢迎第一个新来的（避免同一时刻多人加入刷屏）
                                 const newAgent = (merged || []).find(a => a.agentId === newIds[0]);
                                 if (newAgent && newAgent.name) {
-                                    // 临时将 currentState 视为 writing 以允许 showBubble 展示
+                                    // 临时将 currentState 视为 waving(인사) 以允许 showBubble 展示
                                     const oldState = currentState;
-                                    currentState = 'writing';
+                                    currentState = 'waving';
                                     // 临时更换 bubble 文案
                                     const lang = uiLang;
                                     const welcomeLines = [
@@ -4243,11 +4258,11 @@ function toggleBrokerPanel() {
                                         `${newAgent.name}${t('welcome3')}`
                                     ];
                                     const langPack = BUBBLE_TEXTS[lang] || BUBBLE_TEXTS.zh;
-                                    const oldTexts = Array.isArray(langPack.writing) ? [...langPack.writing] : [];
-                                    langPack.writing = welcomeLines;
+                                    const oldTexts = Array.isArray(langPack.waving) ? [...langPack.waving] : [];
+                                    langPack.waving = welcomeLines;
                                     showBubble();
                                     // 还原
-                                    langPack.writing = oldTexts;
+                                    langPack.waving = oldTexts;
                                     currentState = oldState;
                                 }
                             }
@@ -4402,8 +4417,10 @@ function toggleBrokerPanel() {
                 this.load.spritesheet(`cat_${n}`, `/static/cat_${n}.webp?v={{VERSION_TIMESTAMP}}`, { frameWidth: 64, frameHeight: 64 });
                 this.load.image(`cat_${n}_role`, `/static/cat_${n}_role.png?v={{VERSION_TIMESTAMP}}`);
             });
-            // rosie petdex 9상태 아틀라스 (8열×9행, 192×208 프레임)
-            this.load.spritesheet('rosie_petdex', '/static/rosie-petdex.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 192, frameHeight: 208 });
+            // 고양이별 petdex 9상태 아틀라스 (8열×9행, 192×208 프레임). 시트가 없는 고양이는 로드 실패=텍스처 미존재(정상).
+            CAT_AGENT_NAMES.forEach((n) => {
+                this.load.spritesheet(`${n}_petdex`, `/static/${n}-petdex.webp?v={{VERSION_TIMESTAMP}}`, { frameWidth: 192, frameHeight: 208 });
+            });
         }
 
         function create() {
@@ -4419,9 +4436,10 @@ function toggleBrokerPanel() {
             sofa.setDepth(10);
             areas = {
                 door: { x: 640, y: 550 }, // 墙的门（偏下 1/3 位置）
-                writing: { x: 320, y: 360 }, // 左 1/3 中间（办公桌）
-                researching: { x: 320, y: 360 }, // 左 1/3 中间（研究也在办公区
-                error: { x: 1066, y: 180 }, // 右 1/3 上 1/2（服务器区
+                work: { x: 505, y: 618 }, // 중앙 작업 바닥(running/waving/jumping)
+                desk: { x: 225, y: 618 }, // 좌측 책상 앞(review)
+                wait: { x: 740, y: 618 }, // 입구/문 근처 대기(waiting)
+                error: { x: 1020, y: 305 }, // 右 1/3 上 1/2（服务器区
                 breakroom: { x: IDLE_SOFA_ANCHOR.x, y: IDLE_SOFA_ANCHOR.y } // 与 sofa-idle-v3 同中心锚点
             };
 
@@ -4459,21 +4477,23 @@ function toggleBrokerPanel() {
                     });
                 }
             });
-            // rosie petdex 9상태 애니 (행별 프레임수: idle6/run8/left8/wave4/jump5/fail8/wait6/run6/review6)
-            if (this.textures.exists('rosie_petdex')) {
-                const ROSIE_PX_ROWS = [['idle',6],['running_right',8],['running_left',8],['waving',4],['jumping',5],['failed',8],['waiting',6],['running',6],['review',6]];
-                ROSIE_PX_ROWS.forEach(([name, cnt], r) => {
-                    const key = `rosiepx_${name}`;
+            // 고양이별 petdex 9상태 애니 (행별 프레임수: idle6/run8/left8/wave4/jump5/fail8/wait6/run6/review6)
+            const PETDEX_PX_ROWS = [['idle',6],['running_right',8],['running_left',8],['waving',4],['jumping',5],['failed',8],['waiting',6],['running',6],['review',6]];
+            CAT_AGENT_NAMES.forEach((n) => {
+                const tex = `${n}_petdex`;
+                if (!this.textures.exists(tex)) return;
+                PETDEX_PX_ROWS.forEach(([name, cnt], r) => {
+                    const key = `${n}px_${name}`;
                     if (!this.anims.exists(key)) {
                         this.anims.create({
                             key,
-                            frames: this.anims.generateFrameNumbers('rosie_petdex', { start: r * 8, end: r * 8 + cnt - 1 }),
+                            frames: this.anims.generateFrameNumbers(tex, { start: r * 8, end: r * 8 + cnt - 1 }),
                             frameRate: 8,
                             repeat: -1
                         });
                     }
                 });
-            }
+            });
 
             // 구역을 '방'처럼 보이게: 은은한 러그 + 텍스트 없는 이모지 표지(언어 의존 X)
             window.roomDecor = [];
@@ -4964,9 +4984,9 @@ function toggleBrokerPanel() {
                 }
             }
 
-            // error 状态：显示 bug 动画，并在两点之间来回移动
+            // failed 状态：显示 bug 动画，并在两点之间来回移动
             if (window.errorBug) {
-                if (effectiveStateForServer === 'error') {
+                if (effectiveStateForServer === 'failed') {
                     window.errorBug.setVisible(true);
                     if (!window.errorBug.anims.isPlaying || window.errorBug.anims.currentAnim?.key !== 'error_bug') {
                         window.errorBug.anims.play('error_bug', true);
@@ -4980,9 +5000,9 @@ function toggleBrokerPanel() {
                 }
             }
 
-            // Sync animation fallback logic
+            // Sync animation fallback logic (waiting state)
             if (syncAnimSprite) {
-                if (effectiveStateForServer === 'syncing') {
+                if (effectiveStateForServer === 'waiting') {
                     if (syncAnimPlayable && syncAnimSprite.anims && syncAnimSprite.anims.play && syncAnimSprite.scene?.anims?.exists('sync_anim')) {
                     if (!syncAnimSprite.anims.isPlaying || syncAnimSprite.anims.currentAnim?.key !== 'sync_anim') {
                         syncAnimSprite.anims.play('sync_anim', true);
@@ -5070,12 +5090,19 @@ function toggleBrokerPanel() {
         }
 
         function normalizeState(s) {
+            // petdex 어휘. 새 상태는 통과, 레거시 이름은 매핑, 그 외 idle.
             if (!s) return 'idle';
-            if (s === 'working') return 'writing';
-            if (s === 'run' || s === 'running') return 'executing';
-            if (s === 'sync') return 'syncing';
-            if (s === 'research') return 'researching';
-            return s;
+            const v = String(s).toLowerCase().trim();
+            const PETDEX = new Set(['idle','running','review','waving','waiting','failed','jumping']);
+            if (PETDEX.has(v)) return v;
+            if (['talking','talk','chat','chatting','meeting','meet','discuss'].includes(v)) return 'waving';
+            if (['writing','write'].includes(v)) return 'review';
+            if (['researching','research','search'].includes(v)) return 'review';
+            if (['executing','execute','run','working','busy','work','exec'].includes(v)) return 'running';
+            if (['syncing','sync'].includes(v)) return 'waiting';
+            if (['error','err','fail'].includes(v)) return 'failed';
+            if (['rest','sleep','unknown'].includes(v)) return 'idle';
+            return 'idle';
         }
 
         // Star 본체(가운데 로봇) 표시 여부. false = 숨김(에이전트 고양이 8마리만 무대 주인공).

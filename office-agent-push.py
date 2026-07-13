@@ -83,18 +83,24 @@ def save_local_state(data):
 
 
 def normalize_state(s):
-    """兼容不同本地状态词，并映射到办公室识别状态。"""
+    """兼容不同本地状态词，并映射到办公室识别状态（petdex 词汇）。"""
     s = (s or "").strip().lower()
-    if s in {"writing", "researching", "executing", "syncing", "error", "idle"}:
+    if s in {"idle", "running", "review", "waving", "waiting", "failed", "jumping"}:
         return s
-    if s in {"working", "busy", "write"}:
-        return "writing"
-    if s in {"run", "running", "execute", "exec"}:
-        return "executing"
-    if s in {"research", "search"}:
-        return "researching"
-    if s in {"sync"}:
-        return "syncing"
+    if s in {"rest", "sleep", "unknown"}:
+        return "idle"
+    if s in {"talking", "talk", "chat", "chatting", "meeting", "meet", "discuss"}:
+        return "waving"
+    if s in {"writing", "write"}:
+        return "review"
+    if s in {"researching", "research", "search"}:
+        return "review"
+    if s in {"executing", "execute", "run", "working", "busy", "work", "exec"}:
+        return "running"
+    if s in {"syncing", "sync"}:
+        return "waiting"
+    if s in {"error", "err", "fail"}:
+        return "failed"
     return "idle"
 
 
@@ -102,13 +108,13 @@ def map_detail_to_state(detail, fallback_state="idle"):
     """当只有 detail 时，用关键词推断状态（贴近 AGENTS.md 的办公区逻辑）。"""
     d = (detail or "").lower()
     if any(k in d for k in ["报错", "error", "bug", "异常", "报警"]):
-        return "error"
+        return "failed"
     if any(k in d for k in ["同步", "sync", "备份"]):
-        return "syncing"
+        return "waiting"
     if any(k in d for k in ["调研", "research", "搜索", "查资料"]):
-        return "researching"
+        return "review"
     if any(k in d for k in ["执行", "run", "推进", "处理任务", "工作中", "writing"]):
-        return "writing"
+        return "running"
     if any(k in d for k in ["待命", "休息", "idle", "完成", "done"]):
         return "idle"
     return fallback_state
