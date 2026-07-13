@@ -4137,22 +4137,8 @@ function toggleBrokerPanel() {
             // use smaller/new map version provided by user
             this.load.image('office_bg', '/static/office_bg_small.webp?v={{VERSION_TIMESTAMP}}');
 
-            // Furniture
-            this.load.image('sofa_idle', '/static/sofa-v4.webp?v={{VERSION_TIMESTAMP}}');
-
             // Decor
-            this.load.image('plant_v4', '/static/plant-v4.webp?v={{VERSION_TIMESTAMP}}');
             this.load.spritesheet('posters', '/static/posters-spritesheet.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 160, frameHeight: 160 });
-            this.load.image('coffee_machine', '/static/coffee_maker-v4.webp?v={{VERSION_TIMESTAMP}}');
-            this.load.image('serverroom', '/static/server_rack-v4.webp?v={{VERSION_TIMESTAMP}}');
-
-            // Extra decor props (single images, CC0 from gen_decor.py)
-            this.load.image('bookshelf', '/static/bookshelf-v4.webp?v={{VERSION_TIMESTAMP}}');
-            this.load.image('whiteboard', '/static/whiteboard-v1.webp?v={{VERSION_TIMESTAMP}}');
-            this.load.image('water_cooler', '/static/water_cooler-v4.webp?v={{VERSION_TIMESTAMP}}');
-
-            // Error / bug animation: 180x180, 96 frames (repacked grid)
-            this.load.spritesheet('error_bug', '/static/error-bug-spritesheet-grid.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 220, frameHeight: 220 });
 
             // 런타임 Gemini 설정(이사/중개 이미지 생성용)
             this.geminiConfig = { hasKey: false, model: 'gemini-3.1-flash-image-preview' };
@@ -4160,14 +4146,9 @@ function toggleBrokerPanel() {
             // Cat spritesheet: 160x160, 4x4=16 cats
             this.load.spritesheet('cats', '/static/cats-spritesheet.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 160, frameHeight: 160 });
 
-            // Sync state animation (256x256, 다중 프레임): 비동기 시 첫 프레임 표시, 동기 시 2번째 프레임부터 반복
-            this.load.spritesheet('sync_anim', '/static/sync-animation-v3-grid.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 256, frameHeight: 256 });
-
             // Memo background image
             // memo 배경 이미지는 png로 고정, 일부 환경 webp 투명 채널 이상으로 "배경 사라짐" 방지
             this.load.image('memo_bg', '/static/memo-bg.webp?v={{VERSION_TIMESTAMP}}');
-            // Desk v2 (webp only)
-            this.load.image('desk_v2', '/static/desk-v4.webp?v={{VERSION_TIMESTAMP}}');
             // Flower spritesheet (65x65, 16 frames)
             this.load.spritesheet('flowers', '/static/flowers-bloom-v2.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: FLOWERS_FRAME_W, frameHeight: FLOWERS_FRAME_H });
 
@@ -4194,36 +4175,6 @@ function toggleBrokerPanel() {
             hideGameSkeleton();
             officeBgSprite = this.add.image(640, 360, 'office_bg');
 
-            // ── 3방(dollhouse) 러그 + 상단 명패(WORK/REVIEW/LOUNGE). ROOMS 좌표에 정렬. ──
-            (function drawRooms(scene) {
-                const ROOM_NP = [
-                    { room: 'lounge', label: 'LOUNGE', cx: 305 },
-                    { room: 'review', label: 'REVIEW', cx: 765 },
-                    { room: 'work',   label: 'WORK',   cx: 1106 }
-                ];
-                const gfx = scene.add.graphics().setDepth(3);
-                ROOM_NP.forEach(z => {
-                    const r = getAreaRect(z.room);
-                    const pad = 12;
-                    const x = r.x1 - pad, y = r.y1 - pad;
-                    const w = (r.x2 - r.x1) + pad * 2, h = (r.y2 - r.y1) + pad * 2;
-                    gfx.fillStyle(0x000000, 0.06); gfx.fillRoundedRect(x + 2, y + 4, w, h, 14);  // 바닥 그림자
-                    gfx.fillStyle(0xffffff, 0.05); gfx.fillRoundedRect(x, y, w, h, 14);          // 밝은 바닥 매트
-                    gfx.lineStyle(2, 0xffffff, 0.12); gfx.strokeRoundedRect(x, y, w, h, 14);     // 테두리
-                });
-                // 상단 헤더 플레이트 위 방 이름
-                ROOM_NP.forEach(z => {
-                    scene.add.text(z.cx, 104, z.label, {
-                        fontFamily: 'ArkPixel, monospace', fontSize: '17px', color: '#6b5233'
-                    }).setOrigin(0.5).setDepth(5);
-                });
-            })(this);
-
-            // Place furniture: Sofa
-            // NOTE: coordinates are interpreted as the TOP-LEFT corner of the sprite
-            game.add.ellipse(IDLE_SOFA_ANCHOR.x, 656, 180, 16, 0x000000, 0.16).setDepth(1);
-            sofa = this.add.sprite(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y, 'sofa_idle').setOrigin(0.5);
-            sofa.setDepth(10);
             areas = {
                 door: { x: 640, y: 550 }, // 벽의 문(아래쪽 1/3 위치)
                 work: { x: 505, y: 618 }, // 중앙 작업 바닥(running/waving/jumping)
@@ -4303,10 +4254,6 @@ function toggleBrokerPanel() {
                 window.ambientParticles.push(mote);
             }
 
-            // Sofa stays static when idle (no longer the main idle animation)
-            sofa.anims.stop();
-            sofa.setTexture('sofa_idle');
-
             // 픽셀 스타일 간판 추가
             const plaqueX = config.width / 2;
             const plaqueY = config.height - 30;
@@ -4331,84 +4278,8 @@ function toggleBrokerPanel() {
             game.add.text(plaqueX + 138, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '18px' }).setOrigin(0.5).setDepth(PLAQUE_DEPTH + 1);
             window.officePlaqueText = plaqueText;
 
-            // Plant on the lounge floor
-            game.add.ellipse(62, 656, 66, 12, 0x000000, 0.16).setDepth(1);
-            const plant = game.add.image(62, 598, 'plant_v4').setOrigin(0.5);
-            plant.setDepth(5);
-
             // 장식용 랜덤 고양이 제거(에이전트 고양이와 혼동 방지). 캣버블 함수는 catSprite 없으면 자동 비활성.
             window.catSprite = null;
-
-            // Coffee machine (static image)
-            game.add.ellipse(110, 656, 78, 12, 0x000000, 0.16).setDepth(1);
-            const coffeeMachine = this.add.image(110, 592, 'coffee_machine').setOrigin(0.5);
-            coffeeMachine.setDepth(99);
-
-            // Server rack (static image)
-            game.add.ellipse(1180, 660, 66, 12, 0x000000, 0.16).setDepth(1);
-            serverroom = this.add.image(1180, 556, 'serverroom').setOrigin(0.5);
-            serverroom.setDepth(2);
-
-            // Desk (v2)
-            game.add.ellipse(1070, 660, 170, 16, 0x000000, 0.16).setDepth(1);
-            const desk = this.add.image(1070, 590, 'desk_v2').setOrigin(0.5);
-            desk.setDepth(1001);  // desk above starWorking
-
-            // Extra decor props (gen_decor.py). Placed in empty spots, clear of
-            // the cats' activity zones (door/writing/error/breakroom) and existing
-            // furniture. Wall props sit on the wall (low depth); floor props sit
-            // on the floor with their own soft shadow baked in.
-            // Whiteboard on the upper-center wall (between window art & posters).
-            const whiteboard = this.add.image(765, 128, 'whiteboard').setOrigin(0.5);
-            whiteboard.setDepth(4);
-            // Bookshelf against the far-right wall, standing on the floor.
-            game.add.ellipse(700, 660, 120, 14, 0x000000, 0.16).setDepth(1);
-            const bookshelf = this.add.image(700, 560, 'bookshelf').setOrigin(0.5);
-            bookshelf.setDepth(6);
-            // Water cooler in the bottom-right corner.
-            game.add.ellipse(505, 658, 44, 10, 0x000000, 0.16).setDepth(1);
-            const waterCooler = this.add.image(505, 583, 'water_cooler').setOrigin(0.5);
-            waterCooler.setDepth(7);
-
-            // Error / bug animation (96 frames)
-            this.anims.create({
-                key: 'error_bug',
-                frames: this.anims.generateFrameNumbers('error_bug', { start: 0, end: 71 }),
-                frameRate: 12,
-                repeat: -1
-            });
-
-            // Error bug character (moves between two points when state=error)
-            const errorBug = this.add.sprite(1007, 221, 'error_bug', 0).setOrigin(0.5);
-            errorBug.setDepth(50); // above serverroom, below desk/bubbles
-            errorBug.setVisible(false);
-            errorBug.setScale(0.9); // shrink 10%
-            errorBug.anims.play('error_bug', true);
-            window.errorBug = errorBug;
-            window.errorBugDir = 1; // 1 -> to right, -1 -> to left
-
-            // Sync animation sprite at (1157,592)
-            const syncFrameTotal = Number(this.textures.get('sync_anim')?.frameTotal || 0);
-            const syncFrameStart = 1;
-            const syncFrameEnd = Math.max(0, syncFrameTotal - 2);
-            // 재생 가능한 프레임이 실제로 존재(>=1)할 때만 동기 애니메이션 생성, 단일 프레임 소재의 재생 이상 방지
-            syncAnimPlayable = syncFrameTotal >= 3 && syncFrameEnd >= syncFrameStart;
-            if (this.anims.exists('sync_anim')) {
-                this.anims.remove('sync_anim');
-            }
-            if (syncAnimPlayable) {
-            this.anims.create({
-                key: 'sync_anim',
-                    frames: this.anims.generateFrameNumbers('sync_anim', { start: syncFrameStart, end: syncFrameEnd }),
-                frameRate: 12,
-                repeat: -1
-            });
-            }
-            syncAnimSprite = this.add.sprite(1157, 592, 'sync_anim', 0).setOrigin(0.5);
-            syncAnimSprite.setDepth(40);
-            // default show first frame only
-            syncAnimSprite.anims.stop();
-            syncAnimSprite.setFrame(0);
 
             placeOverlayAndStatusAtCanvasBottomLeft();
             window.addEventListener('resize', placeOverlayAndStatusAtCanvasBottomLeft);
@@ -4498,41 +4369,6 @@ function toggleBrokerPanel() {
                         if (game.anims.exists(a)) g.sprite.play(a, true);
                     }
                 });
-            }
-
-            // serverroom is now a static image; state drives errorBug/syncAnim only
-            const effectiveStateForServer = pendingDesiredState || currentState;
-
-            // failed 상태: bug 애니메이션 표시, 두 지점 사이를 왕복 이동
-            if (window.errorBug) {
-                if (effectiveStateForServer === 'failed') {
-                    window.errorBug.setVisible(true);
-                    if (!window.errorBug.anims.isPlaying || window.errorBug.anims.currentAnim?.key !== 'error_bug') {
-                        window.errorBug.anims.play('error_bug', true);
-                    }
-                    // 제자리 고정(요구에 따라 error 이동 경로 제거)
-                    window.errorBug.x = 1007;
-                    window.errorBug.y = 221;
-                } else {
-                    window.errorBug.setVisible(false);
-                    window.errorBug.anims.stop();
-                }
-            }
-
-            // Sync animation fallback logic (waiting state)
-            if (syncAnimSprite) {
-                if (effectiveStateForServer === 'waiting') {
-                    if (syncAnimPlayable && syncAnimSprite.anims && syncAnimSprite.anims.play && syncAnimSprite.scene?.anims?.exists('sync_anim')) {
-                    if (!syncAnimSprite.anims.isPlaying || syncAnimSprite.anims.currentAnim?.key !== 'sync_anim') {
-                        syncAnimSprite.anims.play('sync_anim', true);
-                    }
-                } else {
-                        syncAnimSprite.setFrame(0);
-                    }
-                } else {
-                    if (syncAnimSprite.anims && syncAnimSprite.anims.isPlaying) syncAnimSprite.anims.stop();
-                    syncAnimSprite.setFrame(0);
-                }
             }
 
             // 말풍선 표시
@@ -4655,11 +4491,7 @@ function toggleBrokerPanel() {
         // Star 본체(가운데 로봇) 표시 여부. false = 숨김(에이전트 고양이 8마리만 무대 주인공).
         const SHOW_STAR = false;
 
-        function applyVisualState(nextState) {
-            // Star 본체는 은퇴(비표시). 소파·동기 애니만 리셋; 서버랙은 정적 이미지라 리셋 불필요. 가시 앰비언트는 update()가 상태별로 제어.
-            if (syncAnimSprite) { try { syncAnimSprite.anims.stop(); } catch (e) {} syncAnimSprite.setVisible(false); }
-            if (sofa) { try { sofa.anims.stop(); } catch (e) {} sofa.setTexture('sofa_idle'); }
-        }
+        function applyVisualState(nextState) { /* 가구/이펙트 배경에 구워짐 — 시각 반영 불필요 */ }
 
         function fetchStatus() {
             return fetch('/status', { cache: 'no-store' })
@@ -4700,19 +4532,11 @@ function toggleBrokerPanel() {
             if (currentState === 'idle') return; // idle일 때 말풍선 표시 안 함(필요 시 활성화 가능)
 
             // Bubble anchor should follow current visible character:
-            // - syncing: syncAnimSprite
-            // - error state: errorBug
             // - working at desk: starWorking
             // - other: star
             let anchorX = star.x;
             let anchorY = star.y;
-            if (currentState === 'syncing' && syncAnimSprite && syncAnimSprite.visible) {
-                anchorX = syncAnimSprite.x;
-                anchorY = syncAnimSprite.y;
-            } else if (currentState === 'error' && window.errorBug && window.errorBug.visible) {
-                anchorX = window.errorBug.x;
-                anchorY = window.errorBug.y;
-            } else if (!star.visible && window.starWorking && window.starWorking.visible) {
+            if (!star.visible && window.starWorking && window.starWorking.visible) {
                 anchorX = window.starWorking.x;
                 anchorY = window.starWorking.y;
             }
