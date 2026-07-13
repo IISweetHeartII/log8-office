@@ -3775,11 +3775,12 @@ function toggleBrokerPanel() {
             // 工作区域范围（190,526）（380,683）
             // error 区域范围（932,275）（1109,327）
             const rects = {
-                // y2(발 위치)는 하단 배너(plaque y670~710)·뷰포트 바닥을 피해 ≤652로. 정수기(~1118)·책장 피함.
-                work:      { x1: 380, y1: 560, x2: 620, y2: 650 },   // 중앙 작업 바닥(running/waving/jumping)
-                desk:      { x1: 110, y1: 560, x2: 340, y2: 650 },   // 좌측 책상 앞(review — 검토/조사)
-                wait:      { x1: 660, y1: 560, x2: 900, y2: 650 },   // 입구/문 근처 대기(waiting)
-                breakroom: { x1: 215, y1: 600, x2: 1060, y2: 650 },  // 휴게(idle): 넓은 한 줄 → 안 겹침·배너 위
+                // 2단 구성: 활동존(work/desk/wait)은 뒤쪽 높은 y(작업대 근처), 휴게(idle)는 앞쪽 낮은 y(라운지).
+                // → x가 겹쳐도 y가 달라 앞뒤로 서고 y-depth 정렬로 자연스럽게 가려짐. 배너(y670~710)·바닥 회피.
+                desk:      { x1: 110, y1: 556, x2: 350, y2: 574 },   // 좌측 책상 앞(review — 검토/조사) · 뒤열
+                work:      { x1: 380, y1: 556, x2: 640, y2: 574 },   // 중앙 작업(running/waving/jumping) · 뒤열
+                wait:      { x1: 670, y1: 556, x2: 910, y2: 574 },   // 우측 대기(waiting) · 뒤열
+                breakroom: { x1: 230, y1: 634, x2: 1050, y2: 650 },  // 휴게(idle): 앞열 넓은 한 줄 · 라운지
                 error:     { x1: 930, y1: 270, x2: 1110, y2: 340 }   // 에러(버그 구역)
             };
             return rects[area] || rects.breakroom;
