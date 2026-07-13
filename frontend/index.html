@@ -3528,11 +3528,11 @@ function toggleBrokerPanel() {
 
         // ── Dollhouse 3방 구조: 좌 작업실 / 중 검토실 / 우 라운지 (가로 배치, 정면뷰) ──
         const ROOMS = {
-            lounge: { rect: { x1: 35,  y1: 568, x2: 575,  y2: 658 } },  // 좌(블루,창문): 가장 넓음 — idle 최다 수용
-            review: { rect: { x1: 618, y1: 568, x2: 912,  y2: 658 } },  // 중(크림): 칸막이 사이
-            work:   { rect: { x1: 950, y1: 568, x2: 1262, y2: 658 } }   // 우(피치): 작업(running/failed)
+            lounge: { rect: { x1: 28,  y1: 560, x2: 608, y2: 652 } },  // 좌(블루,창문): 가장 넓음 — idle 최다 수용
+            review: { rect: { x1: 648, y1: 560, x2: 930, y2: 652 } },  // 중(크림): 칸막이 사이
+            work:   { rect: { x1: 972, y1: 560, x2: 1268, y2: 652 } }  // 우(피치): 작업(running/failed)
         };
-        const LANE_Y = 654;  // 방 사이 이동 통로(문지방 높이) — 배경 바닥 앞줄
+        const LANE_Y = 650;  // 방 사이 이동 통로(문지방 높이) — 배경 바닥 앞줄
         // 상태 7개 → 방 3개. jumping은 현재 방 유지(제자리 표현).
         const STATE_ROOM = { running:'work', failed:'work', review:'review', waving:'review', idle:'lounge', waiting:'lounge' };
         function roomForState(state, prevRoom) {
