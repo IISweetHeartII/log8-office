@@ -3589,8 +3589,10 @@ function toggleBrokerPanel() {
             const sx = g.sprite.x, sy = g.sprite.y;
             if (viaLane) {
                 _walkAnimStart(g, p.x);
-                const seg3 = () => game.tweens.add({ targets: g.sprite, x: p.x, y: p.y, duration: _dur(p.x, LANE_Y, p.x, p.y), ease: 'Sine.easeInOut', onComplete: () => _settle(g, state) });
-                const seg2 = () => game.tweens.add({ targets: g.sprite, x: p.x, y: LANE_Y, duration: _dur(sx, LANE_Y, p.x, LANE_Y), ease: 'Linear', onComplete: seg3 });
+                // 각 세그먼트 시작 시 자신을 guestTweens[id].move로 등록 → 인터럽트 시 현재 세그먼트가 stop되고
+                // walking(isPlaying) 체크도 정확해짐(고아 tween/hop 충돌 방지).
+                const seg3 = () => { guestTweens[id] = { move: game.tweens.add({ targets: g.sprite, x: p.x, y: p.y, duration: _dur(p.x, LANE_Y, p.x, p.y), ease: 'Sine.easeInOut', onComplete: () => _settle(g, state) }) }; };
+                const seg2 = () => { guestTweens[id] = { move: game.tweens.add({ targets: g.sprite, x: p.x, y: LANE_Y, duration: _dur(sx, LANE_Y, p.x, LANE_Y), ease: 'Linear', onComplete: seg3 }) }; };
                 const t1 = game.tweens.add({ targets: g.sprite, x: sx, y: LANE_Y, duration: _dur(sx, sy, sx, LANE_Y), ease: 'Sine.easeInOut', onComplete: seg2 });
                 guestTweens[id] = { move: t1 };
             } else {
