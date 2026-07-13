@@ -3928,7 +3928,7 @@ function toggleBrokerPanel() {
                         fontFamily: 'ArkPixel, monospace', fontSize: '20px'
                     }).setOrigin(0.5).setDepth(2602);
 
-                    guestSprites[id] = { sprite, nameText, emote, shadow, catKey: (catKey && game.textures.exists(catKey)) ? catKey : null, petBase: usePetdex ? petBase : null };
+                    guestSprites[id] = { sprite, nameText, emote, shadow, catKey: (catKey && game.textures.exists(catKey)) ? catKey : null, petBase: usePetdex ? petBase : null, baseScale: (sprite.scaleY || 1) };
                 } else {
                     const g = guestSprites[id];
                     const yOffset = (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星')) ? 10 : 0;
@@ -3975,7 +3975,16 @@ function toggleBrokerPanel() {
                             }
                             const dist = Math.hypot(p.x - g.sprite.x, ty - g.sprite.y);
                             const duration = Math.min(2600, Math.max(450, dist * 4));
-                            const move = game.tweens.add({ targets: g.sprite, x: p.x, y: ty, duration, ease: 'Sine.easeInOut' });
+                            // petdex: 이동 방향 걷기 애니(running-left/right), 도착하면 상태 애니로 복귀
+                            if (g.petBase && g.sprite.anims) {
+                                const dir = (p.x >= g.sprite.x) ? 'running_right' : 'running_left';
+                                const wa = petdexAnimFor(g.petBase, dir);
+                                if (game.anims.exists(wa)) { g.busyAnim = true; g.sprite.play(wa, true); }
+                            }
+                            const move = game.tweens.add({ targets: g.sprite, x: p.x, y: ty, duration, ease: 'Sine.easeInOut', onComplete: () => {
+                                g.busyAnim = false;
+                                if (g.petBase && g.sprite.anims) { const a = petdexAnimFor(g.petBase, agent.state); if (game.anims.exists(a)) g.sprite.play(a, true); }
+                            } });
                             const nameMove = game.tweens.add({ targets: g.nameText, x: p.x, y: ty - 104, duration, ease: 'Sine.easeInOut' });
                             guestTweens[id] = { move, name: nameMove };
                         }
@@ -3983,12 +3992,22 @@ function toggleBrokerPanel() {
 
                     g.nameText.setText(agent.name || t('visitorDefault'));
                     if (g.emote) g.emote.setText(emoteFor(agent.state));
-                    if (g.petBase && g.sprite.anims) {
-                        const a = petdexAnimFor(g.petBase, agent.state);
-                        if (g.sprite.anims.getName() !== a && game.anims.exists(a)) {
-                            g.sprite.play(a, true);
+                    if (g.petBase && g.sprite.anims && !g.busyAnim) {
+                        const WORK = ['running', 'review', 'waving', 'waiting', 'failed'];
+                        if (g.prevState && WORK.includes(g.prevState) && agent.state === 'idle' && game.anims.exists(petdexAnimFor(g.petBase, 'jumping'))) {
+                            // 작업 완료 축하 점프(jumping) → 1.4s 후 idle 복귀
+                            g.busyAnim = true;
+                            g.sprite.play(petdexAnimFor(g.petBase, 'jumping'), true);
+                            game.time.delayedCall(1400, () => {
+                                g.busyAnim = false;
+                                if (g.sprite && g.sprite.anims) { const ia = petdexAnimFor(g.petBase, 'idle'); if (game.anims.exists(ia)) g.sprite.play(ia, true); }
+                            });
+                        } else {
+                            const a = petdexAnimFor(g.petBase, agent.state);
+                            if (g.sprite.anims.getName() !== a && game.anims.exists(a)) g.sprite.play(a, true);
                         }
                     }
+                    if (g.petBase) g.prevState = agent.state;
                 }
             });
 
@@ -5061,7 +5080,8 @@ function toggleBrokerPanel() {
                             g.hopping = true;
                             const baseY = g.sprite.y;
                             game.tweens.add({ targets: g.sprite, y: baseY - 12, duration: 180, ease: 'Quad.easeOut', yoyo: true, onComplete: () => { g.sprite.y = baseY; g.hopping = false; } });
-                            game.tweens.add({ targets: g.sprite, scaleY: 1.62, duration: 180, ease: 'Quad.easeOut', yoyo: true, onComplete: () => { g.sprite.scaleY = 1.5; } });
+                            const _bs = g.baseScale || g.sprite.scaleY || 1;   // 스프라이트별 기본 스케일(petdex=0.55, cat=1.5 등) 상대 squash
+                            game.tweens.add({ targets: g.sprite, scaleY: _bs * 1.08, duration: 180, ease: 'Quad.easeOut', yoyo: true, onComplete: () => { g.sprite.scaleY = _bs; } });
                         }
                     }
                 });
