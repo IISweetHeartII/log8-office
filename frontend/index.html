@@ -1941,6 +1941,7 @@
         let guestTweens = {};  // agentId -> {move, name}
         let hiddenDemoNames = new Set();
         const DEMO_MODE = new URLSearchParams(window.location.search).get('demo') === '1';
+        const STATE_DEMO = new URLSearchParams(window.location.search).get('statedemo') === '1';  // 9상태 순환 데모
         const FETCH_INTERVAL = 1000;
         const GUEST_AGENTS_FETCH_INTERVAL = 3500;
         const BLINK_INTERVAL = 2500;
@@ -4987,6 +4988,21 @@ function toggleBrokerPanel() {
         function update(time) {
             if (time - lastFetch > FETCH_INTERVAL) { fetchStatus(); lastFetch = time; }
             if (time - lastGuestAgentsFetch > GUEST_AGENTS_FETCH_INTERVAL) { fetchGuestAgents(); lastGuestAgentsFetch = time; }
+
+            // ?statedemo=1 : 모든 petdex 고양이를 9상태로 순환시켜 애니를 한눈에 확인(실제 상태 무시)
+            if (STATE_DEMO && time - (window._sdAt || 0) > 1600) {
+                window._sdAt = time;
+                const S9 = ['idle', 'running', 'review', 'waving', 'jumping', 'failed', 'waiting', 'running_right', 'running_left'];
+                window._sdIdx = ((window._sdIdx || 0) + 1) % S9.length;
+                const st = S9[window._sdIdx];
+                Object.values(guestSprites).forEach(g => {
+                    if (g && g.petBase && g.sprite && g.sprite.anims) {
+                        g.busyAnim = true;  // 실제 상태 애니가 덮어쓰지 않게
+                        const a = petdexAnimFor(g.petBase, st);
+                        if (game.anims.exists(a)) g.sprite.play(a, true);
+                    }
+                });
+            }
 
             // 兜底：非 idle 时确保机房动画在播，idle 时静止
             const effectiveStateForServer = pendingDesiredState || currentState;
