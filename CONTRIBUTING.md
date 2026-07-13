@@ -43,9 +43,7 @@ log8-office/
 │   ├── app.py        # 진입점 (기본 포트 19000)
 │   └── *_utils.py    # 기능별 유틸리티 모듈
 ├── frontend/         # Phaser 픽셀게임 프론트엔드
-│   ├── index.html    # 메인 UI (단일 파일 원칙)
-│   ├── game.js       # Phaser 게임 로직
-│   └── layout.js     # 레이아웃 상수
+│   └── index.html    # 메인 UI (인라인 CSS/JS 단일 파일 — 게임 로직 전부 포함)
 ├── assets/           # 서빙되는 에셋 (WebP 스프라이트 등)
 ├── assets-gen/       # 픽셀킷 툴킷 — 에셋 생성 스크립트
 ├── scripts/          # 유틸리티 스크립트 (smoke_test.py 등)
@@ -65,8 +63,7 @@ log8-office/
 
 #### 프론트엔드 (`frontend/`)
 
-- `index.html`은 **단일 파일 원칙** — 인라인 CSS/JS로 유지 (업스트림 스타일).
-- `game.js` / `layout.js`는 `index.html`에서 분리된 파일로 유지.
+- `index.html`은 **단일 파일 원칙** — 인라인 CSS/JS로 유지 (업스트림 스타일). Phaser 씬·게임 로직 전부 여기 인라인.
 - 새로운 별도 JS 파일 추가보다 기존 구조를 확장하는 방향 권장.
 - Phaser 라이브러리는 `frontend/vendor/`에 고정 (CDN 의존 없음).
 
@@ -172,9 +169,7 @@ log8-office/
 │   ├── app.py        # Entry point (default port 19000)
 │   └── *_utils.py    # Feature-specific utility modules
 ├── frontend/         # Phaser pixel-game frontend
-│   ├── index.html    # Main UI (single-file principle)
-│   ├── game.js       # Phaser game logic
-│   └── layout.js     # Layout constants
+│   └── index.html    # Main UI (single inline-CSS/JS file — all game logic inside)
 ├── assets/           # Served assets (WebP sprites, etc.)
 ├── assets-gen/       # Pixelkit toolkit — asset generation scripts
 ├── scripts/          # Utility scripts (smoke_test.py, etc.)
@@ -194,8 +189,7 @@ log8-office/
 
 #### Frontend (`frontend/`)
 
-- `index.html` follows the **single-file principle** — inline CSS and JS (matches upstream style).
-- `game.js` / `layout.js` remain as separate files alongside `index.html`.
+- `index.html` follows the **single-file principle** — inline CSS and JS (matches upstream style). All Phaser scene/game logic lives inline here.
 - Prefer extending the existing structure over adding new JS files.
 - Phaser is pinned in `frontend/vendor/` — no CDN dependency.
 
