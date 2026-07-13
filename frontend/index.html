@@ -50,7 +50,7 @@
             gap: 10px;
             overflow-x: hidden;
         }
-        /* 底部面板容器 */
+        /* 하단 패널 컨테이너 */
         #main-stage {
             position: relative;
             width: 1280px;
@@ -58,7 +58,7 @@
             will-change: transform;
         }
         body.drawer-open #main-stage {
-            /* 与右侧抽屉并列：按视口动态左移，确保与抽屉至少保留 20px 间隔 */
+            /* 오른쪽 서랍과 나란히: 뷰포트에 따라 동적으로 왼쪽 이동, 서랍과 최소 20px 간격 유지 */
             transform: translateX(calc(-1 * max(0px, (min(320px, 92vw) + 20px) - ((100vw - 1280px) / 2))));
         }
         #bottom-panels {
@@ -84,14 +84,14 @@
             width: 100% !important;
             height: 100% !important;
             image-rendering: pixelated;
-            /* 再兜底一次：即使外层高度变化，也不要拉伸变形 */
+            /* 한 번 더 보정: 외곽 높이가 변해도 늘어나거나 찌그러지지 않게 */
             object-fit: contain;
-            /* 边框改为直接贴合画布内部，避免“框比地图大” */
+            /* 테두리를 캔버스 내부에 딱 맞춰서 "테두리가 맵보다 큰" 문제 방지 */
             box-shadow: inset 0 0 0 4px #64477d;
             position: relative;
             z-index: 10;
         }
-        /* 首屏骨架：避免 Phaser 未就绪时纯黑屏 */
+        /* 첫 화면 스켈레톤: Phaser 준비 전 완전 검은 화면 방지 */
         #game-skeleton {
             position: absolute;
             inset: 0;
@@ -173,7 +173,7 @@
             text-overflow: ellipsis;
             line-height: 1.2;
         }
-        /* 状态控制栏 */
+        /* 상태 컨트롤 바 */
         #control-bar {
             position: relative;
             background: #141722;
@@ -669,7 +669,7 @@
             background: #4a4f5f;
             border-color: #e94560;
         }
-        /* Star 状态四按钮（不含装修）使用像素精灵皮肤 */
+        /* Star 상태 4버튼(방 꾸미기 제외)에 픽셀 스프라이트 스킨 사용 */
         #control-bar #btn-state-idle,
         #control-bar #btn-state-review,
         #control-bar #btn-state-waiting,
@@ -707,7 +707,7 @@
             padding-bottom: 0;
             filter: brightness(0.97);
         }
-        /* 装修房间按钮使用像素精灵皮肤 */
+        /* 방 꾸미기 버튼에 픽셀 스프라이트 스킨 사용 */
         #control-bar #btn-open-drawer {
             background-image: url('/static/btn-open-drawer-sprite.png?v={{VERSION_TIMESTAMP}}') !important;
             background-color: transparent !important;
@@ -737,7 +737,7 @@
             padding-bottom: 5px !important;
             filter: brightness(0.97);
         }
-        /* Guest Agent 名单面板（右下角） */
+        /* Guest Agent 명단 패널(오른쪽 아래) */
         #guest-agent-panel {
             position: relative;
             width: 390px;
@@ -859,7 +859,7 @@
         .guest-agent-buttons button.leave-btn:hover {
             background: #6a2828;
         }
-        /* Memo 区域 - 4:3 小正方形 */
+        /* Memo 영역 - 4:3 작은 정사각형 */
         #memo-panel {
             position: relative;
             width: 460px;
@@ -981,7 +981,7 @@
             flex-shrink: 0;
         }
 
-        /* 手机端专属适配（不影响桌面） */
+        /* 모바일 전용 대응(데스크탑 영향 없음) */
         @media (max-width: 900px), (pointer: coarse) {
             html, body {
                 height: 100%;
@@ -998,7 +998,7 @@
 
             #game-container {
                 width: 100vw;
-                height: 66.666vh; /* 办公室占 2/3 屏幕高度 */
+                height: 66.666vh; /* 오피스가 화면 높이의 2/3 차지 */
                 max-width: 100vw;
                 max-height: 66.666vh;
                 border-width: 0;
@@ -1018,7 +1018,7 @@
             #bottom-panels {
                 width: 100vw;
                 max-width: 100vw;
-                min-height: 33.334vh; /* 余下约 1/3 可见区 */
+                min-height: 33.334vh; /* 나머지 약 1/3 가시 영역 */
                 padding: 10px 10px 16px;
                 display: flex;
                 flex-direction: column;
@@ -1095,11 +1095,8 @@
                 padding: 8px 12px;
             }
 
-            #coords-toggle,
-            #pan-toggle,
             #lang-btn-en,
-            #lang-btn-jp,
-            #lang-btn-cn {
+            #lang-btn-jp {
                 font-size: 12px !important;
                 padding: 6px 8px !important;
             }
@@ -1157,7 +1154,7 @@
     </style>
 </head>
 <body>
-    <!-- 加载遮罩 -->
+    <!-- 로딩 오버레이 -->
     <div id="loading-overlay">
         <div id="loading-text">Loading Star’s pixel office...</div>
         <div id="loading-progress-container">
@@ -1171,9 +1168,9 @@
             <div id="status-text">불러오는 중...</div>
         </div>
     
-    <!-- 底部面板容器 -->
+    <!-- 하단 패널 컨테이너 -->
     <div id="bottom-panels">
-        <!-- Memo 面板 -->
+        <!-- Memo 패널 -->
         <div id="memo-panel">
             <div id="memo-title">어 제 의 메 모</div>
             <div id="memo-date"></div>
@@ -1184,7 +1181,7 @@
             <div class="memo-decoration">─ ─ ─ ─ ─</div>
         </div>
         
-        <!-- 状态控制栏 -->
+        <!-- 상태 컨트롤 바 -->
         <div id="control-bar">
             <div id="control-bar-title">Star 상태</div>
             <div id="control-buttons">
@@ -1196,7 +1193,7 @@
             </div>
         </div>
 
-        <!-- Guest Agent 名单面板（右下角） -->
+        <!-- Guest Agent 명단 패널(오른쪽 아래) -->
         <div id="guest-agent-panel">
             <div id="guest-agent-panel-title">방 문 자 목 록</div>
             <div id="guest-agent-list">
@@ -1217,15 +1214,15 @@
     <div id="asset-drawer-backdrop" onclick="toggleAssetDrawer(false)"></div>
     <aside id="asset-drawer">
         <div id="asset-drawer-header">
-            <span>装修房间 · 资产侧边栏</span>
-            <button id="btn-close-drawer" onclick="toggleAssetDrawer(false)">关闭</button>
+            <span>방 꾸미기 · 에셋 사이드바</span>
+            <button id="btn-close-drawer" onclick="toggleAssetDrawer(false)">닫기</button>
         </div>
         <div id="asset-drawer-body">
             <div id="asset-auth-gate" class="asset-preview-box">
-                <div class="asset-preview-title">请输入装修验证码</div>
+                <div class="asset-preview-title">방 꾸미기 인증코드를 입력하세요</div>
                 <div class="asset-toolbar">
-                    <input id="asset-pass-input" type="password" placeholder="输入验证码" />
-                    <button onclick="unlockAssetDrawer()">验证</button>
+                    <input id="asset-pass-input" type="password" placeholder="인증코드 입력" />
+                    <button onclick="unlockAssetDrawer()">확인</button>
                 </div>
                 <div id="asset-auth-msg" class="asset-sub"></div>
             </div>
@@ -1233,64 +1230,64 @@
             <div id="asset-main-content" style="display:none;">
                 <div id="asset-move-panel">
                     <div class="asset-toolbar" id="asset-move-row">
-                        <button id="btn-move-house" class="btn-move" onclick="generateRpgBackground()">📦 搬新家</button>
-                        <button id="btn-back-home" class="btn-home" onclick="restoreHomeBackground()">🐚 回老家</button>
+                        <button id="btn-move-house" class="btn-move" onclick="generateRpgBackground()">📦 새 집으로</button>
+                        <button id="btn-back-home" class="btn-home" onclick="restoreHomeBackground()">🐚 본가로</button>
                     </div>
                     <div class="asset-toolbar" id="asset-broker-row">
-                        <button class="btn-broker" onclick="toggleBrokerPanel()">🤝 找中介</button>
-                        <button id="btn-diy" class="btn-diy" onclick="toggleManualPanel()">🪚 自己装</button>
+                        <button class="btn-broker" onclick="toggleBrokerPanel()">🤝 중개인</button>
+                        <button id="btn-diy" class="btn-diy" onclick="toggleManualPanel()">🪚 직접 꾸미기</button>
                     </div>
                     <div id="asset-move-result" class="asset-sub" style="margin-top:4px; margin-bottom:6px;"></div>
                     <div id="asset-broker-panel">
-                        <div class="asset-sub" style="margin-bottom:6px;">写你的风格主题（严格保持原始房间结构，只改变视觉风格）</div>
-                        <textarea id="asset-broker-prompt" placeholder="例如：像素风赛博东京夜景，霓虹灯、雨夜地面反光、蓝紫主色"></textarea>
+                        <div class="asset-sub" style="margin-bottom:6px;">원하는 스타일 테마 입력 (방 구조는 유지, 시각 스타일만 변경)</div>
+                        <textarea id="asset-broker-prompt" placeholder="예: 픽셀풍 사이버 도쿄 야경, 네온사인, 비 오는 밤 바닥 반사, 청보라 메인컬러"></textarea>
                         <div class="asset-toolbar" style="margin-top:6px; gap:8px; align-items:center; justify-content:flex-start;">
-                            <span id="speed-mode-label" class="asset-sub" style="min-width:62px;">生成模式</span>
+                            <span id="speed-mode-label" class="asset-sub" style="min-width:62px;">생성 모드</span>
                             <button id="speed-fast-btn" type="button" onclick="setSpeedMode('fast')" style="background:#22c55e;color:#052e16;border-color:#16a34a;">🍌2</button>
                             <button id="speed-quality-btn" type="button" onclick="setSpeedMode('quality')" style="background:#334155;color:#e5e7eb;border-color:#475569;">🍌Pro</button>
                         </div>
                         <details id="asset-gemini-panel" style="margin-top:6px; border:0; border-top:1px solid rgba(148,163,184,.18); border-radius:0; padding:8px 0 0; background:transparent;">
-                            <summary id="gemini-panel-summary" style="cursor:pointer; color:#cbd5e1;">🔐 API 设置（可折叠）</summary>
+                            <summary id="gemini-panel-summary" style="cursor:pointer; color:#cbd5e1;">🔐 API 설정 (접기 가능)</summary>
                             <div id="asset-gemini-config" style="display:block; margin-top:6px;">
-                                <div id="gemini-config-hint" class="asset-sub" style="margin-bottom:4px;">可选：填写你的生图 API Key（留空不影响基础功能）</div>
-                                <div class="asset-sub" style="margin-bottom:6px;"><a id="gemini-api-doc-link" href="https://ai.google.dev/gemini-api/docs/api-key?hl=zh-cn" target="_blank" rel="noopener noreferrer">📘 如何申请 Google API Key</a></div>
+                                <div id="gemini-config-hint" class="asset-sub" style="margin-bottom:4px;">선택: 이미지 생성 API Key 입력 (비워두어도 기본 기능에는 영향 없음)</div>
+                                <div class="asset-sub" style="margin-bottom:6px;"><a id="gemini-api-doc-link" href="https://ai.google.dev/gemini-api/docs/api-key?hl=zh-cn" target="_blank" rel="noopener noreferrer">📘 Google API Key 발급 방법</a></div>
                                 <div id="gemini-mask-status" class="asset-sub" style="margin-bottom:6px; color:#a7f3d0;"></div>
                                 <div class="asset-toolbar" style="gap:6px; flex-wrap:wrap;">
-                                    <input id="gemini-api-key-input" type="password" placeholder="粘贴 GEMINI_API_KEY（不会回显）" style="min-width:220px; flex:1;" autocomplete="new-password" />
-                                    <button id="btn-save-gemini-key" onclick="saveGeminiConfigFromUI()">保存 Key</button>
+                                    <input id="gemini-api-key-input" type="password" placeholder="GEMINI_API_KEY 붙여넣기 (표시 안 됨)" style="min-width:220px; flex:1;" autocomplete="new-password" />
+                                    <button id="btn-save-gemini-key" onclick="saveGeminiConfigFromUI()">Key 저장</button>
                                 </div>
                                 <div id="gemini-config-msg" class="asset-sub" style="margin-top:4px;"></div>
                             </div>
                         </details>
                         <div id="asset-broker-actions">
-                            <button onclick="generateCustomRpgBackground()">按中介方案搬家</button>
+                            <button onclick="generateCustomRpgBackground()">중개 플랜으로 이사</button>
                         </div>
                     </div>
                 </div>
 
                 <div id="asset-home-actions-panel" class="asset-preview-box" style="margin-bottom:10px;">
                     <div class="asset-toolbar" style="margin-bottom:6px; gap:8px;">
-                        <button id="btn-back-last-bg" class="btn-home" onclick="restoreLastGeneratedBackground()">↩️ 回上一个家</button>
-                        <button id="btn-favorite-home" class="btn-home" onclick="saveCurrentHomeFavorite()">⭐ 收藏这个家</button>
+                        <button id="btn-back-last-bg" class="btn-home" onclick="restoreLastGeneratedBackground()">↩️ 이전 집으로</button>
+                        <button id="btn-favorite-home" class="btn-home" onclick="saveCurrentHomeFavorite()">⭐ 이 집 저장</button>
                     </div>
                     <details id="asset-home-favorites" style="margin:0;">
-                        <summary id="asset-home-favorites-title" class="asset-preview-title">🏠 收藏的家</summary>
+                        <summary id="asset-home-favorites-title" class="asset-preview-title">🏠 저장한 집</summary>
                         <div id="asset-home-favorites-list" class="home-fav-list"></div>
                     </details>
                 </div>
 
                 <div id="asset-manual-panel" style="display:flex; flex-direction:column; flex:1; min-height:0;">
                     <div class="asset-toolbar">
-                        <input id="asset-search" placeholder="搜索资产名（如 desk / sofa / star）" oninput="renderAssetDrawerList()" />
+                        <input id="asset-search" placeholder="에셋 이름 검색 (예: desk / sofa / star)" oninput="renderAssetDrawerList()" />
                     </div>
                     <div id="asset-list"></div>
                     <div id="asset-upload-panel">
                         <input id="asset-upload-file" type="file" accept="image/*" style="display:none;" />
                         <div class="asset-upload-grid" style="margin-top:0; margin-bottom:6px; gap:8px;">
-                            <button id="asset-choose-btn" onclick="openInlineAssetUploader()">上传素材</button>
-                            <button id="asset-commit-refresh-btn" onclick="commitAndRefresh()" disabled style="opacity:.55;">确认刷新</button>
-                            <button id="asset-reset-default-btn" onclick="resetSelectedAssetToDefault()" disabled style="opacity:.55;">重置默认</button>
-                            <button id="asset-restore-prev-btn" onclick="restoreSelectedAssetPrev()" disabled style="opacity:.55;">恢复上版</button>
+                            <button id="asset-choose-btn" onclick="openInlineAssetUploader()">소재 업로드</button>
+                            <button id="asset-commit-refresh-btn" onclick="commitAndRefresh()" disabled style="opacity:.55;">확인 새로고침</button>
+                            <button id="asset-reset-default-btn" onclick="resetSelectedAssetToDefault()" disabled style="opacity:.55;">기본값으로 초기화</button>
+                            <button id="asset-restore-prev-btn" onclick="restoreSelectedAssetPrev()" disabled style="opacity:.55;">이전 버전 복원</button>
                         </div>
                         <div id="asset-upload-result" class="asset-sub"></div>
                     </div>
@@ -1298,26 +1295,17 @@
             </div>
         </div>
     </aside>
-    <div id="coords-overlay" style="display:none; position:fixed; pointer-events:none; background:rgba(0,0,0,0.85); color:#fff; font-family:ArkPixel,monospace; font-size:14px; padding:8px 12px; border-radius:4px; z-index:99999;">
-        <div id="coords-display">X: 0 | Y: 0</div>
-    </div>
-    <button id="coords-toggle" style="position:fixed; top:calc(env(safe-area-inset-top, 0px) + 12px); right:12px; z-index:999999; padding:8px 10px; font-family:ArkPixel,monospace; font-size:13px; cursor:pointer; border:2px solid #333; border-radius:5px; background:#333; color:#fff;">
-        显示坐标
-    </button>
-    <button id="pan-toggle" style="position:fixed; top:calc(env(safe-area-inset-top, 0px) + 12px); left:12px; z-index:999999; padding:8px 10px; font-family:ArkPixel,monospace; font-size:13px; cursor:pointer; border:2px solid #333; border-radius:5px; background:#333; color:#fff;">
-        移动视野
-    </button>
-    <div id="lang-toggle-group" style="position:fixed; top:calc(env(safe-area-inset-top, 0px) + 52px); left:12px; z-index:1000002; display:flex; gap:2px; align-items:center;">
+    <div id="lang-toggle-group" style="position:fixed; top:calc(env(safe-area-inset-top, 0px) + 12px); left:12px; z-index:1000002; display:flex; gap:2px; align-items:center;">
         <button id="lang-btn-ko" onclick="setUILanguage('ko')" style="padding:8px 10px; font-family:ArkPixel,monospace; font-size:13px; cursor:pointer; border:2px solid #333; border-radius:5px; background:#333; color:#fff;">KO</button>
         <button id="lang-btn-en" onclick="setUILanguage('en')" style="padding:8px 10px; font-family:ArkPixel,monospace; font-size:13px; cursor:pointer; border:2px solid #333; border-radius:5px; background:#333; color:#fff;">EN</button>
         <button id="lang-btn-jp" onclick="setUILanguage('ja')" style="padding:8px 10px; font-family:ArkPixel,monospace; font-size:13px; cursor:pointer; border:2px solid #333; border-radius:5px; background:#333; color:#fff;">JP</button>
-        <button id="lang-btn-cn" onclick="setUILanguage('zh')" style="padding:8px 10px; font-family:ArkPixel,monospace; font-size:13px; cursor:pointer; border:2px solid #333; border-radius:5px; background:#333; color:#fff;">CN</button>
     </div>
 
     <script src="/static/vendor/phaser-3.80.1.min.js?v={{VERSION_TIMESTAMP}}"></script>
     <script>
-        // 简易中英文切换
+        // 언어 전환 (ko/en/ja)
         let uiLang = localStorage.getItem('uiLang') || 'ko';
+        if (!['ko', 'en', 'ja'].includes(uiLang)) { uiLang = 'ko'; localStorage.setItem('uiLang', 'ko'); }  // 구 zh 등 제거된 언어 → ko 마이그레이션
         const I18N = {
             ko: {
                 controlTitle: 'Star 상태',
@@ -1342,9 +1330,7 @@
                 searchPlaceholder: '에셋 이름 검색 (desk / sofa / star)', loaded: '불러옴', allAssets: '전체 에셋',
                 chooseImage: '소재 업로드', confirmUpload: '확인 후 새로고침', resetToDefault: '기본값 초기화', restorePrevAsset: '이전 버전 복원', uploadPending: '업로드 대기', uploadTarget: '대상',
                 assetHintNotInScene: '현재 씬에서 이 오브젝트가 감지되지 않았지만, 파일 교체는 가능합니다 (새로고침 후 적용)',
-                assetHintDefault: '공용 소재: 원본 크기·투명 채널·시각 중심을 유지해 어긋남이나 왜곡을 방지하세요',
-                showCoords: '좌표 표시', hideCoords: '좌표 숨김', moveView: '시야 이동', lockView: '시야 고정',
-                memoTitle: '어 제 의 메 모', guestTitle: '방 문 자 목 록', officeTitle: 'log8 픽셀 오피스',
+                assetHintDefault: '공용 소재: 원본 크기·투명 채널·시각 중심을 유지해 어긋남이나 왜곡을 방지하세요',                memoTitle: '어 제 의 메 모', guestTitle: '방 문 자 목 록', officeTitle: 'log8 픽셀 오피스',
                 loadingOffice: 'log8 픽셀 오피스를 불러오는 중...',
                 statusPrefix: '상태',
                 stateNames: { idle: '대기', running: '작업 실행', review: '검토·조사', waving: '대화', waiting: '입력 대기', failed: '오류 발생', jumping: '완료' },
@@ -1378,72 +1364,7 @@
                 rollbackConfirm: '⚠️ ${path} 을(를) 이전 버전으로 되돌릴까요?', rollbackPrevOk: '✅ 이전 버전으로 되돌렸어요: ',
                 detailBroker: '중개 꾸미기 플랜 처리 중', detailMoving: '새 집으로 이사 중', detailGoingHome: '본가로 가는 중', detailRollingBack: '직전 배경으로 롤백 중', detailReplacingFav: '저장한 맵으로 교체 중',
                 statusUpdateErr: '상태 업데이트 오류, 복구 중...', connFail: '연결 실패, 재시도 중...', apiNoJson: '응답이 JSON이 아닙니다',
-                welcome1: '님 오피스에 오신 걸 환영해요~', welcome2: '님, 함께 시작해요', welcome3: '님이 합류했어요, 환영!',
-                panOn: '시야 드래그가 켜졌어요 (캔버스를 좌우로 드래그 가능)', panOff: '시야 드래그가 꺼졌어요 (좌상단 “시야 이동”을 눌러 켜기)',
-                confirmGoHome: '⚠️ 본가로 가면 현재 커스텀 방 배경을 덮어써요 (bg-history에서 이전 이미지 복원 가능).\n계속할까요?', confirmRollback: '⚠️ 가장 최근에 생성한 방 배경으로 되돌립니다. 계속할까요?', partialRefreshSuffix: ' (부분 새로고침 실패, 페이지를 수동 새로고침하세요)'
-            },
-            zh: {
-                controlTitle: 'Star 状态',
-                btnIdle: '待命', btnWork: '工作', btnSync: '同步', btnError: '报警', btnDecor: '装修房间',
-                drawerTitle: '装修房间 · 资产侧边栏', drawerClose: '关闭',
-                authTitle: '请输入装修验证码', authPlaceholder: '输入验证码', authVerify: '验证', authDefaultPassHint: '默认密码：1234（可随时让我帮你改，建议改成强密码）',
-                drawerVisibilityTip: '可见性：点击条目右侧眼睛按钮切换该资产显示',
-                hideDrawer: '👁 隐藏侧边栏', showDrawer: '👁 显示侧边栏',
-                assetHide: '隐藏', assetShow: '显示',
-                resetToDefault: '重置为默认资产', restorePrevAsset: '用上一版',
-                btnMove: '📦 搬新家', btnHome: '🐚 回老家', btnHomeLast: '↩️ 回上一个家', btnHomeFavorite: '⭐ 收藏这个家', btnBroker: '🤝 找中介', btnDIY: '🪚 自己装', btnBrokerGo: '听中介的',
-                homeFavTitle: '🏠 收藏的家', homeFavEmpty: '还没有收藏，先点“⭐ 收藏这个家”', homeFavApply: '替换到当前地图', homeFavDelete: '删除', homeFavSaved: '✅ 已收藏当前地图', homeFavApplied: '✅ 已替换为收藏地图', homeFavDeleted: '🗑️ 已删除收藏',
-                brokerHint: '你会给助手推荐什么样的房间',
-                brokerPromptPh: '例如：故宫主题、莫奈风格、地牢主题、兵马俑主题……',
-                brokerNeedPrompt: '请先输入中介方案描述',
-                brokerGenerating: '🏘️ 正在按中介方案生成底图，请稍候（约20-90秒）...',
-                brokerDone: '✅ 已按中介方案生成并替换底图，正在刷新房间...',
-                moveSuccess: '✅ 搬家成功！',
-                brokerMissingKey: '❌ 生图失败：缺少 GEMINI API Key，请在下方填写并保存后重试',
-                geminiPanelTitle: '🔐 API 设置（可折叠）', geminiHint: '可选：填写你的生图 API Key（留空不影响基础功能）', geminiApiDoc: '📘 如何申请 Google API Key', geminiInputPh: '粘贴 GEMINI_API_KEY（不会回显）', geminiSaveKey: '保存 Key', geminiMaskNoKey: '当前状态：未配置 Key', geminiMaskHasKey: '当前已配置：',
-                speedModeLabel: '生成模式', speedFast: '🍌2', speedQuality: '🍌Pro',
-                searchPlaceholder: '搜索资产名（如 desk / sofa / star）', loaded: '已加载', allAssets: '全部资产',
-                chooseImage: '上传素材', confirmUpload: '确认刷新', resetToDefault: '重置默认', restorePrevAsset: '恢复上版', uploadPending: '待上传', uploadTarget: '目标',
-                assetHintNotInScene: '当前场景未检测到此对象，仍可替换文件（刷新后生效）',
-                assetHintDefault: '通用素材：建议保持原图尺寸、透明通道与视觉重心一致，避免错位或失真',
-                showCoords: '显示坐标', hideCoords: '隐藏坐标', moveView: '移动视野', lockView: '锁定视野',
-                memoTitle: '昨 日 小 记', guestTitle: '访 客 列 表', officeTitle: 'log8 像素办公室',
-                loadingOffice: '正在加载 log8 像素办公室...',
-                statusPrefix: '状态',
-                stateNames: { idle: '待命', running: '执行任务', review: '检查调研', waving: '对话', waiting: '等待输入', failed: '出错了', jumping: '完成' },
-                stateShort: { idle: '待命', running: '执行', review: '检查', waving: '对话', waiting: '等待', failed: '报警', jumping: '完成' },
-                authStatus: { approved: '已授权', pending: '待授权', rejected: '已拒绝', offline: '离线' },
-                detailIdle: '待命', detailWorking: '工作中', detailSyncing: '同步中', detailError: '报警中',
-                memoEmpty: '暂无昨日日记', memoLoadFail: '加载失败', loadingText: '加载中...',
-                visitorLoading: '正在加载访客...', visitorEmpty: '暂无访客', visitorUnnamed: '未命名访客', visitorDefault: '访客',
-                swapSkill: '交换skill', swapSkillDev: '交换 skill 功能开发中', leaveRoom: '离开房间',
-                hasLeftRoom: ' 已离开房间', hasLeftRoomDemo: ' 已离开房间（demo）',
-                leaveFail: '离开失败：', requestFail: '请求失败：', unknownError: '未知错误',
-                approveOk: '已批准该访客接入', approveFail: '批准失败：', rejectOk: '已拒绝该访客', rejectFail: '拒绝失败：',
-                authNeedCode: '❌ 请输入验证码', authPassOk: '✅ 验证通过', authCodeWrong: '❌ 验证码错误', authFail: '❌ 验证失败：',
-                assetSelectFirst: '请先选择一个资产', assetSelectPathFirst: '请先选中一个资产路径',
-                assetLoadFail: '❌ 资产加载失败，请点“刷新”重试', assetEmpty: '暂无资产（可点“刷新”重试）',
-                assetLoadedCount: '已加载资产：', sceneGrab: ' ｜ 场景抓取：', assetShown: '✅ 已显示：', assetHidden: '🙈 已隐藏：',
-                uploading: '⏳ 正在上传并替换，请稍候...', updateFail: '❌ 更新失败：',
-                uploadedAnim: '✅ 已上传（动图→', uploaded: '✅ 已上传：', frames: '帧', refreshedShort: ' ｜ ✅ 已上传并刷新', confirmedRefresh: '✅ 已确认并刷新',
-                apiKeyNeed: '请输入有效 API Key', saveFail: '保存失败：', geminiSaved: '✅ 已保存，可重新点击搬家/中介',
-                genWaited: '（已等待 ', genWaitedTail: '秒）', genTimeout: '生图超时（超过5分钟），请重试',
-                apiKeyRevoked: '❌ 当前 API Key 已失效/疑似泄露，请更换新 Key 后重试',
-                modelUnavailable: '❌ 当前模型在此通道不可用，请切换可用模型后重试', detailLabel: '详情：',
-                genFail: '❌ 生成失败：', genPartialRefresh: '✅ 已生成并替换底图（局部刷新失败，可手动刷新页面）',
-                packingLuggage: '🧳 正在打包行李，请稍后（约30~120秒）', genReplacedRefreshing: '✅ 已生成并替换底图，正在刷新房间...',
-                brokerGenBase: '🏘️ 正在按中介方案生成底图', moveGenBase: '🧳 正在生成新房间',
-                cancelGoHome: '已取消回老家', goingHome: '🏡 正在回老家（恢复初始底图）...', restoreFail: '❌ 恢复失败：', restoredHome: '✅ 已恢复初始底图', restoredHomePartial: '✅ 已恢复初始底图（局部刷新失败，可手动刷新页面）',
-                cancelRollback: '已取消回退', rollingBack: '↩️ 正在回退到最近一次生成底图...', rollbackFail: '❌ 回退失败：', rolledBack: '✅ 已回退到上一次背景', rolledBackPartial: '✅ 已回退到上一次背景（局部刷新失败，可手动刷新页面）', rolledBackState: '已回退到上一次背景',
-                favListFail: '❌ 收藏列表加载失败：', favFail: '❌ 收藏失败：', favReplaceFail: '❌ 替换失败：', appliedFavState: '已应用收藏地图',
-                favConfirmDelete: '确定删除这个收藏吗？删除后不可恢复。', favDeleteFail: '❌ 删除失败：',
-                resetConfirm: '⚠️ 确定将 ${path} 重置为默认资产吗？', resetFail: '❌ 重置失败：', resetOk: '✅ 已重置为默认资产：',
-                rollbackConfirm: '⚠️ 确定将 ${path} 回退到上一版吗？', rollbackPrevOk: '✅ 已回退到上一版：',
-                detailBroker: '正在处理中介装修方案', detailMoving: '正在搬新家', detailGoingHome: '正在回老家', detailRollingBack: '正在回退到上一次背景', detailReplacingFav: '正在替换收藏地图',
-                statusUpdateErr: '状态更新异常，正在恢复...', connFail: '连接失败，正在重试...', apiNoJson: '接口未返回 JSON',
-                welcome1: ' 来到办公室～', welcome2: '，一起开工吧', welcome3: ' 已加入，欢迎！',
-                panOn: '视野拖动已开启（可左右拖动画布）', panOff: '视野拖动已关闭（点击左上角“移动视野”可开启）',
-                confirmGoHome: '⚠️ 回老家会覆盖当前自定义房间背景（可从 bg-history 恢复历史图）。\n确定继续吗？', confirmRollback: '⚠️ 将回退到最近一次生成的房间背景，确定继续吗？', partialRefreshSuffix: '（局部刷新失败，可手动刷新页面）'
+                welcome1: '님 오피스에 오신 걸 환영해요~', welcome2: '님, 함께 시작해요', welcome3: '님이 합류했어요, 환영!',                confirmGoHome: '⚠️ 본가로 가면 현재 커스텀 방 배경을 덮어써요 (bg-history에서 이전 이미지 복원 가능).\n계속할까요?', confirmRollback: '⚠️ 가장 최근에 생성한 방 배경으로 되돌립니다. 계속할까요?', partialRefreshSuffix: ' (부분 새로고침 실패, 페이지를 수동 새로고침하세요)'
             },
             en: {
                 controlTitle: 'Star Status',
@@ -1468,9 +1389,7 @@
                 searchPlaceholder: 'Search assets (desk / sofa / star)', loaded: 'Loaded', allAssets: 'All Assets',
                 chooseImage: 'Upload Asset', confirmUpload: 'Apply Refresh', resetToDefault: 'Reset Default', restorePrevAsset: 'Restore Prev', uploadPending: 'Pending Upload', uploadTarget: 'Target',
                 assetHintNotInScene: 'This object is not detected in current scene; you can still replace file (effective after refresh)',
-                assetHintDefault: 'Generic asset: keep source size, alpha channel, and visual anchor to avoid drift/distortion',
-                showCoords: 'Show Coords', hideCoords: 'Hide Coords', moveView: 'Pan View', lockView: 'Lock View',
-                memoTitle: 'YESTERDAY NOTES', guestTitle: 'VISITOR LIST', officeTitle: 'log8 Pixel Office',
+                assetHintDefault: 'Generic asset: keep source size, alpha channel, and visual anchor to avoid drift/distortion',                memoTitle: 'YESTERDAY NOTES', guestTitle: 'VISITOR LIST', officeTitle: 'log8 Pixel Office',
                 loadingOffice: 'Loading log8 pixel office...',
                 statusPrefix: 'Status',
                 stateNames: { idle: 'Idle', running: 'Running', review: 'Reviewing', waving: 'Waving', waiting: 'Waiting', failed: 'Failed', jumping: 'Done' },
@@ -1504,9 +1423,7 @@
                 rollbackConfirm: '⚠️ Roll ${path} back to previous version?', rollbackPrevOk: '✅ Rolled back to previous version: ',
                 detailBroker: 'Processing broker decor plan', detailMoving: 'Moving to new home', detailGoingHome: 'Going home', detailRollingBack: 'Rolling back to previous background', detailReplacingFav: 'Replacing with saved map',
                 statusUpdateErr: 'Status update error, recovering...', connFail: 'Connection failed, retrying...', apiNoJson: 'Response is not JSON',
-                welcome1: ' welcome to the office~', welcome2: ', let’s build something', welcome3: ' just joined — welcome!',
-                panOn: 'View drag enabled (drag canvas left/right)', panOff: 'View drag disabled (tap “Pan View” at top-left to enable)',
-                confirmGoHome: '⚠️ Going home overwrites the current custom room background (you can restore from bg-history).\nContinue?', confirmRollback: '⚠️ This rolls back to the most recently generated room background. Continue?', partialRefreshSuffix: ' (partial refresh failed, refresh page manually)'
+                welcome1: ' welcome to the office~', welcome2: ', let’s build something', welcome3: ' just joined — welcome!',                confirmGoHome: '⚠️ Going home overwrites the current custom room background (you can restore from bg-history).\nContinue?', confirmRollback: '⚠️ This rolls back to the most recently generated room background. Continue?', partialRefreshSuffix: ' (partial refresh failed, refresh page manually)'
             },
             ja: {
                 controlTitle: 'Star ステータス',
@@ -1531,9 +1448,7 @@
                 searchPlaceholder: 'アセット検索（desk / sofa / star）', loaded: '読み込み済み', allAssets: '全アセット',
                 chooseImage: '素材アップロード', confirmUpload: '確定して更新', resetToDefault: '初期に戻す', restorePrevAsset: '前版に戻す', uploadPending: 'アップロード待ち', uploadTarget: '対象',
                 assetHintNotInScene: '現在のシーンでこのオブジェクトは未検出です。ファイル差し替えは可能（更新後に反映）',
-                assetHintDefault: '汎用素材：元サイズ・透過・視覚アンカーを維持し、ズレや崩れを防いでください',
-                showCoords: '座標表示', hideCoords: '座標非表示', moveView: '視点移動', lockView: '視点固定',
-                memoTitle: '昨日のメモ', guestTitle: '訪問者リスト', officeTitle: 'log8 ピクセルオフィス',
+                assetHintDefault: '汎用素材：元サイズ・透過・視覚アンカーを維持し、ズレや崩れを防いでください',                memoTitle: '昨日のメモ', guestTitle: '訪問者リスト', officeTitle: 'log8 ピクセルオフィス',
                 loadingOffice: 'log8 ピクセルオフィスを読み込み中...',
                 statusPrefix: '状態',
                 stateNames: { idle: '待機', running: 'タスク実行', review: '検討・調査', waving: '対話', waiting: '入力待ち', failed: 'エラー発生', jumping: '完了' },
@@ -1567,9 +1482,7 @@
                 rollbackConfirm: '⚠️ ${path} を前の版に戻しますか？', rollbackPrevOk: '✅ 前の版に戻しました：',
                 detailBroker: '仲介の装飾プランを処理中', detailMoving: '新しい家へ引っ越し中', detailGoingHome: '実家に戻る中', detailRollingBack: '前の背景にロールバック中', detailReplacingFav: '保存したマップに差し替え中',
                 statusUpdateErr: '状態更新エラー、復旧中...', connFail: '接続失敗、再試行中...', apiNoJson: 'レスポンスが JSON ではありません',
-                welcome1: ' さん、オフィスへようこそ！', welcome2: ' さん、一緒に進めよう。', welcome3: ' さんが参加しました、歓迎！',
-                panOn: 'ビューのドラッグが有効（キャンバスを左右にドラッグ可能）', panOff: 'ビューのドラッグが無効（左上の「視点移動」で有効化）',
-                confirmGoHome: '⚠️ 実家に戻ると現在のカスタム部屋背景を上書きします（bg-history から履歴画像を復元可能）。\n続けますか？', confirmRollback: '⚠️ 直近生成の部屋背景にロールバックします。続けますか？', partialRefreshSuffix: '（部分更新失敗、ページを手動更新してください）'
+                welcome1: ' さん、オフィスへようこそ！', welcome2: ' さん、一緒に進めよう。', welcome3: ' さんが参加しました、歓迎！',                confirmGoHome: '⚠️ 実家に戻ると現在のカスタム部屋背景を上書きします（bg-history から履歴画像を復元可能）。\n続けますか？', confirmRollback: '⚠️ 直近生成の部屋背景にロールバックします。続けますか？', partialRefreshSuffix: '（部分更新失敗、ページを手動更新してください）'
             }
         };
 
@@ -1607,8 +1520,7 @@
             const langButtons = [
                 { id: 'lang-btn-ko', lang: 'ko' },
                 { id: 'lang-btn-en', lang: 'en' },
-                { id: 'lang-btn-jp', lang: 'ja' },
-                { id: 'lang-btn-cn', lang: 'zh' }
+                { id: 'lang-btn-jp', lang: 'ja' }
             ];
             langButtons.forEach(({ id, lang }) => {
                 const el = document.getElementById(id);
@@ -1665,44 +1577,37 @@
                 window.officePlaqueText.setText(plaqueTitle);
             }
 
-            const coordsBtn = document.getElementById('coords-toggle');
-            if (coordsBtn) coordsBtn.textContent = showCoords ? t('hideCoords') : t('showCoords');
-            const panBtn = document.getElementById('pan-toggle');
-            if (panBtn) {
-                const on = panBtn.dataset.on === '1';
-                panBtn.textContent = on ? t('lockView') : t('moveView');
-            }
             ensureMemoBgVisible();
             renderBootLoadingText(Number(loadingProgressBar?.style?.width?.replace('%','') || 0));
         }
 
         function setUILanguage(lang) {
-            if (!['ko', 'zh', 'en', 'ja'].includes(lang)) return;
+            if (!['ko', 'en', 'ja'].includes(lang)) return;
             uiLang = lang;
             localStorage.setItem('uiLang', uiLang);
             applyLanguage();
             updateSpeedModeUI();
 
-            // 语言切换后立即重绘资产侧栏，确保易懂名同步更新
+            // 언어 변경 후 에셋 사이드바를 즉시 다시 그려 쉬운 이름 동기화
             renderAssetDrawerList();
 
-            // 语言切换后同步刷新已选资产的指导文案（上传区小字三语联动）
+            // 언어 변경 후 선택된 에셋의 안내 문구도 새로고침(업로드 영역 작은 글씨 다국어 연동)
             if (selectedAssetInfo && selectedAssetInfo.path) {
                 const inScene = !!mapAssetPathToSprite(selectedAssetInfo.path);
                 renderSelectedAssetGuidance(selectedAssetInfo.path, inScene);
             }
 
-            // 语言切换时，当前正在显示的 loading 文案也实时切换
+            // 언어 변경 시 현재 표시 중인 loading 문구도 실시간 전환
             const overlay = document.getElementById('room-loading-overlay');
             if (overlay && overlay.style.display === 'flex') {
                 showRoomLoadingOverlay();
             }
         }
 
-        // 检测浏览器是否支持 WebP
+        // 브라우저가 WebP를 지원하는지 감지
         let supportsWebP = false;
         
-        // 方法 1: 使用 canvas 检测
+        // 방법 1: canvas로 감지
         function checkWebPSupport() {
             return new Promise((resolve) => {
                 const canvas = document.createElement('canvas');
@@ -1714,7 +1619,7 @@
             });
         }
         
-        // 方法 2: 使用 image 检测（备用）
+        // 방법 2: image로 감지(예비)
         function checkWebPSupportFallback() {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -1732,7 +1637,7 @@
             height: 720,
             parent: 'game-container',
             pixelArt: true,
-            // 桌面端保持 FIT；手机端用 RESIZE，并在相机里按高度做 fit（可横向 pan）
+            // 데스크탑은 FIT 유지; 모바일은 RESIZE, 카메라에서 높이 기준 fit(가로 pan 가능)
             scale: {
                 mode: IS_TOUCH_DEVICE ? Phaser.Scale.RESIZE : Phaser.Scale.FIT,
                 autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -1747,7 +1652,7 @@
         let loadedAssets = 0;
         let loadingProgressBar, loadingProgressContainer, loadingOverlay, loadingText;
 
-        // Memo 相关函数
+        // Memo 관련 함수
         async function loadMemo() {
             const memoDate = document.getElementById('memo-date');
             const memoContent = document.getElementById('memo-content');
@@ -1763,12 +1668,12 @@
                     memoContent.innerHTML = `<div id="memo-placeholder">${t('memoEmpty')}</div>`;
                 }
             } catch (e) {
-                console.error('加载 memo 失败:', e);
+                console.error('memo 로드 실패:', e);
                 memoContent.innerHTML = `<div id="memo-placeholder">${t('memoLoadFail')}</div>`;
             }
         }
 
-        // 更新加载进度
+        // 로딩 진행도 업데이트
         function updateLoadingProgress() {
             loadedAssets++;
             const percent = Math.min(100, Math.round((loadedAssets / totalAssets) * 100));
@@ -1780,7 +1685,7 @@
             }
         }
 
-        // 隐藏加载界面
+        // 로딩 화면 숨기기
         function hideLoadingOverlay() {
             setTimeout(() => {
                 if (loadingOverlay) {
@@ -1793,7 +1698,7 @@
             }, 80);
         }
 
-        // Phaser 就绪后，移除首屏骨架，避免黑屏感
+        // Phaser 준비 후 첫 화면 스켈레톤 제거, 검은 화면 방지
         function hideGameSkeleton() {
             const sk = document.getElementById('game-skeleton');
             if (!sk) return;
@@ -1804,14 +1709,14 @@
             }, 260);
         }
 
-        // 兜底：某些移动网络/CDN 抖动时，避免一直卡在“加载中”遮罩
+        // 보정: 일부 모바일 네트워크/CDN 지연 시 "로딩 중" 오버레이에 계속 멈추지 않도록
         setTimeout(() => {
             if (loadingOverlay && loadingOverlay.style.display !== 'none') {
                 hideLoadingOverlay();
             }
         }, 8000);
         
-        // 懒加载逻辑已取消（体验优先：装饰首屏直接出现）
+        // 지연 로딩 로직 제거(경험 우선: 장식도 첫 화면에 바로 표시)
 
         // Human-readable state names are language-aware (see I18N[lang].stateNames). Here we only keep the scene area.
         const STATES = {
@@ -1836,16 +1741,6 @@
                 jumping: ['해냈다! 작업 완료','성공! 다음으로 갈게요','끝! 아주 매끄럽게','완료 — 잠깐 신나서 폴짝'],
                 cat: ['야옹~','고로롱…','꼬리 살랑살랑','햇볕 쬐는 게 최고','누가 보러 왔다!','이 오피스의 마스코트예요','쭉— 기지개','오늘 간식 준비됐나요','드르렁 골골','이 자리가 전망 최고']
             },
-            zh: {
-                idle: ['待命中：耳朵竖起来了','我在这儿，随时可以开工','先把桌面收拾干净再说','呼——给大脑放个风','今天也要优雅地高效','等待，是为了更准确的一击','咖啡还热，灵感也还在','我在后台给你加 Buff','状态：静心 / 充电','小猫说：慢一点也没关系'],
-                running: ['执行中：不要眨眼','把任务切成小块逐个击破','开始跑 pipeline','一键推进：走你','让结果自己说话','先做最小可行，再做最美版本'],
-                review: ['进入专注模式：勿扰','先把关键路径跑通','我来把复杂变简单','把 bug 关进笼子里','写到一半，先保存','把每一步都做成可回滚','我在挖证据链','让我把信息熬成结论','找到了：关键在这里','先把变量控制住','我在查：它为什么会这样','把直觉写成验证'],
-                waving: ['你好！我们聊两句','嗯，我在听','很高兴见到你 — 需要帮忙吗','正在收发消息'],
-                waiting: ['等待输入中：等下一步指令','同步中：把今天锁进云里','备份不是仪式，是安全感','把变更交给时间戳','待命中，马上继续','不着急，准备好就开始'],
-                failed: ['警报响了：先别慌','我闻到 bug 的味道了','先复现，再谈修复','把日志给我，我会说人话','错误不是敌人，是线索','把影响面圈起来','先止血，再手术','我在：马上定位根因','别怕，这种我见多了','报警中：让问题自己现形'],
-                jumping: ['搞定！任务完成','成功！进入下一步','完成啦，非常顺利','太棒了，蹦一下庆祝'],
-                cat: ['喵~','咕噜咕噜…','尾巴摇一摇','晒太阳最开心','有人来看我啦','我是这个办公室的吉祥物','伸个懒腰','今天的罐罐准备好了吗','呼噜呼噜','这个位置视野最好']
-            },
             en: {
                 idle: ['On standby: ears up.','I’m here, ready to roll.','Let’s tidy the desk first.','Taking a quick brain breeze.','Efficient and elegant, as always.','Waiting for a more precise strike.','Coffee is warm, ideas too.','Giving you a quiet backstage buff.','Status: calm / charging.','Cat says: no rush, we’re good.'],
                 running: ['Executing—don’t blink.','Split tasks, conquer one by one.','Pipeline is running.','One-click push: go go.','Let the results speak.','Build MVP first, then craft beauty.'],
@@ -1869,9 +1764,9 @@
         };
 
         let game, star, sofa, serverroom, officeBgSprite, areas = {}, currentState = 'idle', pendingDesiredState = null, statusText, lastFetch = 0, lastBlink = 0, lastBubble = 0, targetX = 660, targetY = 170, bubble = null, typewriterText = '', typewriterTarget = '', typewriterIndex = 0, lastTypewriter = 0, syncAnimSprite = null, syncAnimPlayable = false, catBubble = null, selectionBoxGraphics = null;
-        const IDLE_SOFA_ANCHOR = { x: 798, y: 272 }; // 统一中心锚点（原 sofa 左上 670,144 的中心）
-        const IDLE_STAR_SCALE = 1.0; // star idle 改为256帧原生显示，不再放大
-        // flowers 精灵表规格：固定单帧 128x128，4x4
+        const IDLE_SOFA_ANCHOR = { x: 798, y: 272 }; // 중심 앵커 통일(원래 sofa 좌상단 670,144의 중심)
+        const IDLE_STAR_SCALE = 1.0; // star idle을 256프레임 원본 표시로 변경, 더 이상 확대 안 함
+        // flowers 스프라이트시트 규격: 단일 프레임 128x128 고정, 4x4
         let FLOWERS_FRAME_W = 65;
         let FLOWERS_FRAME_H = 65;
         let FLOWERS_FRAME_COLS = 4;
@@ -1889,13 +1784,13 @@
         let homeFavoritesCache = [];
         let homeFavoritesLoadedAt = 0;
 
-        // 坐标以服务端为准；清理历史本地缓存，避免把素材挪飞
+        // 좌표는 서버 기준; 과거 로컬 캐시 정리, 소재가 엉뚱한 곳으로 튀는 것 방지
         let assetPositionOverrides = {};
         let roomLoadingTimer = null;
         let roomLoadingIndex = 0;
         let roomLoadingEmojiIndex = 0;
 
-        // 默认走更稳的模型档（quality），避免部分通道不支持 fast 模型时报错
+        // 기본은 더 안정적인 모델 등급(quality) 사용, 일부 채널이 fast 모델 미지원 시 오류 방지
         let speedMode = localStorage.getItem('speedMode') || 'quality';
         function setSpeedMode(mode) {
             speedMode = (mode === 'quality') ? 'quality' : 'fast';
@@ -1919,8 +1814,6 @@
         let waypoints = []; // list of (x,y) to walk through in order
         let lastWanderAt = 0;
 
-        let coordsOverlay, coordsDisplay, coordsToggle;
-        let showCoords = false;
         let guestAgents = [];
         let guestSprites = {}; // agentId -> {sprite, nameText}
         let guestBubbles = {}; // agentId -> bubble container
@@ -1942,7 +1835,6 @@
         let hiddenDemoNames = new Set();
         const DEMO_MODE = new URLSearchParams(window.location.search).get('demo') === '1';
         const STATE_DEMO = new URLSearchParams(window.location.search).get('statedemo') === '1';  // 9상태 순환 데모
-        const POS_DEBUG = new URLSearchParams(window.location.search).get('posdebug') === '1';  // TEMP: 좌표 실측 디버그
         const FETCH_INTERVAL = 1000;
         const GUEST_AGENTS_FETCH_INTERVAL = 3500;
         const BLINK_INTERVAL = 2500;
@@ -1952,10 +1844,10 @@
         let lastGuestAgentsFetch = 0;
         let lastGuestBubbleAt = 0;
         const TYPEWRITER_DELAY = 50;
-        let lastSeenGuestIds = new Set(); // 用于检测新加入的访客，触发欢迎气泡
+        let lastSeenGuestIds = new Set(); // 새로 들어온 방문자를 감지해 환영 말풍선 트리거
         let guestWelcomeInitialized = false;
 
-        // 状态控制栏函数（用于测试）
+        // 상태 컨트롤 바 함수(테스트용)
         function setState(state, detail) {
             fetch('/set_state', {
                 method: 'POST',
@@ -2060,30 +1952,6 @@
                     'guest_anim_5': '방문자 애니메이션 5',
                     'guest_anim_6': '방문자 애니메이션 6'
                 },
-                zh: {
-                    'star-idle-v5': '主角·待命状态',
-                    'star-working-spritesheet-grid': '主角·工作状态',
-                    'sync-animation': '主角·同步状态',
-                    'sync-animation-v3-grid': '主角·同步状态',
-                    'error-bug-spritesheet-grid': '主角·报错状态',
-                    'cats-spritesheet': '随机猫猫',
-                    'coffee-machine-v3-grid': '咖啡机',
-                    'coffee-machine-shadow-v1': '咖啡机阴影',
-                    'posters-spritesheet': '随机海报',
-                    'serverroom-spritesheet': '服务器房动画',
-                    'plants-spritesheet': '随机绿植',
-                    'flowers-bloom-v2': '随机花朵',
-                    'office_bg_small': '办公室背景',
-                    'memo-bg': '昨日小记底图',
-                    'desk-v3': '办公桌',
-                    'desk': '办公桌（旧）',
-                    'guest_anim_1': '访客动画 1',
-                    'guest_anim_2': '访客动画 2',
-                    'guest_anim_3': '访客动画 3',
-                    'guest_anim_4': '访客动画 4',
-                    'guest_anim_5': '访客动画 5',
-                    'guest_anim_6': '访客动画 6'
-                },
                 en: {
                     'star-idle-v5': 'Main · Idle',
                     'star-working-spritesheet-grid': 'Main · Working',
@@ -2170,39 +2038,6 @@
                 'guest_role_4': '방문자 정지 폴백 이미지 4. 대응하는 guest_anim 캐릭터 설정과 맞추면 전환이 자연스럽습니다.',
                 'guest_role_5': '방문자 정지 폴백 이미지 5. 대응하는 guest_anim 캐릭터 설정과 맞추면 전환이 자연스럽습니다.',
                 'guest_role_6': '방문자 정지 폴백 이미지 6. 대응하는 guest_anim 캐릭터 설정과 맞추면 전환이 자연스럽습니다.'
-            },
-            zh: {
-                'office_bg_small': '主场景底图（当前生效）。建议 1280×720（16:9），保留房间结构与视角，避免角色站位错位。',
-                'office_bg': '历史背景备份。通常不直接生效，建议与 office_bg_small 保持同构图用于回退。',
-                'star-idle-v5': '主角待机动画表。请保持 256×256 分帧与网格布局一致，否则待机动作会错帧。',
-                'star-working-spritesheet-grid': '主角工作动画表（工位状态）。请保持 300×300 分帧，建议人物重心与原图一致。',
-                'sync-animation': '同步状态素材（当前引用）。建议按 256×256 帧规范制作，避免同步状态显示静止或抖动。',
-                'sync-animation-v3-grid': '同步动画表（兼容资源）。保持 256×256 网格可用于替换同步动作细节。',
-                'error-bug-spritesheet-grid': '报错状态动画表。请保持 220×220 分帧，建议高对比度以增强异常提示感。',
-                'desk-v3': '办公桌前景层。影响主角前后遮挡关系，建议保持当前比例与锚点视觉重心。',
-                'desk': '旧版办公桌素材（兼容用）。建议与 desk-v3 保持相近体积与锚点，避免遮挡异常。',
-                'sofa-idle-v3': '沙发静态素材。建议保持 256×256 与透明背景，避免替换后位置漂移。',
-                'sofa-shadow-v1': '沙发阴影层。建议与沙发主体同坐标叠放，增强贴地感。',
-                'memo-bg': '小记面板底图。建议留出文字阅读区域，降低高频纹理，避免信息难读。',
-                'plants-spritesheet': '绿植随机素材。保持 160×160 分帧，可一次替换多个绿植位的观感。',
-                'posters-spritesheet': '海报随机素材。保持 160×160 分帧，建议统一风格避免墙面杂乱。',
-                'cats-spritesheet': '猫咪随机素材。保持 160×160 分帧，建议轮廓清晰、识别度高。',
-                'coffee-machine-v3-grid': '咖啡机静态素材。建议保持 230×230 与当前锚点，避免位置偏移。',
-                'coffee-machine-shadow-v1': '咖啡机阴影层。建议与咖啡机本体同宽对齐，增强贴地感。',
-                'serverroom-spritesheet': '服务器房动画表。保持 180×251 分帧，灯效变化建议节奏均匀不过闪。',
-                'flowers-bloom-v2': '花朵随机素材。保持 128×128 分帧，建议色彩与整体办公室主色协调。',
-                'guest_anim_1': '访客动画序列 1（32×32 分帧）。建议保持像素风、轮廓清晰，与主角风格统一。',
-                'guest_anim_2': '访客动画序列 2（32×32 分帧）。建议保持像素风、轮廓清晰，与主角风格统一。',
-                'guest_anim_3': '访客动画序列 3（32×32 分帧）。建议保持像素风、轮廓清晰，与主角风格统一。',
-                'guest_anim_4': '访客动画序列 4（32×32 分帧）。建议保持像素风、轮廓清晰，与主角风格统一。',
-                'guest_anim_5': '访客动画序列 5（32×32 分帧）。建议保持像素风、轮廓清晰，与主角风格统一。',
-                'guest_anim_6': '访客动画序列 6（32×32 分帧）。建议保持像素风、轮廓清晰，与主角风格统一。',
-                'guest_role_1': '访客静态形象备用图 1。建议与对应 guest_anim 角色设定一致，避免切换割裂。',
-                'guest_role_2': '访客静态形象备用图 2。建议与对应 guest_anim 角色设定一致，避免切换割裂。',
-                'guest_role_3': '访客静态形象备用图 3。建议与对应 guest_anim 角色设定一致，避免切换割裂。',
-                'guest_role_4': '访客静态形象备用图 4。建议与对应 guest_anim 角色设定一致，避免切换割裂。',
-                'guest_role_5': '访客静态形象备用图 5。建议与对应 guest_anim 角色设定一致，避免切换割裂。',
-                'guest_role_6': '访客静态形象备用图 6。建议与对应 guest_anim 角色设定一致，避免切换割裂。'
             },
             en: {
                 'office_bg_small': 'Primary room background (active). Use 1280×720 (16:9), keep room structure/perspective to avoid character misalignment.',
@@ -2384,7 +2219,7 @@
         }
 
         function mapAssetPathToSprite(path) {
-            // 背景做特殊映射：即使纹理 key 已变成 office_bg_live_xxx，也能稳定定位到背景对象
+            // 배경은 특수 매핑: 텍스처 key가 office_bg_live_xxx로 바뀌어도 배경 객체를 안정적으로 찾음
             if ((path || '').includes('office_bg_small.webp') && officeBgSprite) return officeBgSprite;
 
             const item = sceneAssetItems.find(x => x.path === path && x.ref && x.ref.getBounds);
@@ -2453,7 +2288,7 @@
 
         async function applySavedPositionOverrides() {
             try {
-                // 优先：后端持久化坐标；回退：后端默认坐标；最后：本地内存覆盖
+                // 우선: 백엔드 영속 좌표; 폴백: 백엔드 기본 좌표; 최후: 로컬 메모리 덮어쓰기
                 let serverPositions = {};
                 let serverDefaults = {};
                 try {
@@ -2472,19 +2307,19 @@
                     const texKey = ch?.texture?.key;
                     if (!texKey) continue;
 
-                    // 先尝试资产路径命中（推荐持久化键，优先级最高）
+                    // 먼저 에셋 경로 매칭 시도(권장 영속 키, 우선순위 최상)
                     const assetPath = resolveAssetPathByTextureKey(texKey);
                     let ov = null;
                     if (assetPath) {
                         ov = serverPositions[assetPath] || serverDefaults[assetPath] || assetPositionOverrides[assetPath];
                     }
 
-                    // 再尝试 textureKey 命中（兼容旧数据）
+                    // 다음으로 textureKey 매칭 시도(구 데이터 호환)
                     if (!ov) {
                         ov = serverPositions[texKey] || serverDefaults[texKey] || assetPositionOverrides[texKey];
                     }
 
-                    // 最后按 stem 模糊匹配（处理 webp/png 或 live key 差异）
+                    // 마지막으로 stem 퍼지 매칭(webp/png 또는 live key 차이 처리)
                     if (!ov) {
                         const stem = toAssetStem(assetPath || texKey);
                         const hitKey = Object.keys(serverPositions).find(k => toAssetStem(k) === stem)
@@ -2548,7 +2383,7 @@
         }
 
         function selectAssetInDrawer(path) {
-            // 二次点击同一资产 = 取消选择
+            // 같은 에셋 재클릭 = 선택 해제
             if (selectedAssetInfo && selectedAssetInfo.path === path) {
                 clearAssetSelection(true);
                 return;
@@ -2568,7 +2403,7 @@
         function inferSpritesheetFrameMetaByPath(path) {
             const p = (path || '').toLowerCase();
             if (!p) return null;
-            // 优先用文件命名约定推断（不写死具体尺寸）
+            // 파일 명명 규칙으로 우선 추론(구체 크기를 하드코딩하지 않음)
             if (p.includes('spritesheet') || p.includes('sprite-sheet') || p.includes('sheet') || p.includes('anim') || p.includes('grid')) {
                 return { w: null, h: null };
             }
@@ -2576,16 +2411,16 @@
         }
 
         function getSpritesheetFrameMeta(item) {
-            // 先看命名是否属于精灵表
+            // 먼저 명명이 스프라이트시트인지 확인
             const inferred = inferSpritesheetFrameMetaByPath(item?.path || '');
             if (!inferred) return null;
-            // 仅返回“是精灵表”的信号，单帧尺寸后续自动推断
+            // "스프라이트시트임" 신호만 반환, 단일 프레임 크기는 이후 자동 추론
             return { w: null, h: null, isSheet: true };
         }
 
         function guessThumbFrameSize(fullW, fullH, path = '') {
             const p = (path || '').toLowerCase();
-            // 常见核心资产优先用显式提示（避免误判）
+            // 자주 쓰는 핵심 에셋은 명시적 힌트 우선 사용(오판 방지)
             const hints = [
                 [/star-working-spritesheet-grid\.webp$/, 300, 300],
                 [/star-idle-v5\.(webp|png)$/, 256, 256],
@@ -2598,7 +2433,7 @@
                 if (re.test(p) && fullW % fw === 0 && fullH % fh === 0) return { fw, fh };
             }
 
-            // 通用推断：枚举可整除候选，偏好 cols≈8、帧尺寸适中、近似方形
+            // 범용 추론: 나누어떨어지는 후보 열거, cols≈8·적당한 프레임 크기·정사각형에 가까운 것 선호
             const divisors = (n) => {
                 const arr = [];
                 for (let i = 1; i * i <= n; i++) {
@@ -2650,7 +2485,7 @@
                 const fw = guessed.fw;
                 const fh = guessed.fh;
 
-                // 判断是否可能是精灵表：整图宽高至少是单帧的整数倍，且总帧数>1
+                // 스프라이트시트 가능성 판단: 전체 너비/높이가 단일 프레임의 정수배 이상, 총 프레임 수>1
                 const cols = Math.floor(fullW / fw);
                 const rows = Math.floor(fullH / fh);
                 const frames = cols * rows;
@@ -2708,7 +2543,7 @@
             const list = document.getElementById('asset-list');
             if (!list) return;
 
-            // 统一显示后端全部资产（不再区分已加载/全部）
+            // 백엔드의 모든 에셋을 통일 표시(로드됨/전체 구분 없음)
             const baseRows = assetListData.map(it => ({ ...it, key: '' }));
 
             const statePriority = [
@@ -2720,12 +2555,12 @@
             const assetRank = (path='') => {
                 const p = (path || '').toLowerCase();
                 const idx = statePriority.findIndex(x => p.endsWith(x));
-                if (idx >= 0) return idx; // 0~3: 四个主状态最前
+                if (idx >= 0) return idx; // 0~3: 4개 주요 상태를 맨 앞으로
 
-                // 按钮素材最不重要：统一沉到列表末尾
+                // 버튼 소재는 가장 덜 중요: 리스트 맨 끝으로 통일
                 if (p.includes('/btn-') || p.includes('btn-') || p.includes('button')) return 1000;
 
-                if (p.includes('guest_anim_')) return 999; // guest 动画靠后
+                if (p.includes('guest_anim_')) return 999; // guest 애니메이션은 뒤로
                 return 100;
             };
             const rows = baseRows
@@ -2760,7 +2595,7 @@
                 </div>`;
             }).join('');
 
-            // 先画静态缩略图，再尝试对精灵表做逐帧预览
+            // 먼저 정적 썸네일을 그리고, 스프라이트시트는 프레임별 미리보기 시도
             rows.forEach(it => {
                 const canvas = document.getElementById(`asset-thumb-canvas-${(it.path || '').replace(/[^a-zA-Z0-9]/g, '_')}`);
                 if (!canvas) return;
@@ -2785,7 +2620,7 @@
                 const data = await res.json();
                 assetListData = data.items || [];
 
-                // 场景渲染可能稍晚，做一次延迟抓取
+                // 씬 렌더링이 늦을 수 있어 지연 후 한 번 더 가져옴
                 buildSceneAssetItems();
                 if (sceneAssetItems.length === 0) {
                     setTimeout(() => {
@@ -2802,7 +2637,7 @@
                     applyScenePreview(selectedPath);
                 }
             } catch (e) {
-                console.error('加载资产列表失败', e);
+                console.error('에셋 목록 로드 실패', e);
                 if (out) out.textContent = t('assetLoadFail');
             }
         }
@@ -2853,7 +2688,7 @@
             if (!body) return;
             body.addEventListener('click', (e) => {
                 if (!assetDrawerOpen || !assetDrawerAuthed) return;
-                // 点击空白处才取消选择；点击控件/资产项不取消
+                // 빈 곳 클릭 시에만 선택 해제; 컨트롤/에셋 항목 클릭은 해제 안 함
                 const keep = e.target.closest('.asset-item, .asset-toolbar, #asset-upload-panel, #asset-move-panel, button, input, textarea, label, canvas');
                 if (keep) return;
                 clearAssetSelection(true);
@@ -2881,31 +2716,31 @@
                 try {
                     scene.load.once('complete', () => {
                         try {
-                            // 替换到新纹理
+                            // 새 텍스처로 교체
                             if (sprite.setTexture) sprite.setTexture(newKey);
-                            // 同 key 角色（如多个同材质装饰）一起替换
+                            // 같은 key 캐릭터(동일 재질 장식 여러 개 등)를 함께 교체
                             getSceneChildren().forEach(ch => {
                                 if (ch !== sprite && ch.texture && ch.texture.key === oldKey && ch.setTexture) {
                                     ch.setTexture(newKey);
                                 }
                             });
-                            // 更新背景引用
+                            // 배경 참조 업데이트
                             if (oldKey === 'office_bg' && officeBgSprite && officeBgSprite.texture && officeBgSprite.texture.key === newKey) {
                                 currentOfficeBgTextureKey = newKey;
                             }
-                            // 移除旧纹理，避免内存堆积
+                            // 오래된 텍스처 제거, 메모리 누적 방지
                             if (oldKey !== newKey && scene.textures.exists(oldKey)) {
                                 scene.textures.remove(oldKey);
                             }
                             resolve(true);
                         } catch (e) {
-                            console.warn('替换场景纹理失败(setTexture):', e);
+                            console.warn('씬 텍스처 교체 실패(setTexture):', e);
                             resolve(false);
                         }
                     });
                     scene.load.once('loaderror', () => resolve(false));
 
-                    // 按扩展名用对应 loader
+                    // 확장자에 맞는 loader 사용
                     if (ext === 'json') {
                         resolve(false);
                         return;
@@ -2913,7 +2748,7 @@
                     scene.load.image(newKey, url);
                     scene.load.start();
                 } catch (e) {
-                    console.warn('替换场景纹理失败(load):', e);
+                    console.warn('씬 텍스처 교체 실패(load):', e);
                     resolve(false);
                 }
             });
@@ -2924,7 +2759,7 @@
             const fi = document.getElementById('asset-upload-file');
             const out = document.getElementById('asset-upload-result');
             if (!path) { out.textContent = t('assetSelectPathFirst'); return false; }
-            if (!fi.files.length) { return true; } // 允许仅改坐标
+            if (!fi.files.length) { return true; } // 좌표만 변경 허용
             const file = fi.files[0];
             const fd = new FormData();
             fd.append('path', path);
@@ -2937,11 +2772,11 @@
 
             if (isSheetTarget) {
                 fd.append('auto_spritesheet', '1');
-                // 全自动：后端识别并切帧
+                // 완전 자동: 백엔드가 인식해서 프레임 분할
                 if (isAnimInput) {
                     fd.append('preserve_original', '1');
                 } else {
-                    // 静态图兜底切法
+                    // 정적 이미지 폴백 분할 방식
                     fd.append('frame_w', '64');
                     fd.append('frame_h', '64');
                     fd.append('preserve_original', '0');
@@ -2979,7 +2814,7 @@
                 else out.textContent = t('confirmedRefresh');
             }
 
-            // 刷新前关闭侧边栏，行为与地图替换一致
+            // 새로고침 전 사이드바 닫기, 맵 교체와 동일한 동작
             assetDrawerOpen = false;
             const drawer = document.getElementById('asset-drawer');
             if (drawer) drawer.classList.remove('open');
@@ -3007,7 +2842,7 @@ function toggleBrokerPanel() {
             const fallbackBox = document.getElementById('game-container');
             const rect = canvasEl?.getBoundingClientRect?.() || fallbackBox?.getBoundingClientRect?.();
 
-            // 1) loading 遮罩
+            // 1) loading 오버레이
             const overlay = document.getElementById('room-loading-overlay');
             if (overlay) {
                 if (!rect || !(rect.width > 0 && rect.height > 0)) {
@@ -3023,7 +2858,7 @@ function toggleBrokerPanel() {
                 }
             }
 
-            // 2) detail/status 严格限制在画布内部左下角
+            // 2) detail/status를 캔버스 내부 왼쪽 아래로 엄격히 제한
             const st = document.getElementById('status-text');
             const gameContainer = document.getElementById('game-container');
             if (st && gameContainer) {
@@ -3065,22 +2900,6 @@ function toggleBrokerPanel() {
                     '호기심을 최대치로 올리는 중……',
                     '여정이 다음 문패를 배달하기를 기다리는 중……'
                 ],
-                zh: [
-                    '正在打包今天的灵感行李……',
-                    '正在抽取下一站数字坐标……',
-                    '正在查看本次漂流目的地……',
-                    '正在把办公室折叠成随身模式……',
-                    '正在给钳子装上远行 Buff……',
-                    '正在匹配下一段创作气候……',
-                    '正在把时差调成冒险模式……',
-                    '正在接收陌生街区的 Wi‑Fi 心跳……',
-                    '正在试播下一站的海风 BGM……',
-                    '正在加载“也许会爱上”的新房间……',
-                    '正在为未知邻居准备自我介绍……',
-                    '正在解锁下一片数字海域……',
-                    '正在把好奇心调到满格……',
-                    '正在等待旅程投递下一张门牌号……'
-                ],
                 en: [
                     'Packing today’s luggage of inspiration…',
                     'Drawing the digital coordinates for the next stop…',
@@ -3114,7 +2933,7 @@ function toggleBrokerPanel() {
                     '旅が次の番地を届けるのを待っています……'
                 ]
             };
-            const steps = loadingTexts[uiLang] || loadingTexts.zh;
+            const steps = loadingTexts[uiLang] || loadingTexts.ko;
             const emojis = ['🦞','🦀','🦐','🦑','🐙','🐟','🐠','🐡','🦪','🍣','🍤','🍱','🍲','🍜','🍝','🌊','🐚','🪸'];
 
             roomLoadingIndex = 0;
@@ -3353,7 +3172,7 @@ function toggleBrokerPanel() {
             }
 
             setWorkingStatus(t('detailGoingHome'));
-            // 点击即刻显示遮罩，先于任何网络调用
+            // 클릭 즉시 오버레이 표시, 어떤 네트워크 호출보다 먼저
             showRoomLoadingOverlay();
             out.textContent = t('goingHome');
             try {
@@ -3428,7 +3247,7 @@ function toggleBrokerPanel() {
             if (!box) return;
             const now = Date.now();
             if (!force && homeFavoritesCache.length > 0 && (now - homeFavoritesLoadedAt) < 30000) {
-                // 使用缓存，避免频繁请求
+                // 캐시 사용, 잦은 요청 방지
             } else {
                 try {
                     const data = await fetchJsonSafe('/assets/home-favorites/list', { cache: 'no-store' });
@@ -3575,7 +3394,7 @@ function toggleBrokerPanel() {
             }
         }
 
-        // 记录 body scroll 位置，drawer 关闭时恢复
+        // body scroll 위치 기록, drawer 닫을 때 복원
         let _drawerScrollY = 0;
 
         async function toggleAssetDrawer(force) {
@@ -3585,7 +3404,7 @@ function toggleBrokerPanel() {
             assetDrawerOpen = next;
             drawer.classList.toggle('open', next);
             if (backdrop) backdrop.classList.toggle('open', next);
-            // 移动端 body 锁定：打开时冻结滚动位置，关闭时恢复
+            // 모바일 body 잠금: 열 때 스크롤 위치 고정, 닫을 때 복원
             if (next) {
                 _drawerScrollY = window.scrollY;
                 document.body.style.top = `-${_drawerScrollY}px`;
@@ -3624,7 +3443,7 @@ function toggleBrokerPanel() {
             }
         }
 
-        // Guest Agent 离开房间
+        // Guest Agent 방 나가기
         function removeGuestSpriteByName(name) {
             const target = guestAgents.find(a => (a.name || '') === name);
             if (target && guestSprites[target.agentId]) {
@@ -3645,7 +3464,7 @@ function toggleBrokerPanel() {
                 body: JSON.stringify({ agentId, name })
             }).then(response => response.json()).then(data => {
                 if (data.ok) {
-                    // 优先按 agentId 清理，避免重名误伤
+                    // agentId 기준 우선 정리, 동명이인 오삭제 방지
                     if (agentId && guestSprites[agentId]) {
                         guestSprites[agentId].sprite.destroy();
                         guestSprites[agentId].nameText.destroy();
@@ -3658,8 +3477,8 @@ function toggleBrokerPanel() {
                     fetchGuestAgents();
                     alert((name || agentId) + t('hasLeftRoom'));
                 } else {
-                    // demo agent 没在后端也允许本地隐藏
-                    if (DEMO_MODE && (name === '尼卡' || name === '水星')) {
+                    // demo agent가 백엔드에 없어도 로컬 숨김 허용
+                    if (DEMO_MODE && (name === 'Nika' || name === 'Mercury')) {
                         hiddenDemoNames.add(name);
                         removeGuestSpriteByName(name);
                         renderGuestAgentList();
@@ -3712,14 +3531,13 @@ function toggleBrokerPanel() {
             if (!Array.isArray(window.__demoVisitors) || window.__demoVisitors.length === 0) {
                 const demoBubble = {
                     ko: { review: '자료를 검토·조사 중이에요', idle: '휴게실에 좀 누워있을게요' },
-                    zh: { review: '我在检查和调研', idle: '我去休息区躺一下' },
                     en: { review: 'Reviewing and researching.', idle: 'Taking a break in the lounge.' },
                     ja: { review: '資料を検討・調査中です。', idle: '休憩エリアでひと休み。' }
                 };
-                const db = demoBubble[uiLang] || demoBubble.zh;
+                const db = demoBubble[uiLang] || demoBubble.ko;
                 window.__demoVisitors = [
-                    { agentId: 'demo_nika', name: '尼卡', authStatus: 'approved', state: 'review', bubbleText: db.review, isDemo: true, updated_at: new Date().toISOString() },
-                    { agentId: 'demo_mercury', name: '水星', authStatus: 'approved', state: 'idle', bubbleText: db.idle, isDemo: true, updated_at: new Date().toISOString() }
+                    { agentId: 'demo_nika', name: 'Nika', authStatus: 'approved', state: 'review', bubbleText: db.review, isDemo: true, updated_at: new Date().toISOString() },
+                    { agentId: 'demo_mercury', name: 'Mercury', authStatus: 'approved', state: 'idle', bubbleText: db.idle, isDemo: true, updated_at: new Date().toISOString() }
                 ];
             }
         }
@@ -3771,16 +3589,16 @@ function toggleBrokerPanel() {
 
         function getAreaRect(area) {
             // 구역 좌표(좌상단-우하단; x/y는 sprite 하단 앵커 좌표로 사용)
-            // 休息区域范围（511,262）（841,621）
-            // 工作区域范围（190,526）（380,683）
-            // error 区域范围（932,275）（1109,327）
+            // 휴게 영역 범위(511,262)(841,621)
+            // 작업 영역 범위(190,526)(380,683)
+            // error 영역 범위(932,275)(1109,327)
             const rects = {
                 // 2단 구성: 활동존(work/desk/wait)은 뒤쪽 높은 y(작업대 근처), 휴게(idle)는 앞쪽 낮은 y(라운지).
                 // → x가 겹쳐도 y가 달라 앞뒤로 서고 y-depth 정렬로 자연스럽게 가려짐. 배너(y670~710)·바닥 회피.
                 desk:      { x1: 110, y1: 556, x2: 350, y2: 574 },   // 좌측 책상 앞(review — 검토/조사) · 뒤열
                 work:      { x1: 380, y1: 556, x2: 640, y2: 574 },   // 중앙 작업(running/waving/jumping) · 뒤열
                 wait:      { x1: 670, y1: 556, x2: 910, y2: 574 },   // 우측 대기(waiting) · 뒤열
-                breakroom: { x1: 230, y1: 634, x2: 1050, y2: 650 },  // 휴게(idle): 앞열 넓은 한 줄 · 라운지
+                breakroom: { x1: 220, y1: 634, x2: 1052, y2: 650 },  // 휴게(idle): 앞열 넓은 한 줄(7마리 수용) · 라운지
                 error:     { x1: 930, y1: 270, x2: 1110, y2: 340 }   // 에러(버그 구역)
             };
             return rects[area] || rects.breakroom;
@@ -3851,7 +3669,7 @@ function toggleBrokerPanel() {
                     }
                 }
 
-                const isDemo = !!agent.isDemo || (DEMO_MODE && (id === 'demo_nika' || id === 'demo_mercury' || agent.name === '尼卡' || agent.name === '水星'));
+                const isDemo = !!agent.isDemo || (DEMO_MODE && (id === 'demo_nika' || id === 'demo_mercury' || agent.name === 'Nika' || agent.name === 'Mercury'));
                 const area = STATE_AREA[agent.state] || 'breakroom';
 
                 const idx = (areaIdx[area] = (areaIdx[area] || 0) + 1) - 1;
@@ -3862,10 +3680,10 @@ function toggleBrokerPanel() {
                 if (!guestSprites[id]) {
                     // 발밑 부드러운 그림자(고양이 origin이 하단중앙이라 sprite.y가 발 위치)
                     const shadow = game.add.ellipse(p.x, p.y, 54, 16, 0x000000, 0.28).setDepth(2599);
-                    // 优先用图标：demo visitor 有专门映射
+                    // 아이콘 우선: demo visitor는 전용 매핑 있음
                     let sprite;
-                    const isDemoNika = DEMO_MODE && (agent.agentId === 'demo_nika' || agent.name === '尼卡');
-                    const isDemoMercury = DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星');
+                    const isDemoNika = DEMO_MODE && (agent.agentId === 'demo_nika' || agent.name === 'Nika');
+                    const isDemoMercury = DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === 'Mercury');
                     const catKey = catKeyForAgent(agent);
                     const petBase = (catKey && catKey.startsWith('cat_')) ? catKey.slice(4) : null;
                     const usePetdex = petBase && game.textures.exists(petBase + '_petdex');
@@ -3880,14 +3698,14 @@ function toggleBrokerPanel() {
                         sprite = game.add.sprite(p.x, p.y, catKey).setOrigin(0.5, 1).setScale(1.5);
                         if (game.anims.exists(`${catKey}_idle`)) sprite.anims.play(`${catKey}_idle`, true);
                     } else if (isDemoNika || isDemoMercury) {
-                        // 统一使用动态像素角色，避免依赖已删除的 demo 静态图
+                        // 동적 픽셀 캐릭터로 통일, 삭제된 demo 정적 이미지 의존 방지
                         const animKey = 'guest_anim_1';
                         const f = 0;
                         sprite = game.add.sprite(p.x, p.y, animKey, f).setOrigin(0.5, 1).setScale(1.1);
                         if (sprite.anims && sprite.anims.play) sprite.anims.play(animKey, true);
                     } else {
-                        // 非 demo 访客：优先用动画精灵（guest_anim_x），其次静态图，兜底星星
-                        // 先确定角色索引（1-6）
+                        // demo가 아닌 방문자: 애니메이션 스프라이트(guest_anim_x) 우선, 다음 정적 이미지, 최후 별
+                        // 먼저 캐릭터 인덱스 결정(1-6)
                         let animIdx = agent.avatar
                             ? parseInt((agent.avatar.match(/_(\d+)$/) || [])[1] || '0', 10)
                             : 0;
@@ -3921,12 +3739,12 @@ function toggleBrokerPanel() {
                         }
                     }
                     sprite.setDepth(2600);
-                    if (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星')) {
+                    if (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === 'Mercury')) {
                         sprite.y = sprite.y + 10;
                     }
 
-                    // demo 水星下移 10px（仅 demo_mercury）
-                    const yOffset = (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星')) ? 10 : 0;
+                    // demo Mercury 10px 아래로 (demo_mercury 전용)
+                    const yOffset = (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === 'Mercury')) ? 10 : 0;
 
                     const nameTextY = isDemo ? ((p.y + yOffset) - 80) : ((p.y + yOffset) - 104);
                     const nameText = game.add.text(p.x, nameTextY, agent.name || t('visitorDefault'), {
@@ -3946,9 +3764,9 @@ function toggleBrokerPanel() {
                     guestSprites[id] = { sprite, nameText, emote, shadow, catKey: (catKey && game.textures.exists(catKey)) ? catKey : null, petBase: usePetdex ? petBase : null, baseScale: (sprite.scaleY || 1) };
                 } else {
                     const g = guestSprites[id];
-                    const yOffset = (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星')) ? 10 : 0;
+                    const yOffset = (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === 'Mercury')) ? 10 : 0;
 
-                    // demo：平滑移动（避免闪现）；非 demo：保持稳定位置（避免轮询抖动）
+                    // demo: 부드러운 이동(순간이동 방지); demo 아님: 안정적 위치 유지(폴링 흔들림 방지)
                     if (isDemo) {
                         // kill previous tweens for this id
                         if (guestTweens[id] && guestTweens[id].move) {
@@ -3958,7 +3776,7 @@ function toggleBrokerPanel() {
                             guestTweens[id].name.stop();
                         }
 
-                        const duration = 2000 + Math.floor(Math.random() * 1000); // 2~3s 走路感
+                        const duration = 2000 + Math.floor(Math.random() * 1000); // 2~3s 걷는 느낌
                         const ease = 'Sine.easeInOut';
 
                         const moveTween = game.tweens.add({
@@ -3977,7 +3795,7 @@ function toggleBrokerPanel() {
                         });
                         guestTweens[id] = { move: moveTween, name: nameTween };
                     } else {
-                        // 非 demo（고양이 포함）：상태/구역이 바뀌면 해당 위치로 '걸어서' 이동(텔레포트 X)
+                        // demo 아님(고양이 포함): 상태/구역이 바뀌면 해당 위치로 '걸어서' 이동(텔레포트 X)
                         const ty = p.y + yOffset;
                         const curX = (g.targetX != null) ? g.targetX : g.sprite.x;
                         const curY = (g.targetY != null) ? g.targetY : g.sprite.y;
@@ -4028,21 +3846,7 @@ function toggleBrokerPanel() {
                 if (guestSprites[id]) { guestSprites[id].area = area; guestSprites[id].curState = agent.state; guestSprites[id].homeX = p.x; guestSprites[id].homeY = p.y; }
             });
 
-            // TEMP posdebug: 실측 좌표 덤프(#posdebug div → --dump-dom으로 읽음)
-            if (POS_DEBUG) {
-                let el = document.getElementById('posdebug');
-                if (!el) { el = document.createElement('div'); el.id = 'posdebug'; el.style.cssText = 'position:fixed;left:0;top:120px;z-index:99999;background:#000;color:#0f0;font:11px monospace;white-space:pre;padding:4px'; document.body.appendChild(el); }
-                const lines = [`visitors=${visitors.length} areaCounts=${JSON.stringify(areaCounts)}`];
-                visitors.forEach((a, i) => {
-                    const g = guestSprites[a.agentId];
-                    const ar = STATE_AREA[a.state] || 'breakroom';
-                    const exp = getAreaPoint(ar, i, areaCounts[ar]);
-                    lines.push(`${a.name}|st=${a.state}|expX=${exp.x}|actX=${g && g.sprite ? Math.round(g.sprite.x) : '?'}|homeX=${g ? g.homeX : '?'}|tgtX=${g ? g.targetX : '?'}`);
-                });
-                el.textContent = lines.join('\n');
-            }
-
-            // 删除消失的 agent + 清理其气泡/tween
+            // 사라진 게스트 정리(스프라이트/버블/tween 제거)
             Object.keys(guestSprites).forEach(id => {
                 if (!seenIds.has(id)) {
                     guestSprites[id].sprite.destroy();
@@ -4071,7 +3875,7 @@ function toggleBrokerPanel() {
             const id = ids[Math.floor(Math.random() * ids.length)];
             const g = guestSprites[id];
 
-            // demo 气泡：优先展示与状态对应的内容，便于验证“状态→区域→气泡”链路
+            // demo 말풍선: 상태에 맞는 내용 우선 표시, "상태→구역→말풍선" 흐름 검증 용이
             const demoVisitor = (DEMO_MODE && window.__demoVisitors)
                 ? (window.__demoVisitors.find(v => v.agentId === id) || window.__demoVisitors.find(v => v.name === (g.nameText && g.nameText.text)))
                 : null;
@@ -4085,15 +3889,6 @@ function toggleBrokerPanel() {
                     waiting: ['입력 대기 중', '다음 지시를 기다리는 중', '대기 중, 곧 이어서 진행'],
                     failed: ['오류 발생 — 복구 중', '이상 감지, 수정 중', '버그 구역에서 점검 중'],
                     jumping: ['작업 완료!', '완료! 다음으로 넘어갈게요', '끝냈어요, 성공!']
-                },
-                zh: {
-                    idle: ['我在休息区待命', '先放松一下，等下一步任务', '我在休息充电中'],
-                    running: ['执行中，正在跑流程', '我在工作区执行任务', '正在把计划落地执行'],
-                    review: ['正在检查资料、做调研', '正在查资料和验证线索', '我在调研模式，搜集信息'],
-                    waving: ['对话中，正在收发消息', '正在交流沟通中', '沟通中，请稍候'],
-                    waiting: ['等待输入中', '等待下一步指令', '待命中，马上继续'],
-                    failed: ['出错了 — 正在恢复', '检测到异常，正在修复', '我在 bug 区排查问题'],
-                    jumping: ['任务完成！', '搞定！进入下一步', '完成啦，成功！']
                 },
                 en: {
                     idle: ['On standby in the lounge', 'Relaxing, waiting for the next task', 'Resting and recharging'],
@@ -4114,7 +3909,7 @@ function toggleBrokerPanel() {
                     jumping: ['作業完了！', '完了！次へ進みます', '終わりました、成功！']
                 }
             };
-            const statusThoughtsMap = statusThoughtsMapByLang[uiLang] || statusThoughtsMapByLang.zh;
+            const statusThoughtsMap = statusThoughtsMapByLang[uiLang] || statusThoughtsMapByLang.ko;
             const agentState = (guestAgents.find(a => a.agentId === id) || {}).state || 'idle';
             const thoughts = statusThoughtsMap[agentState] || statusThoughtsMap.idle;
             const text = (demoVisitor && demoVisitor.bubbleText) ? demoVisitor.bubbleText : thoughts[Math.floor(Math.random() * thoughts.length)];
@@ -4125,7 +3920,7 @@ function toggleBrokerPanel() {
             }
 
             const bx = g.sprite.x;
-            // 气泡位置：demo 维持原逻辑；真实访客放在“名字上方”，避免压角色也避免压名字
+            // 말풍선 위치: demo는 기존 로직 유지; 실제 방문자는 "이름 위"에 배치, 캐릭터·이름 겹침 방지
             const isDemoGuest = (demoVisitor && demoVisitor.isDemo) || (id === 'demo_nika' || id === 'demo_mercury');
             const nameH = (g.nameText && g.nameText.height) ? g.nameText.height : 16;
             const by = isDemoGuest ? (g.sprite.y - 90) : ((g.nameText ? g.nameText.y : (g.sprite.y - 150)) - (nameH / 2) - 22);
@@ -4137,7 +3932,7 @@ function toggleBrokerPanel() {
             bubble.setDepth(2700);
             guestBubbles[id] = bubble;
 
-            // 让气泡跟随 sprite 锚点（用于 demo 平滑移动时也保持贴合）
+            // 말풍선이 sprite 앵커를 따라가게(demo 부드러운 이동 시에도 붙어있도록)
             bubble.__followAgentId = id;
 
             setTimeout(() => {
@@ -4169,15 +3964,6 @@ function toggleBrokerPanel() {
                     failed: '오류 발생! 경보 구역으로 갈게요',
                     jumping: '작업 완료! 신나요'
                 },
-                zh: {
-                idle: '我去休息区躺一下',
-                running: '我在执行任务',
-                review: '我在检查和调研',
-                waving: '我在聊两句',
-                waiting: '我在等待输入',
-                failed: '出错了！我去报警区',
-                jumping: '任务完成！好开心'
-                },
                 en: {
                     idle: 'Taking a break in the lounge.',
                     running: 'I am executing tasks.',
@@ -4197,9 +3983,9 @@ function toggleBrokerPanel() {
                     jumping: '作業完了！うれしい。'
                 }
             };
-            const bubbleTextMap = bubbleTextMapByLang[uiLang] || bubbleTextMapByLang.zh;
+            const bubbleTextMap = bubbleTextMapByLang[uiLang] || bubbleTextMapByLang.ko;
 
-            // 确保两位 demo 角色不会总是同一个状态（增加可观测性）
+            // 두 demo 캐릭터가 항상 같은 상태가 되지 않도록(관측성 향상)
             const pickJs = (exclude) => {
                 let s = states[Math.floor(Math.random() * states.length)];
                 let tries = 0;
@@ -4214,7 +4000,7 @@ function toggleBrokerPanel() {
             const cur0 = current[0] ? (current[0].state || 'idle') : 'idle';
 
             const next0 = pickJs(cur0);
-            const next1 = pickJs(next0); // 尽量不同
+            const next1 = pickJs(next0); // 최대한 다르게
             const nextStates = [next0, next1];
 
             const prevVisitors = current.map((v) => ({ ...v }));
@@ -4228,10 +4014,10 @@ function toggleBrokerPanel() {
                 };
             });
 
-            // 状态切换时：每一位 demo 都立即冒泡（强制），用于清晰验证链路
+            // 상태 전환 시: 각 demo가 즉시 말풍선(강제), 흐름을 명확히 검증
             try {
                 if (typeof game !== 'undefined' && game) {
-                    // 找出状态实际变了的 demo visitor，给他们强制冒泡
+                    // 상태가 실제로 바뀐 demo visitor를 찾아 강제로 말풍선 표시
                     const prevById = {};
                     prevVisitors.forEach(v => { prevById[v.agentId] = v; });
                     const newVisitors = window.__demoVisitors || [];
@@ -4239,7 +4025,7 @@ function toggleBrokerPanel() {
                         const prev = prevById[agent.agentId];
                         const changed = !prev || prev.state !== agent.state;
                         if (changed) {
-                            // 直接冒泡
+                            // 바로 말풍선 표시
                             if (guestSprites[agent.agentId]) {
                                 const g = guestSprites[agent.agentId];
                                 const text = agent.bubbleText || '';
@@ -4267,26 +4053,26 @@ function toggleBrokerPanel() {
                         }
                     });
                 }
-            } catch (e) { console.error('强制冒泡失败:', e); }
+            } catch (e) { console.error('강제 말풍선 실패:', e); }
         }
 
         function fetchGuestAgents() {
-            // demo 随机状态先更新（不依赖后端）
+            // demo 랜덤 상태 먼저 업데이트(백엔드 비의존)
             maybeRandomizeDemoVisitors();
 
             return fetch('/agents?t=' + Date.now(), { cache: 'no-store' })
                 .then(response => response.json())
                 .then(data => {
-                    // 无论后端返回是否为数组，demo=1 都应保证本地 demo 访客可见
+                    // 백엔드 반환이 배열이든 아니든, demo=1이면 로컬 demo 방문자가 보이도록 보장
                     guestAgents = Array.isArray(data) ? data : [];
 
-                    // 新访客检测：触发 Star 欢迎气泡（只欢迎真实访客，不欢迎 demo）
+                    // 신규 방문자 감지: Star 환영 말풍선 트리거(실제 방문자만 환영, demo 제외)
                     try {
                         const merged = getMergedVisitors();
                         const currentIds = new Set((merged || []).filter(a => !a.isMain && !a.isDemo).map(a => a.agentId));
 
                         if (!guestWelcomeInitialized) {
-                            // 首次初始化不欢迎，避免刷新页面就刷屏
+                            // 최초 초기화 시엔 환영 안 함, 페이지 새로고침마다 도배 방지
                             lastSeenGuestIds = currentIds;
                             guestWelcomeInitialized = true;
                         } else {
@@ -4294,24 +4080,24 @@ function toggleBrokerPanel() {
                             currentIds.forEach(id => { if (!lastSeenGuestIds.has(id)) newIds.push(id); });
 
                             if (newIds.length > 0) {
-                                // 只欢迎第一个新来的（避免同一时刻多人加入刷屏）
+                                // 처음 새로 온 한 명만 환영(동시 다수 입장 시 도배 방지)
                                 const newAgent = (merged || []).find(a => a.agentId === newIds[0]);
                                 if (newAgent && newAgent.name) {
-                                    // 临时将 currentState 视为 waving(인사) 以允许 showBubble 展示
+                                    // 임시로 currentState를 waving(인사)으로 간주해 showBubble 표시 허용
                                     const oldState = currentState;
                                     currentState = 'waving';
-                                    // 临时更换 bubble 文案
+                                    // 임시로 bubble 문구 교체
                                     const lang = uiLang;
                                     const welcomeLines = [
                                         `${newAgent.name}${t('welcome1')}`,
                                         `${newAgent.name}${t('welcome2')}`,
                                         `${newAgent.name}${t('welcome3')}`
                                     ];
-                                    const langPack = BUBBLE_TEXTS[lang] || BUBBLE_TEXTS.zh;
+                                    const langPack = BUBBLE_TEXTS[lang] || BUBBLE_TEXTS.ko;
                                     const oldTexts = Array.isArray(langPack.waving) ? [...langPack.waving] : [];
                                     langPack.waving = welcomeLines;
                                     showBubble();
-                                    // 还原
+                                    // 원복
                                     langPack.waving = oldTexts;
                                     currentState = oldState;
                                 }
@@ -4325,8 +4111,8 @@ function toggleBrokerPanel() {
                     renderGuestAgentsInScene();
                 })
                 .catch(error => {
-                    console.error('拉取访客列表失败:', error);
-                    // 即使拉取失败，demo 也要能渲染
+                    console.error('방문자 목록 가져오기 실패:', error);
+                    // 가져오기 실패해도 demo는 렌더링 되도록
                     if (DEMO_MODE) {
                         renderGuestAgentList();
                         renderGuestAgentsInScene();
@@ -4334,9 +4120,9 @@ function toggleBrokerPanel() {
                 });
         }
 
-        // 初始化：先检测 WebP 支持，再启动游戏
+        // 초기화: 먼저 WebP 지원 감지 후 게임 시작
         async function initGame() {
-            // 检测 WebP 支持
+            // WebP 지원 감지
             try {
                 supportsWebP = await checkWebPSupport();
             } catch (e) {
@@ -4347,25 +4133,25 @@ function toggleBrokerPanel() {
                 }
             }
 
-            console.log('WebP 支持:', supportsWebP);
+            console.log('WebP 지원:', supportsWebP);
             applyLanguage();
             updateSpeedModeUI();
 
 
-            // 直接启动 Phaser，避免首屏被额外接口阻塞
+            // Phaser 바로 시작, 첫 화면이 추가 API에 막히지 않도록
 
             new Phaser.Game(config);
 
-            // 非关键初始化延后到首屏之后，提升首开速度
+            // 비핵심 초기화는 첫 화면 이후로 지연, 첫 로딩 속도 향상
             setTimeout(async () => {
-                // 动态探测 flowers 精灵表帧规格（避免写死 65x65 导致显示比例异常）
+                // flowers 스프라이트시트 프레임 규격 동적 탐지(65x65 하드코딩으로 인한 비율 이상 방지)
                 try {
                     const res = await fetch('/assets/list?t=' + Date.now(), { cache: 'no-store' });
                     const data = await res.json();
                     if (data && data.ok && Array.isArray(data.items)) {
                         const flowerItem = data.items.find(it => (it.path || '').toLowerCase().includes('flowers-bloom-v2'));
                         if (flowerItem && Number(flowerItem.width) > 0 && Number(flowerItem.height) > 0) {
-                            // 固定规则：花朵单帧 128x128，4x4
+                            // 고정 규칙: 꽃 단일 프레임 128x128, 4x4
                             FLOWERS_FRAME_W = 128;
                             FLOWERS_FRAME_H = 128;
                             FLOWERS_FRAME_COLS = 4;
@@ -4373,7 +4159,7 @@ function toggleBrokerPanel() {
                         }
                     }
                 } catch (e) {
-                    console.warn('flowers 规格探测失败，使用默认 65x65', e);
+                    console.warn('flowers 규격 탐지 실패, 기본값 65x65 사용', e);
                 }
 
                 // Only fetch /assets/positions and /assets/defaults when user is authed,
@@ -4389,17 +4175,17 @@ function toggleBrokerPanel() {
         }
 
         function preload() {
-            // 获取加载界面元素
+            // 로딩 화면 요소 가져오기
             loadingOverlay = document.getElementById('loading-overlay');
             loadingProgressBar = document.getElementById('loading-progress-bar');
             loadingText = document.getElementById('loading-text');
             loadingProgressContainer = document.getElementById('loading-progress-container');
             
-            // 设置资源总数（全部首屏加载：装饰也第一时间出现）
+            // 리소스 총 개수 설정(전부 첫 화면 로드: 장식도 즉시 표시)
             totalAssets = 18;
             loadedAssets = 0;
             
-            // 加载进度监听
+            // 로딩 진행도 리스너
             this.load.on('filecomplete', () => {
                 updateLoadingProgress();
             });
@@ -4432,7 +4218,7 @@ function toggleBrokerPanel() {
             // Error / bug animation: 180x180, 96 frames (repacked grid)
             this.load.spritesheet('error_bug', '/static/error-bug-spritesheet-grid.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 220, frameHeight: 220 });
 
-            // 运行时 Gemini 配置（用于搬家/中介生图）
+            // 런타임 Gemini 설정(이사/중개 이미지 생성용)
             this.geminiConfig = { hasKey: false, model: 'gemini-3.1-flash-image-preview' };
 
             // Cat spritesheet: 160x160, 4x4=16 cats
@@ -4441,14 +4227,14 @@ function toggleBrokerPanel() {
             // Desk
             // Star working animation: repacked to grid to avoid WebGL max texture size limits
             // NOTE: prefer WebP for size, PNG fallback
-            // 动态替换后按最新素材识别：当前 writing 素材为 300x300 单帧
+            // 동적 교체 후 최신 소재로 인식: 현재 writing 소재는 300x300 단일 프레임
             this.load.spritesheet('star_working', '/static/star-working-spritesheet-grid.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 300, frameHeight: 300 });
 
-            // Sync state animation (256x256, 多帧): 非同步显示首帧，同步从第2帧循环
+            // Sync state animation (256x256, 다중 프레임): 비동기 시 첫 프레임 표시, 동기 시 2번째 프레임부터 반복
             this.load.spritesheet('sync_anim', '/static/sync-animation-v3-grid.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 256, frameHeight: 256 });
 
             // Memo background image
-            // memo 底图固定走 png，避免某些端 webp 透明通道异常导致“底图丢失”
+            // memo 배경 이미지는 png로 고정, 일부 환경 webp 투명 채널 이상으로 "배경 사라짐" 방지
             this.load.image('memo_bg', '/static/memo-bg.webp?v={{VERSION_TIMESTAMP}}');
             // Desk v2 (webp only)
             this.load.image('desk_v2', '/static/desk-v3.webp?v={{VERSION_TIMESTAMP}}');
@@ -4506,15 +4292,15 @@ function toggleBrokerPanel() {
             sofa = this.add.sprite(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y, 'sofa_idle').setOrigin(0.5);
             sofa.setDepth(10);
             areas = {
-                door: { x: 640, y: 550 }, // 墙的门（偏下 1/3 位置）
+                door: { x: 640, y: 550 }, // 벽의 문(아래쪽 1/3 위치)
                 work: { x: 505, y: 618 }, // 중앙 작업 바닥(running/waving/jumping)
                 desk: { x: 225, y: 618 }, // 좌측 책상 앞(review)
                 wait: { x: 740, y: 618 }, // 입구/문 근처 대기(waiting)
-                error: { x: 1020, y: 305 }, // 右 1/3 上 1/2（服务器区
-                breakroom: { x: IDLE_SOFA_ANCHOR.x, y: IDLE_SOFA_ANCHOR.y } // 与 sofa-idle-v3 同中心锚点
+                error: { x: 1020, y: 305 }, // 오른쪽 1/3 위쪽 1/2(서버 구역
+                breakroom: { x: IDLE_SOFA_ANCHOR.x, y: IDLE_SOFA_ANCHOR.y } // sofa-idle-v3와 같은 중심 앵커
             };
 
-            // 创建 Star 角色待命动画（每次先移除旧定义，确保不复用历史动画）
+            // Star 캐릭터 대기 애니메이션 생성(매번 기존 정의를 먼저 제거해 과거 애니메이션 재사용 방지)
             const starIdleFrameMax = Math.max(0, (this.textures.get('star_idle')?.frameTotal || 1) - 1);
             if (this.anims.exists('star_idle')) {
                 this.anims.remove('star_idle');
@@ -4527,7 +4313,7 @@ function toggleBrokerPanel() {
             });
 
 
-            // 创建 6 个访客角色的循环 idle 动画（8帧循环）
+            // 방문자 캐릭터 6개의 반복 idle 애니메이션 생성(8프레임 반복)
             for (let i = 1; i <= 6; i++) {
                 this.anims.create({
                     key: `guest_anim_${i}_idle`,
@@ -4649,7 +4435,7 @@ function toggleBrokerPanel() {
                 align: 'center'
             }).setOrigin(0.5);
             plaqueText.setDepth(PLAQUE_DEPTH + 1);
-            // 牌匾两边加个小装饰（跟随牌匾居中）
+            // 현판 양옆에 작은 장식 추가(현판 따라 가운데 정렬)
             game.add.text(plaqueX - 138, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '18px' }).setOrigin(0.5).setDepth(PLAQUE_DEPTH + 1);
             game.add.text(plaqueX + 138, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '18px' }).setOrigin(0.5).setDepth(PLAQUE_DEPTH + 1);
             window.officePlaqueText = plaqueText;
@@ -4740,7 +4526,7 @@ function toggleBrokerPanel() {
             });
             serverroom = this.add.sprite(1021, 142, 'serverroom', 0).setOrigin(0.5);
             serverroom.setDepth(2);
-            // 默认 idle: 静止第0帧
+            // 기본 idle: 0번 프레임 정지
             serverroom.anims.stop();
             serverroom.setFrame(0);
 
@@ -4763,7 +4549,7 @@ function toggleBrokerPanel() {
             waterCooler.setDepth(7);
 
             // Random flower pot at (310,390), default scale 0.8 (top layer)
-            const flowerFrameCount = Math.max(1, FLOWERS_FRAME_COLS * FLOWERS_FRAME_ROWS); // 动态帧数
+            const flowerFrameCount = Math.max(1, FLOWERS_FRAME_COLS * FLOWERS_FRAME_ROWS); // 동적 프레임 수
             const randomFlowerFrame = Math.floor(Math.random() * flowerFrameCount);
             const flower = this.add.sprite(310, 390, 'flowers', randomFlowerFrame).setOrigin(0.5);
             flower.setScale(0.8);
@@ -4779,7 +4565,7 @@ function toggleBrokerPanel() {
             // Star working at desk (217,333)
             this.anims.create({
                 key: 'star_working',
-                // 38 帧（0~37），避免沿用旧 192 帧导致疯狂闪烁
+                // 38 프레임(0~37), 구 192 프레임 사용으로 인한 심한 깜빡임 방지
                 frames: this.anims.generateFrameNumbers('star_working', { start: 0, end: 37 }),
                 frameRate: 12,
                 repeat: -1
@@ -4812,7 +4598,7 @@ function toggleBrokerPanel() {
             const syncFrameTotal = Number(this.textures.get('sync_anim')?.frameTotal || 0);
             const syncFrameStart = 1;
             const syncFrameEnd = Math.max(0, syncFrameTotal - 2);
-            // 仅在确实存在可播放帧（>=1）时才创建同步动画，避免单帧素材触发播放异常
+            // 재생 가능한 프레임이 실제로 존재(>=1)할 때만 동기 애니메이션 생성, 단일 프레임 소재의 재생 이상 방지
             syncAnimPlayable = syncFrameTotal >= 3 && syncFrameEnd >= syncFrameStart;
             if (this.anims.exists('sync_anim')) {
                 this.anims.remove('sync_anim');
@@ -4838,25 +4624,7 @@ function toggleBrokerPanel() {
             placeOverlayAndStatusAtCanvasBottomLeft();
             window.addEventListener('resize', placeOverlayAndStatusAtCanvasBottomLeft);
             window.addEventListener('scroll', placeOverlayAndStatusAtCanvasBottomLeft, { passive: true });
-            coordsOverlay = document.getElementById('coords-overlay');
-            coordsDisplay = document.getElementById('coords-display');
-            coordsToggle = document.getElementById('coords-toggle');
-
-            // guest agent 将由 /agents 动态拉取并渲染到右侧访客列表
-            coordsToggle.addEventListener('click', () => {
-                showCoords = !showCoords;
-                coordsOverlay.style.display = showCoords ? 'block' : 'none';
-                coordsToggle.textContent = showCoords ? t('hideCoords') : t('showCoords');
-                coordsToggle.style.background = showCoords ? '#e94560' : '#333';
-            });
-
-            // 允许手机端“拖动/滑动”来移动视野（本质：移动 Phaser Camera）
-            // iPhone 等触屏设备默认开启；桌面端默认关闭（可手动开）。
-            const panToggle = document.getElementById('pan-toggle');
             const isTouchDevice = IS_TOUCH_DEVICE;
-            let panEnabled = false;
-            let isPanning = false;
-            let panStart = null; // {x,y,sx,sy}
             const camera = game.cameras.main;
 
             const MAP_W = config.width;
@@ -4875,21 +4643,17 @@ function toggleBrokerPanel() {
                 camera.scrollY = clamp(camera.scrollY, 0, maxScrollY());
             }
 
-            // 手机上：锁定“办公室画布高度 = 2/3 区域高度”，
-            // 让世界坐标在竖向恰好看满（不需要上下拖），只保留横向拖动浏览左右。
-            // 记录初始是否已手动平移（避免 resize 时把用户拖好的位置重置）
-            let hasManuallyPanned = false;
+            // 모바일: 오피스 캔버스 높이를 영역 높이(2/3)에 맞춰 세로로 꽉 차게 표시
             function applyMobileCameraFit() {
                 if (!isTouchDevice) return;
                 const h = Math.max(1, camera.height);
                 const w = Math.max(1, camera.width);
 
-                // 关键：先按高度 fit，再看是否需要按宽度微调，
-                // 保证既不会让画面歪，又能左右拖到最左最右边缘不被裁。
+                // 높이 기준으로 fit (화면이 기울지 않도록)
                 const fitHeightZoom = h / MAP_H;
                 const candidateZoom = fitHeightZoom;
 
-                // 按 candidateZoom 计算：viewport 在世界坐标里的宽高
+                // candidateZoom 기준 viewport의 월드 좌표 폭
                 const viewW = w / candidateZoom;
                 const maxX = Math.max(0, MAP_W - viewW);
 
@@ -4897,16 +4661,14 @@ function toggleBrokerPanel() {
                 camera.scrollX = Math.min(camera.scrollX, maxX);
                 camera.scrollY = 0;
 
-                // 仅在未手动平移过时才居中（避免把用户拖好的位置冲掉）
-                if (!hasManuallyPanned) {
-                    camera.centerOn(MAP_W / 2, MAP_H / 2);
-                }
+                // 항상 중앙 정렬
+                camera.centerOn(MAP_W / 2, MAP_H / 2);
                 camera.scrollX = clamp(camera.scrollX, 0, maxX);
                 camera.scrollY = 0;
             }
             applyMobileCameraFit();
 
-            // 手机端旋转屏幕/地址栏伸缩时，重算 zoom + 夹紧 camera
+            // 모바일 화면 회전/주소창 변화 시 zoom 재계산 + camera 클램프
             if (isTouchDevice && game.scale) {
                 game.scale.on('resize', () => {
                     applyMobileCameraFit();
@@ -4917,119 +4679,13 @@ function toggleBrokerPanel() {
             camera.setBounds(0, 0, MAP_W, MAP_H);
             clampCameraScroll();
 
-            function setPanEnabled(on) {
-                panEnabled = on;
-                if (panToggle) {
-                    panToggle.dataset.on = on ? '1' : '0';
-                    panToggle.textContent = on ? t('lockView') : t('moveView');
-                    panToggle.style.background = on ? '#e94560' : '#333';
-                }
-                game.input.setDefaultCursor(on ? 'grab' : 'default');
-                if (isTouchDevice && statusText) {
-                    const info = on ? t('panOn') : t('panOff');
-                    statusText.textContent = `${t('statusPrefix')}：[${stateName(currentState)}] ${info}`;
-                }
-            }
-
-            if (panToggle) {
-                panToggle.addEventListener('click', () => setPanEnabled(!panEnabled));
-            }
-
-            // 手机端默认关闭拖动画面：由左上角“移动视野”开关显式开启
-            if (isTouchDevice) {
-                setPanEnabled(false);
-            }
-
-            // iOS/Safari 手势策略：
-            // - 保留垂直滚动（让页面能下滑看三个面板）
-            // - 水平方向拖动时才阻止默认行为，并转为 camera 横向平移
-            // 说明：iOS 对 pointer + touch-action 支持存在机型差异，所以这里加一套原生 touch 兜底。
+            // 모바일에서 페이지 자연 스크롤 허용 (아래 패널을 볼 수 있도록)
             const canvasEl = game.canvas;
-            let touchPan = null; // {x,y,sx,sy,lock:'x'|'y'|null}
             if (canvasEl) {
-                // 手机端允许页面自然滚动，避免“不能滑动”
                 canvasEl.style.touchAction = 'auto';
-
-                canvasEl.addEventListener('touchstart', (e) => {
-                    if (!panEnabled || e.touches.length !== 1) return;
-                    const t = e.touches[0];
-                    touchPan = { x: t.clientX, y: t.clientY, sx: camera.scrollX, sy: camera.scrollY, lock: null };
-                }, { passive: true });
-
-                canvasEl.addEventListener('touchmove', (e) => {
-                    if (!panEnabled || !touchPan || e.touches.length !== 1) return;
-                    const t = e.touches[0];
-                    const dx = t.clientX - touchPan.x;
-                    const dy = t.clientY - touchPan.y;
-
-                    if (!touchPan.lock) {
-                        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
-                        touchPan.lock = Math.abs(dx) >= Math.abs(dy) ? 'x' : 'y';
-                    }
-
-                    if (touchPan.lock === 'x') {
-                        // 横向拖动交给办公室视野；阻止浏览器默认滚动
-                        e.preventDefault();
-                        hasManuallyPanned = true;
-                        camera.scrollX = clamp(touchPan.sx - dx, 0, maxScrollX());
-                    }
-                    // lock==='y' 时不阻止默认，交给页面纵向滚动
-                }, { passive: false });
-
-                const clearTouchPan = () => { touchPan = null; };
-                canvasEl.addEventListener('touchend', clearTouchPan, { passive: true });
-                canvasEl.addEventListener('touchcancel', clearTouchPan, { passive: true });
             }
 
-            game.input.on('pointerdown', (pointer) => {
-                if (!panEnabled) return;
-                isPanning = true;
-                panStart = { x: pointer.x, y: pointer.y, sx: camera.scrollX, sy: camera.scrollY };
-                game.input.setDefaultCursor('grabbing');
-            });
-
-            game.input.on('pointerup', () => {
-                if (!panEnabled) return;
-                isPanning = false;
-                panStart = null;
-                game.input.setDefaultCursor('grab');
-            });
-
-            game.input.on('pointermove', (pointer) => {
-                if (!panEnabled || !isPanning || !panStart) return;
-                const dx = pointer.x - panStart.x;
-                const dy = pointer.y - panStart.y;
-
-                // 手机端优先“横向拖动看办公室”，纵向手势留给页面滚动看下方面板。
-                if (isTouchDevice && Math.abs(dy) > Math.abs(dx)) {
-                    return;
-                }
-
-                // 手指向右拖，视野跟着向右看：camera scroll 向左减小（反向）
-                const newX = panStart.sx - dx;
-                hasManuallyPanned = true;
-                camera.scrollX = clamp(newX, 0, maxScrollX());
-
-                // 桌面端保留自由二维拖动
-                if (!isTouchDevice) {
-                    const newY = panStart.sy - dy;
-                    camera.scrollY = clamp(newY, 0, maxScrollY());
-                }
-            });
-
-            // Mouse move handler for coordinate display
-            game.input.on('pointermove', (pointer) => {
-                if (!showCoords) return;
-                // Clamp to map size (0..width-1 / 0..height-1)
-                const x = Math.max(0, Math.min(config.width - 1, Math.round(pointer.x)));
-                const y = Math.max(0, Math.min(config.height - 1, Math.round(pointer.y)));
-                coordsDisplay.textContent = `${x}, ${y}`;
-                // Position overlay next to mouse
-                coordsOverlay.style.left = (pointer.x + 18) + 'px';
-                coordsOverlay.style.top = (pointer.y + 18) + 'px';
-            });
-
-            // 加载昨日 memo
+            // 어제 memo 로드
             loadMemo();
 
             fetchStatus();
@@ -5055,7 +4711,7 @@ function toggleBrokerPanel() {
                 });
             }
 
-            // 兜底：非 idle 时确保机房动画在播，idle 时静止
+            // 보정: idle이 아닐 때 서버실 애니메이션 재생 보장, idle일 때 정지
             const effectiveStateForServer = pendingDesiredState || currentState;
             if (serverroom) {
                 if (effectiveStateForServer === 'idle') {
@@ -5070,14 +4726,14 @@ function toggleBrokerPanel() {
                 }
             }
 
-            // failed 状态：显示 bug 动画，并在两点之间来回移动
+            // failed 상태: bug 애니메이션 표시, 두 지점 사이를 왕복 이동
             if (window.errorBug) {
                 if (effectiveStateForServer === 'failed') {
                     window.errorBug.setVisible(true);
                     if (!window.errorBug.anims.isPlaying || window.errorBug.anims.currentAnim?.key !== 'error_bug') {
                         window.errorBug.anims.play('error_bug', true);
                     }
-                    // 固定在原地（按需求取消 error 移动路径）
+                    // 제자리 고정(요구에 따라 error 이동 경로 제거)
                     window.errorBug.x = 1007;
                     window.errorBug.y = 221;
                 } else {
@@ -5102,18 +4758,18 @@ function toggleBrokerPanel() {
                 }
             }
 
-            // 冒气泡
+            // 말풍선 표시
             if (time - lastBubble > BUBBLE_INTERVAL) {
                 showBubble();
                 lastBubble = time;
             }
-            // 猫的气泡（频率低）
+            // 고양이 말풍선(낮은 빈도)
             if (time - lastCatBubble > CAT_BUBBLE_INTERVAL) {
                 showCatBubble();
                 lastCatBubble = time;
             }
 
-            // 打字机效果
+            // 타자기 효과
             if (typewriterIndex < typewriterTarget.length && time - lastTypewriter > TYPEWRITER_DELAY) {
                 typewriterText += typewriterTarget[typewriterIndex];
                 statusText.textContent = typewriterText;
@@ -5121,10 +4777,10 @@ function toggleBrokerPanel() {
                 lastTypewriter = time;
             }
 
-            // 移动 + 小踱步
+            // 이동 + 작은 서성임
             moveStar(time);
 
-            // guest 随机想法泡泡
+            // guest 랜덤 생각 말풍선
             maybeShowGuestBubble(time);
 
             // 고양이별 juice: 그림자/이모트 follow + 둥실 + 가끔 깡총(squash&stretch)
@@ -5164,7 +4820,7 @@ function toggleBrokerPanel() {
                         if (g.nextWanderAt == null) g.nextWanderAt = time + 3000 + Math.random() * 4000;
                         if (time >= g.nextWanderAt) {
                             g.nextWanderAt = time + 4000 + Math.random() * 5000;
-                            // 홈 슬롯 근처 소폭 orbit(멀리 안 감) → 이웃과 안 겹침. y는 납작하게(바닥感).
+                            // 홈 슬롯 근처 소폭 orbit(멀리 안 감) → 이웃과 안 겹침. y는 납작하게(바닥 느낌).
                             const hx = (g.homeX != null) ? g.homeX : g.sprite.x;
                             const hy = (g.homeY != null) ? g.homeY : g.sprite.y;
                             const ang = Math.random() * Math.PI * 2;
@@ -5193,7 +4849,7 @@ function toggleBrokerPanel() {
                 });
             } catch (e) {}
 
-            // demo 平滑移动时：让气泡每帧跟随角色锚点（避免 tween 时气泡滞留在旧位置）
+            // demo 부드러운 이동 시: 말풍선이 매 프레임 캐릭터 앵커를 따라가게(tween 중 말풍선이 옛 위치에 남는 것 방지)
             try {
                 Object.keys(guestBubbles).forEach(id => {
                     const b = guestBubbles[id];
@@ -5212,7 +4868,7 @@ function toggleBrokerPanel() {
                 });
             } catch (e) {}
 
-            // guest 列表会定时刷新
+            // guest 목록은 주기적으로 새로고침
         }
 
         function normalizeState(s) {
@@ -5333,7 +4989,7 @@ function toggleBrokerPanel() {
                         // If we're mid-transition, don't restart the path every poll
                         const changed = (pendingDesiredState === null) && (nextState !== currentState);
                         const nextLine = '[' + stateName(nextState) + '] ' + (data.detail || '...');
-                        // 不论 changed 与否，都按服务端最新状态强制一次视觉同步，避免动画卡旧状态
+                        // changed 여부와 무관하게 서버 최신 상태로 시각 동기화를 한 번 강제, 애니메이션이 옛 상태에 멈추는 것 방지
                         pendingDesiredState = null;
                         if (currentState !== nextState) {
                             currentState = nextState;
@@ -5371,7 +5027,7 @@ function toggleBrokerPanel() {
             const stateInfo = STATES[effectiveState] || STATES.idle;
             const baseTarget = areas[stateInfo.area] || areas.breakroom;
 
-            // idle 时锁定位置（不走任何移动路径）
+            // idle일 때 위치 고정(어떤 이동 경로도 타지 않음)
             if (effectiveState === 'idle') {
                 if (star && star.visible) {
                     star.setPosition(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y);
@@ -5478,7 +5134,7 @@ function toggleBrokerPanel() {
         }
 
         function getBubbleTextsByState(stateKey) {
-            const langPack = BUBBLE_TEXTS[uiLang] || BUBBLE_TEXTS.zh;
+            const langPack = BUBBLE_TEXTS[uiLang] || BUBBLE_TEXTS.ko;
             return langPack[stateKey] || langPack.idle || [];
         }
 
@@ -5486,7 +5142,7 @@ function toggleBrokerPanel() {
             if (bubble) { bubble.destroy(); bubble = null; }
             if (!SHOW_STAR) return; // Star 숨김 시 본체 말풍선도 표시 안 함
             const texts = getBubbleTextsByState(currentState);
-            if (currentState === 'idle') return; // idle 不显示气泡（可按需开启）
+            if (currentState === 'idle') return; // idle일 때 말풍선 표시 안 함(필요 시 활성화 가능)
 
             // Bubble anchor should follow current visible character:
             // - syncing: syncAnimSprite
@@ -5510,7 +5166,7 @@ function toggleBrokerPanel() {
             const bubbleOffsetY = (currentState === 'writing') ? 85 : 70;
             const bubbleY = anchorY - bubbleOffsetY;
 
-            // 只做手机端稍微调大一点，避免发糊
+            // 모바일만 살짝 크게, 흐릿함 방지
             const isTouch = IS_TOUCH_DEVICE;
             const fontSize = isTouch ? 14 : 12;
             const bg = game.add.rectangle(anchorX, bubbleY, text.length * 10 + 20, 28, 0xffffff, 0.95);
@@ -5536,9 +5192,9 @@ function toggleBrokerPanel() {
             setTimeout(() => { if (window.catBubble) { window.catBubble.destroy(); window.catBubble = null; } }, 4000);
         }
 
-        // 假 Agent 气泡逻辑已移除，统一以真实 /agents 数据为准
+        // 가짜 Agent 말풍선 로직 제거, 실제 /agents 데이터 기준으로 통일
 
-        // 启动游戏
+        // 게임 시작
         initGame();
     </script>
 </body>
