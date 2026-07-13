@@ -3528,9 +3528,9 @@ function toggleBrokerPanel() {
 
         // ── Dollhouse 3방 구조: 좌 작업실 / 중 검토실 / 우 라운지 (가로 배치, 정면뷰) ──
         const ROOMS = {
-            work:   { rect: { x1: 35,  y1: 568, x2: 575,  y2: 658 } },  // 좌(블루): 가장 넓음. 칸막이 ~x599 왼쪽
+            lounge: { rect: { x1: 35,  y1: 568, x2: 575,  y2: 658 } },  // 좌(블루,창문): 가장 넓음 — idle 최다 수용
             review: { rect: { x1: 618, y1: 568, x2: 912,  y2: 658 } },  // 중(크림): 칸막이 사이
-            lounge: { rect: { x1: 950, y1: 568, x2: 1262, y2: 658 } }   // 우(피치): 칸막이 ~x928 오른쪽
+            work:   { rect: { x1: 950, y1: 568, x2: 1262, y2: 658 } }   // 우(피치): 작업(running/failed)
         };
         const LANE_Y = 654;  // 방 사이 이동 통로(문지방 높이) — 배경 바닥 앞줄
         // 상태 7개 → 방 3개. jumping은 현재 방 유지(제자리 표현).
@@ -4197,9 +4197,9 @@ function toggleBrokerPanel() {
             // ── 3방(dollhouse) 러그 + 상단 명패(WORK/REVIEW/LOUNGE). ROOMS 좌표에 정렬. ──
             (function drawRooms(scene) {
                 const ROOM_NP = [
-                    { room: 'work',   label: 'WORK',   cx: 305 },
+                    { room: 'lounge', label: 'LOUNGE', cx: 305 },
                     { room: 'review', label: 'REVIEW', cx: 765 },
-                    { room: 'lounge', label: 'LOUNGE', cx: 1106 }
+                    { room: 'work',   label: 'WORK',   cx: 1106 }
                 ];
                 const gfx = scene.add.graphics().setDepth(3);
                 ROOM_NP.forEach(z => {
