@@ -1724,7 +1724,7 @@
         };
 
         let game, star, sofa, serverroom, officeBgSprite, areas = {}, currentState = 'idle', pendingDesiredState = null, lastFetch = 0, lastBlink = 0, lastBubble = 0, bubble = null, syncAnimSprite = null, syncAnimPlayable = false, catBubble = null, selectionBoxGraphics = null;
-        const IDLE_SOFA_ANCHOR = { x: 798, y: 272 }; // 중심 앵커 통일(원래 sofa 좌상단 670,144의 중심)
+        const IDLE_SOFA_ANCHOR = { x: 330, y: 470 }; // 중심 앵커 통일(원래 sofa 좌상단 670,144의 중심)
         // flowers 스프라이트시트 규격: 단일 프레임 128x128 고정, 4x4
         let FLOWERS_FRAME_W = 65;
         let FLOWERS_FRAME_H = 65;
@@ -4332,10 +4332,10 @@ function toggleBrokerPanel() {
             game.add.text(plaqueX + 138, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '18px' }).setOrigin(0.5).setDepth(PLAQUE_DEPTH + 1);
             window.officePlaqueText = plaqueText;
 
-            // Random plant at (565,178) (frame 0-15, 160x160 each)
+            // Random plant on the lounge floor at (70,548) (frame 0-15, 160x160 each)
             const plantFrameCount = 16;
             const randomPlantFrame = Math.floor(Math.random() * plantFrameCount);
-            const plant = game.add.sprite(565, 178, 'plants', randomPlantFrame).setOrigin(0.5);
+            const plant = game.add.sprite(70, 548, 'plants', randomPlantFrame).setOrigin(0.5);
             plant.setDepth(5);
             plant.setInteractive({ useHandCursor: true });
             // Expose to global for click handler
@@ -4347,52 +4347,11 @@ function toggleBrokerPanel() {
                 window.plantSprite.setFrame(next);
             });
 
-            // Random plant at (230,185) (frame 0-15, 160x160 each)
-            const plant2Frame = Math.floor(Math.random() * plantFrameCount);
-            const plant2 = game.add.sprite(230, 185, 'plants', plant2Frame).setOrigin(0.5);
-            plant2.setDepth(5);
-            plant2.setInteractive({ useHandCursor: true });
-            // Expose to global for click handler
-            window.plantSprite2 = plant2;
-            
-            plant2.on('pointerdown', () => {
-                const next = Math.floor(Math.random() * window.plantFrameCount);
-                window.plantSprite2.setFrame(next);
-            });
-
-            // Random plant at (977,496) (frame 0-15, 160x160 each)
-            const plant3Frame = Math.floor(Math.random() * plantFrameCount);
-            const plant3 = game.add.sprite(977, 496, 'plants', plant3Frame).setOrigin(0.5);
-            plant3.setDepth(5);
-            plant3.setInteractive({ useHandCursor: true });
-            // Expose to global for click handler
-            window.plantSprite3 = plant3;
-            
-            plant3.on('pointerdown', () => {
-                const next = Math.floor(Math.random() * window.plantFrameCount);
-                window.plantSprite3.setFrame(next);
-            });
-
-            // Random poster at (252,66) (random frame from spritesheet)
-            const postersFrameCount = (this.textures.get('posters')?.frameTotal || 1) - 1;
-            const randomPosterFrame = Math.floor(Math.random() * Math.max(1, postersFrameCount));
-            const poster = game.add.sprite(252, 66, 'posters', randomPosterFrame).setOrigin(0.5);
-            poster.setDepth(4);
-            poster.setInteractive({ useHandCursor: true });
-            // Expose to global for click handler
-            window.posterSprite = poster;
-            window.posterFrameCount = postersFrameCount;
-            
-            poster.on('pointerdown', () => {
-                const next = Math.floor(Math.random() * window.posterFrameCount);
-                window.posterSprite.setFrame(next);
-            });
-
             // 장식용 랜덤 고양이 제거(에이전트 고양이와 혼동 방지). 캣버블 함수는 catSprite 없으면 자동 비활성.
             window.catSprite = null;
 
             // Coffee machine at (659,397) - animated sprite + shadow
-            const coffeeMachineShadow = this.add.image(659, 397, 'coffee_machine_shadow').setOrigin(0.5);
+            const coffeeMachineShadow = this.add.image(130, 500, 'coffee_machine_shadow').setOrigin(0.5);
             coffeeMachineShadow.setDepth(98);
             const coffeeFrameMax = Math.max(0, (this.textures.get('coffee_machine')?.frameTotal || 1) - 2);
             if (this.anims.exists('coffee_machine')) {
@@ -4404,7 +4363,7 @@ function toggleBrokerPanel() {
                 frameRate: 12.5,
                 repeat: -1
             });
-            const coffeeMachine = this.add.sprite(659, 397, 'coffee_machine').setOrigin(0.5);
+            const coffeeMachine = this.add.sprite(130, 500, 'coffee_machine').setOrigin(0.5);
             coffeeMachine.setDepth(99);
             coffeeMachine.anims.play('coffee_machine', true);
 
@@ -4416,14 +4375,14 @@ function toggleBrokerPanel() {
                 frameRate: 6,
                 repeat: -1
             });
-            serverroom = this.add.sprite(1021, 142, 'serverroom', 0).setOrigin(0.5);
+            serverroom = this.add.sprite(1150, 300, 'serverroom', 0).setOrigin(0.5);
             serverroom.setDepth(2);
             // 기본 idle: 0번 프레임 정지
             serverroom.anims.stop();
             serverroom.setFrame(0);
 
             // Desk at (218,417) (v2)
-            const desk = this.add.image(218, 417, 'desk_v2').setOrigin(0.5);
+            const desk = this.add.image(1085, 470, 'desk_v2').setOrigin(0.5);
             desk.setDepth(1001);  // desk above starWorking
 
             // Extra decor props (gen_decor.py). Placed in empty spots, clear of
@@ -4431,28 +4390,14 @@ function toggleBrokerPanel() {
             // furniture. Wall props sit on the wall (low depth); floor props sit
             // on the floor with their own soft shadow baked in.
             // Whiteboard on the upper-center wall (between window art & posters).
-            const whiteboard = this.add.image(470, 96, 'whiteboard').setOrigin(0.5);
+            const whiteboard = this.add.image(765, 128, 'whiteboard').setOrigin(0.5);
             whiteboard.setDepth(4);
             // Bookshelf against the far-right wall, standing on the floor.
-            const bookshelf = this.add.image(1192, 470, 'bookshelf').setOrigin(0.5);
+            const bookshelf = this.add.image(858, 470, 'bookshelf').setOrigin(0.5);
             bookshelf.setDepth(6);
             // Water cooler in the bottom-right corner.
-            const waterCooler = this.add.image(1118, 588, 'water_cooler').setOrigin(0.5);
+            const waterCooler = this.add.image(505, 505, 'water_cooler').setOrigin(0.5);
             waterCooler.setDepth(7);
-
-            // Random flower pot at (310,390), default scale 0.8 (top layer)
-            const flowerFrameCount = Math.max(1, FLOWERS_FRAME_COLS * FLOWERS_FRAME_ROWS); // 동적 프레임 수
-            const randomFlowerFrame = Math.floor(Math.random() * flowerFrameCount);
-            const flower = this.add.sprite(310, 390, 'flowers', randomFlowerFrame).setOrigin(0.5);
-            flower.setScale(0.8);
-            flower.setDepth(1100); // highest among desk/starWorking
-            flower.setInteractive({ useHandCursor: true });
-            window.flowerSprite = flower;
-            window.flowerFrameCount = flowerFrameCount;
-            flower.on('pointerdown', () => {
-                const next = Math.floor(Math.random() * window.flowerFrameCount);
-                window.flowerSprite.setFrame(next);
-            });
 
             // Error / bug animation (96 frames)
             this.anims.create({
