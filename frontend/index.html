@@ -1724,7 +1724,7 @@
         };
 
         let game, star, sofa, serverroom, officeBgSprite, areas = {}, currentState = 'idle', pendingDesiredState = null, lastFetch = 0, lastBlink = 0, lastBubble = 0, bubble = null, syncAnimSprite = null, syncAnimPlayable = false, catBubble = null, selectionBoxGraphics = null;
-        const IDLE_SOFA_ANCHOR = { x: 330, y: 470 }; // 중심 앵커 통일(원래 sofa 좌상단 670,144의 중심)
+        const IDLE_SOFA_ANCHOR = { x: 325, y: 598 }; // 중심 앵커 통일(원래 sofa 좌상단 670,144의 중심)
         // flowers 스프라이트시트 규격: 단일 프레임 128x128 고정, 4x4
         let FLOWERS_FRAME_W = 65;
         let FLOWERS_FRAME_H = 65;
@@ -4136,20 +4136,18 @@ function toggleBrokerPanel() {
             this.load.image('office_bg', '/static/office_bg_small.webp?v={{VERSION_TIMESTAMP}}');
 
             // Furniture
-            this.load.image('sofa_idle', '/static/sofa-idle-v3.png?v={{VERSION_TIMESTAMP}}');
-            this.load.image('sofa_shadow', '/static/sofa-shadow-v1.png?v={{VERSION_TIMESTAMP}}');
+            this.load.image('sofa_idle', '/static/sofa-v4.webp?v={{VERSION_TIMESTAMP}}');
 
             // Decor
-            this.load.spritesheet('plants', '/static/plants-spritesheet.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 160, frameHeight: 160 });
+            this.load.image('plant_v4', '/static/plant-v4.webp?v={{VERSION_TIMESTAMP}}');
             this.load.spritesheet('posters', '/static/posters-spritesheet.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 160, frameHeight: 160 });
-            this.load.spritesheet('coffee_machine', '/static/coffee-machine-v3-grid.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 230, frameHeight: 230 });
-            this.load.image('coffee_machine_shadow', '/static/coffee-machine-shadow-v1.png?v={{VERSION_TIMESTAMP}}');
-            this.load.spritesheet('serverroom', '/static/serverroom-spritesheet.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 180, frameHeight: 251 });
+            this.load.image('coffee_machine', '/static/coffee_maker-v4.webp?v={{VERSION_TIMESTAMP}}');
+            this.load.image('serverroom', '/static/server_rack-v4.webp?v={{VERSION_TIMESTAMP}}');
 
             // Extra decor props (single images, CC0 from gen_decor.py)
-            this.load.image('bookshelf', '/static/bookshelf-v1.webp?v={{VERSION_TIMESTAMP}}');
+            this.load.image('bookshelf', '/static/bookshelf-v4.webp?v={{VERSION_TIMESTAMP}}');
             this.load.image('whiteboard', '/static/whiteboard-v1.webp?v={{VERSION_TIMESTAMP}}');
-            this.load.image('water_cooler', '/static/water-cooler-v1.webp?v={{VERSION_TIMESTAMP}}');
+            this.load.image('water_cooler', '/static/water_cooler-v4.webp?v={{VERSION_TIMESTAMP}}');
 
             // Error / bug animation: 180x180, 96 frames (repacked grid)
             this.load.spritesheet('error_bug', '/static/error-bug-spritesheet-grid.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 220, frameHeight: 220 });
@@ -4167,7 +4165,7 @@ function toggleBrokerPanel() {
             // memo 배경 이미지는 png로 고정, 일부 환경 webp 투명 채널 이상으로 "배경 사라짐" 방지
             this.load.image('memo_bg', '/static/memo-bg.webp?v={{VERSION_TIMESTAMP}}');
             // Desk v2 (webp only)
-            this.load.image('desk_v2', '/static/desk-v3.webp?v={{VERSION_TIMESTAMP}}');
+            this.load.image('desk_v2', '/static/desk-v4.webp?v={{VERSION_TIMESTAMP}}');
             // Flower spritesheet (65x65, 16 frames)
             this.load.spritesheet('flowers', '/static/flowers-bloom-v2.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: FLOWERS_FRAME_W, frameHeight: FLOWERS_FRAME_H });
 
@@ -4221,8 +4219,7 @@ function toggleBrokerPanel() {
 
             // Place furniture: Sofa
             // NOTE: coordinates are interpreted as the TOP-LEFT corner of the sprite
-            const sofaShadow = this.add.image(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y, 'sofa_shadow').setOrigin(0.5);
-            sofaShadow.setDepth(9);
+            game.add.ellipse(IDLE_SOFA_ANCHOR.x, 656, 180, 16, 0x000000, 0.16).setDepth(1);
             sofa = this.add.sprite(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y, 'sofa_idle').setOrigin(0.5);
             sofa.setDepth(10);
             areas = {
@@ -4332,57 +4329,27 @@ function toggleBrokerPanel() {
             game.add.text(plaqueX + 138, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '18px' }).setOrigin(0.5).setDepth(PLAQUE_DEPTH + 1);
             window.officePlaqueText = plaqueText;
 
-            // Random plant on the lounge floor at (70,548) (frame 0-15, 160x160 each)
-            const plantFrameCount = 16;
-            const randomPlantFrame = Math.floor(Math.random() * plantFrameCount);
-            const plant = game.add.sprite(70, 548, 'plants', randomPlantFrame).setOrigin(0.5);
+            // Plant on the lounge floor
+            game.add.ellipse(62, 656, 66, 12, 0x000000, 0.16).setDepth(1);
+            const plant = game.add.image(62, 598, 'plant_v4').setOrigin(0.5);
             plant.setDepth(5);
-            plant.setInteractive({ useHandCursor: true });
-            // Expose to global for click handler
-            window.plantSprite = plant;
-            window.plantFrameCount = plantFrameCount;
-            
-            plant.on('pointerdown', () => {
-                const next = Math.floor(Math.random() * window.plantFrameCount);
-                window.plantSprite.setFrame(next);
-            });
 
             // 장식용 랜덤 고양이 제거(에이전트 고양이와 혼동 방지). 캣버블 함수는 catSprite 없으면 자동 비활성.
             window.catSprite = null;
 
-            // Coffee machine at (659,397) - animated sprite + shadow
-            const coffeeMachineShadow = this.add.image(130, 500, 'coffee_machine_shadow').setOrigin(0.5);
-            coffeeMachineShadow.setDepth(98);
-            const coffeeFrameMax = Math.max(0, (this.textures.get('coffee_machine')?.frameTotal || 1) - 2);
-            if (this.anims.exists('coffee_machine')) {
-                this.anims.remove('coffee_machine');
-            }
-            this.anims.create({
-                key: 'coffee_machine',
-                frames: this.anims.generateFrameNumbers('coffee_machine', { start: 0, end: coffeeFrameMax }),
-                frameRate: 12.5,
-                repeat: -1
-            });
-            const coffeeMachine = this.add.sprite(130, 500, 'coffee_machine').setOrigin(0.5);
+            // Coffee machine (static image)
+            game.add.ellipse(110, 656, 78, 12, 0x000000, 0.16).setDepth(1);
+            const coffeeMachine = this.add.image(110, 592, 'coffee_machine').setOrigin(0.5);
             coffeeMachine.setDepth(99);
-            coffeeMachine.anims.play('coffee_machine', true);
 
-            // Server room animation
-            const serverFrameMax = Math.max(0, (this.textures.get('serverroom')?.frameTotal || 1) - 2);
-            this.anims.create({
-                key: 'serverroom_on',
-                frames: this.anims.generateFrameNumbers('serverroom', { start: 0, end: serverFrameMax }),
-                frameRate: 6,
-                repeat: -1
-            });
-            serverroom = this.add.sprite(1150, 300, 'serverroom', 0).setOrigin(0.5);
+            // Server rack (static image)
+            game.add.ellipse(1180, 660, 66, 12, 0x000000, 0.16).setDepth(1);
+            serverroom = this.add.image(1180, 556, 'serverroom').setOrigin(0.5);
             serverroom.setDepth(2);
-            // 기본 idle: 0번 프레임 정지
-            serverroom.anims.stop();
-            serverroom.setFrame(0);
 
-            // Desk at (218,417) (v2)
-            const desk = this.add.image(1085, 470, 'desk_v2').setOrigin(0.5);
+            // Desk (v2)
+            game.add.ellipse(1070, 660, 170, 16, 0x000000, 0.16).setDepth(1);
+            const desk = this.add.image(1070, 590, 'desk_v2').setOrigin(0.5);
             desk.setDepth(1001);  // desk above starWorking
 
             // Extra decor props (gen_decor.py). Placed in empty spots, clear of
@@ -4393,10 +4360,12 @@ function toggleBrokerPanel() {
             const whiteboard = this.add.image(765, 128, 'whiteboard').setOrigin(0.5);
             whiteboard.setDepth(4);
             // Bookshelf against the far-right wall, standing on the floor.
-            const bookshelf = this.add.image(858, 470, 'bookshelf').setOrigin(0.5);
+            game.add.ellipse(700, 660, 120, 14, 0x000000, 0.16).setDepth(1);
+            const bookshelf = this.add.image(700, 560, 'bookshelf').setOrigin(0.5);
             bookshelf.setDepth(6);
             // Water cooler in the bottom-right corner.
-            const waterCooler = this.add.image(505, 505, 'water_cooler').setOrigin(0.5);
+            game.add.ellipse(505, 658, 44, 10, 0x000000, 0.16).setDepth(1);
+            const waterCooler = this.add.image(505, 583, 'water_cooler').setOrigin(0.5);
             waterCooler.setDepth(7);
 
             // Error / bug animation (96 frames)
@@ -4529,20 +4498,8 @@ function toggleBrokerPanel() {
                 });
             }
 
-            // 보정: idle이 아닐 때 서버실 애니메이션 재생 보장, idle일 때 정지
+            // serverroom is now a static image; state drives errorBug/syncAnim only
             const effectiveStateForServer = pendingDesiredState || currentState;
-            if (serverroom) {
-                if (effectiveStateForServer === 'idle') {
-                    if (serverroom.anims.isPlaying) {
-                        serverroom.anims.stop();
-                        serverroom.setFrame(0);
-                    }
-                } else {
-                    if (!serverroom.anims.isPlaying || serverroom.anims.currentAnim?.key !== 'serverroom_on') {
-                        serverroom.anims.play('serverroom_on', true);
-                    }
-                }
-            }
 
             // failed 상태: bug 애니메이션 표시, 두 지점 사이를 왕복 이동
             if (window.errorBug) {
@@ -4697,10 +4654,9 @@ function toggleBrokerPanel() {
         const SHOW_STAR = false;
 
         function applyVisualState(nextState) {
-            // Star 본체는 은퇴(비표시). 소파·서버랙·동기 애니만 리셋; 가시 앰비언트는 update()가 상태별로 제어.
+            // Star 본체는 은퇴(비표시). 소파·동기 애니만 리셋; 서버랙은 정적 이미지라 리셋 불필요. 가시 앰비언트는 update()가 상태별로 제어.
             if (syncAnimSprite) { try { syncAnimSprite.anims.stop(); } catch (e) {} syncAnimSprite.setVisible(false); }
             if (sofa) { try { sofa.anims.stop(); } catch (e) {} sofa.setTexture('sofa_idle'); }
-            if (serverroom) { try { serverroom.anims.stop(); } catch (e) {} serverroom.setFrame(0); }
         }
 
         function fetchStatus() {
