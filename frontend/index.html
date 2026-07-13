@@ -3798,6 +3798,10 @@ function toggleBrokerPanel() {
         const STATE_EMOTE = { idle:'💤', talking:'💬', writing:'📝', executing:'⚙️', researching:'🔍', syncing:'🔄', error:'❗' };
         function emoteFor(state){ return STATE_EMOTE[state] || '💤'; }
 
+        // rosie petdex: 오피스 7상태 → petdex 9상태 애니 매핑
+        const PETDEX_STATE_ANIM = { idle:'idle', talking:'waving', writing:'review', researching:'review', executing:'running', syncing:'waiting', error:'failed' };
+        function petdexAnimFor(state) { return 'rosiepx_' + (PETDEX_STATE_ANIM[state] || 'idle'); }
+
         function renderGuestAgentsInScene() {
             if (!game) return;
             const visitors = getMergedVisitors();
@@ -3842,8 +3846,14 @@ function toggleBrokerPanel() {
                     const isDemoNika = DEMO_MODE && (agent.agentId === 'demo_nika' || agent.name === '尼卡');
                     const isDemoMercury = DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星');
                     const catKey = catKeyForAgent(agent);
+                    const useRosiePx = catKey === 'cat_rosie' && game.textures.exists('rosie_petdex');
 
-                    if (catKey && game.textures.exists(catKey)) {
+                    if (useRosiePx) {
+                        // rosie: petdex 9상태 스프라이트 (상태별 애니, 나머지 고양이는 idle bob 유지)
+                        sprite = game.add.sprite(p.x, p.y, 'rosie_petdex').setOrigin(0.5, 1).setScale(0.55);
+                        const rpAnim = petdexAnimFor(agent.state);
+                        if (game.anims.exists(rpAnim)) sprite.anims.play(rpAnim, true);
+                    } else if (catKey && game.textures.exists(catKey)) {
                         // 명명된 고양이 에이전트: 전용 픽셀 고양이 + idle/walk 루프
                         sprite = game.add.sprite(p.x, p.y, catKey).setOrigin(0.5, 1).setScale(1.5);
                         if (game.anims.exists(`${catKey}_idle`)) sprite.anims.play(`${catKey}_idle`, true);
@@ -3911,7 +3921,7 @@ function toggleBrokerPanel() {
                         fontFamily: 'ArkPixel, monospace', fontSize: '20px'
                     }).setOrigin(0.5).setDepth(2602);
 
-                    guestSprites[id] = { sprite, nameText, emote, shadow, catKey: (catKey && game.textures.exists(catKey)) ? catKey : null };
+                    guestSprites[id] = { sprite, nameText, emote, shadow, catKey: (catKey && game.textures.exists(catKey)) ? catKey : null, isRosiePx: useRosiePx };
                 } else {
                     const g = guestSprites[id];
                     const yOffset = (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星')) ? 10 : 0;
@@ -3966,6 +3976,12 @@ function toggleBrokerPanel() {
 
                     g.nameText.setText(agent.name || t('visitorDefault'));
                     if (g.emote) g.emote.setText(emoteFor(agent.state));
+                    if (g.isRosiePx && g.sprite.anims) {
+                        const rpAnim = petdexAnimFor(agent.state);
+                        if (g.sprite.anims.getName() !== rpAnim && game.anims.exists(rpAnim)) {
+                            g.sprite.play(rpAnim, true);
+                        }
+                    }
                 }
             });
 
@@ -4386,6 +4402,8 @@ function toggleBrokerPanel() {
                 this.load.spritesheet(`cat_${n}`, `/static/cat_${n}.webp?v={{VERSION_TIMESTAMP}}`, { frameWidth: 64, frameHeight: 64 });
                 this.load.image(`cat_${n}_role`, `/static/cat_${n}_role.png?v={{VERSION_TIMESTAMP}}`);
             });
+            // rosie petdex 9상태 아틀라스 (8열×9행, 192×208 프레임)
+            this.load.spritesheet('rosie_petdex', '/static/rosie-petdex.webp?v={{VERSION_TIMESTAMP}}', { frameWidth: 192, frameHeight: 208 });
         }
 
         function create() {
@@ -4441,6 +4459,21 @@ function toggleBrokerPanel() {
                     });
                 }
             });
+            // rosie petdex 9상태 애니 (행별 프레임수: idle6/run8/left8/wave4/jump5/fail8/wait6/run6/review6)
+            if (this.textures.exists('rosie_petdex')) {
+                const ROSIE_PX_ROWS = [['idle',6],['running_right',8],['running_left',8],['waving',4],['jumping',5],['failed',8],['waiting',6],['running',6],['review',6]];
+                ROSIE_PX_ROWS.forEach(([name, cnt], r) => {
+                    const key = `rosiepx_${name}`;
+                    if (!this.anims.exists(key)) {
+                        this.anims.create({
+                            key,
+                            frames: this.anims.generateFrameNumbers('rosie_petdex', { start: r * 8, end: r * 8 + cnt - 1 }),
+                            frameRate: 8,
+                            repeat: -1
+                        });
+                    }
+                });
+            }
 
             // 구역을 '방'처럼 보이게: 은은한 러그 + 텍스트 없는 이모지 표지(언어 의존 X)
             window.roomDecor = [];
