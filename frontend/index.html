@@ -4010,6 +4010,8 @@ function toggleBrokerPanel() {
                     }
                     if (g.petBase) g.prevState = agent.state;
                 }
+                // 어슬렁거림(ambient wander)용: 현재 배정 존 + 상태 저장(create/update 양쪽 공통)
+                if (guestSprites[id]) { guestSprites[id].area = area; guestSprites[id].curState = agent.state; }
             });
 
             // 删除消失的 agent + 清理其气泡/tween
@@ -4447,6 +4449,32 @@ function toggleBrokerPanel() {
             game = this;
             hideGameSkeleton();
             officeBgSprite = this.add.image(640, 360, 'office_bg');
+
+            // ── 구역 러그(zone mats): 4개 활동 존을 바닥에 색으로 구분. getAreaRect와 좌표 정렬 →
+            //    고양이가 서는 위치와 100% 일치. depth 3 = 배경 위, 가구/고양이 아래. ──
+            (function drawZoneRugs(scene) {
+                const ZONES = [
+                    { area: 'desk',      color: 0x5b8def, label: '검토' },  // review (좌측 책상)
+                    { area: 'work',      color: 0xf0a840, label: '작업' },  // running (중앙)
+                    { area: 'wait',      color: 0x39c0c8, label: '대기' },  // waiting (문 근처)
+                    { area: 'breakroom', color: 0x5fd08a, label: '휴게' }   // idle (우측 소파)
+                ];
+                const gfx = scene.add.graphics().setDepth(3);
+                ZONES.forEach(z => {
+                    const r = getAreaRect(z.area);
+                    const pad = 18;
+                    const x = r.x1 - pad, y = r.y1 - pad;
+                    const w = (r.x2 - r.x1) + pad * 2, h = (r.y2 - r.y1) + pad * 2;
+                    gfx.fillStyle(z.color, 0.13);
+                    gfx.fillRoundedRect(x, y, w, h, 20);
+                    gfx.lineStyle(3, z.color, 0.40);
+                    gfx.strokeRoundedRect(x, y, w, h, 20);
+                    // 은은한 구역 라벨(좌상단)
+                    scene.add.text(x + 12, y + 7, z.label, {
+                        fontFamily: 'ArkPixel, monospace', fontSize: '14px', color: '#ffffff'
+                    }).setOrigin(0, 0).setDepth(4).setAlpha(0.55);
+                });
+            })(this);
 
             // Place furniture: Sofa
             // NOTE: coordinates are interpreted as the TOP-LEFT corner of the sprite
@@ -5098,6 +5126,34 @@ function toggleBrokerPanel() {
                             game.tweens.add({ targets: g.sprite, y: baseY - 12, duration: 180, ease: 'Quad.easeOut', yoyo: true, onComplete: () => { g.sprite.y = baseY; g.hopping = false; } });
                             const _bs = g.baseScale || g.sprite.scaleY || 1;   // 스프라이트별 기본 스케일(petdex=0.55, cat=1.5 등) 상대 squash
                             game.tweens.add({ targets: g.sprite, scaleY: _bs * 1.08, duration: 180, ease: 'Quad.easeOut', yoyo: true, onComplete: () => { g.sprite.scaleY = _bs; } });
+                        }
+                    }
+
+                    // 어슬렁거림(ambient wander): 자기 존 안에서 4~9초마다 랜덤 지점으로 짧게 산책 → 늘 살아있어 보임.
+                    // 걷는 중/점프 중/상태애니 중엔 안 함. g.targetX(존 홈)는 안 건드림 → renderGuestAgentsInScene와 충돌 없음.
+                    if (g.petBase && !walking && !g.busyAnim && !g.hopping) {
+                        if (g.nextWanderAt == null) g.nextWanderAt = time + 3000 + Math.random() * 4000;
+                        if (time >= g.nextWanderAt) {
+                            g.nextWanderAt = time + 4000 + Math.random() * 5000;
+                            const wp = randomPointInRect(getAreaRect(g.area || 'breakroom'));
+                            const dist = Math.hypot(wp.x - g.sprite.x, wp.y - g.sprite.y);
+                            if (dist > 34) {
+                                const dir = (wp.x >= g.sprite.x) ? 'running_right' : 'running_left';
+                                const wa = petdexAnimFor(g.petBase, dir);
+                                if (game.anims.exists(wa)) { g.busyAnim = true; g.sprite.play(wa, true); }
+                                const dur = Math.min(1700, Math.max(420, dist * 5));
+                                if (guestTweens[id] && guestTweens[id].move) { try { guestTweens[id].move.stop(); } catch (e) {} }
+                                const move = game.tweens.add({
+                                    targets: g.sprite, x: wp.x, y: wp.y, duration: dur, ease: 'Sine.easeInOut',
+                                    onComplete: () => {
+                                        g.busyAnim = false;
+                                        const a = petdexAnimFor(g.petBase, g.curState || 'idle');
+                                        if (game.anims.exists(a)) g.sprite.play(a, true);
+                                    }
+                                });
+                                const nameMove = game.tweens.add({ targets: g.nameText, x: wp.x, y: wp.y - 104, duration: dur, ease: 'Sine.easeInOut' });
+                                guestTweens[id] = { move, name: nameMove };
+                            }
                         }
                     }
                 });
