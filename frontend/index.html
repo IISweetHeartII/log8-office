@@ -153,26 +153,6 @@
             width: 0%;
             transition: width 0.3s ease;
         }
-        #status-text {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            transform: none;
-            color: #eee;
-            font-size: 14px;
-            background: rgba(0,0,0,0.7);
-            padding: 8px 12px;
-            border-radius: 4px;
-            max-width: calc(100% - 24px);
-            text-align: left;
-            font-family: 'ArkPixel', 'Courier New', monospace;
-            z-index: 30;
-            pointer-events: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.2;
-        }
         /* 상태 컨트롤 바 */
         #control-bar {
             position: relative;
@@ -1087,14 +1067,6 @@
                 gap: 8px;
             }
 
-            #status-text {
-                bottom: 8px;
-                left: 8px;
-                max-width: 64vw;
-                font-size: 12px;
-                padding: 8px 12px;
-            }
-
             #lang-btn-en,
             #lang-btn-jp {
                 font-size: 12px !important;
@@ -1165,7 +1137,6 @@
     <div id="main-stage">
         <div id="game-container">
             <div id="game-skeleton"><div class="hint">픽셀 오피스로 들어가는 중…</div></div>
-            <div id="status-text">불러오는 중...</div>
         </div>
     
     <!-- 하단 패널 컨테이너 -->
@@ -1763,7 +1734,7 @@
             }
         };
 
-        let game, star, sofa, serverroom, officeBgSprite, areas = {}, currentState = 'idle', pendingDesiredState = null, statusText, lastFetch = 0, lastBlink = 0, lastBubble = 0, targetX = 660, targetY = 170, bubble = null, typewriterText = '', typewriterTarget = '', typewriterIndex = 0, lastTypewriter = 0, syncAnimSprite = null, syncAnimPlayable = false, catBubble = null, selectionBoxGraphics = null;
+        let game, star, sofa, serverroom, officeBgSprite, areas = {}, currentState = 'idle', pendingDesiredState = null, lastFetch = 0, lastBlink = 0, lastBubble = 0, targetX = 660, targetY = 170, bubble = null, syncAnimSprite = null, syncAnimPlayable = false, catBubble = null, selectionBoxGraphics = null;
         const IDLE_SOFA_ANCHOR = { x: 798, y: 272 }; // 중심 앵커 통일(원래 sofa 좌상단 670,144의 중심)
         const IDLE_STAR_SCALE = 1.0; // star idle을 256프레임 원본 표시로 변경, 더 이상 확대 안 함
         // flowers 스프라이트시트 규격: 단일 프레임 128x128 고정, 4x4
@@ -1843,7 +1814,6 @@
         let lastCatBubble = 0;
         let lastGuestAgentsFetch = 0;
         let lastGuestBubbleAt = 0;
-        const TYPEWRITER_DELAY = 50;
         let lastSeenGuestIds = new Set(); // 새로 들어온 방문자를 감지해 환영 말풍선 트리거
         let guestWelcomeInitialized = false;
 
@@ -2858,22 +2828,6 @@ function toggleBrokerPanel() {
                 }
             }
 
-            // 2) detail/status를 캔버스 내부 왼쪽 아래로 엄격히 제한
-            const st = document.getElementById('status-text');
-            const gameContainer = document.getElementById('game-container');
-            if (st && gameContainer) {
-                if (rect && rect.width > 0 && rect.height > 0) {
-                    const localLeft = Math.max(8, Math.round(rect.left - gameContainer.getBoundingClientRect().left + 14));
-                    const localBottom = 14;
-                    st.style.left = localLeft + 'px';
-                    st.style.bottom = localBottom + 'px';
-                    st.style.maxWidth = Math.max(120, Math.floor(rect.width - 28)) + 'px';
-                } else {
-                    st.style.left = '14px';
-                    st.style.bottom = '14px';
-                    st.style.maxWidth = 'calc(100% - 28px)';
-                }
-            }
         }
 
         function showRoomLoadingOverlay(baseText) {
@@ -4620,7 +4574,6 @@ function toggleBrokerPanel() {
             // Debug: expose star sprite too (for path calibration / visuals)
             window.starSprite = star;
 
-            statusText = document.getElementById('status-text');
             placeOverlayAndStatusAtCanvasBottomLeft();
             window.addEventListener('resize', placeOverlayAndStatusAtCanvasBottomLeft);
             window.addEventListener('scroll', placeOverlayAndStatusAtCanvasBottomLeft, { passive: true });
@@ -4767,14 +4720,6 @@ function toggleBrokerPanel() {
             if (time - lastCatBubble > CAT_BUBBLE_INTERVAL) {
                 showCatBubble();
                 lastCatBubble = time;
-            }
-
-            // 타자기 효과
-            if (typewriterIndex < typewriterTarget.length && time - lastTypewriter > TYPEWRITER_DELAY) {
-                typewriterText += typewriterTarget[typewriterIndex];
-                statusText.textContent = typewriterText;
-                typewriterIndex++;
-                lastTypewriter = time;
             }
 
             // 이동 + 작은 서성임
@@ -4986,38 +4931,18 @@ function toggleBrokerPanel() {
                             }
                         }
                         const nextState = normalizeState(data.state);
-                        // If we're mid-transition, don't restart the path every poll
-                        const changed = (pendingDesiredState === null) && (nextState !== currentState);
-                        const nextLine = '[' + stateName(nextState) + '] ' + (data.detail || '...');
-                        // changed 여부와 무관하게 서버 최신 상태로 시각 동기화를 한 번 강제, 애니메이션이 옛 상태에 멈추는 것 방지
+                        // 서버 최신 상태로 시각 동기화(서버랙/소파 등 애니가 옛 상태에 멈추는 것 방지)
                         pendingDesiredState = null;
                         if (currentState !== nextState) {
                             currentState = nextState;
                         }
                         applyVisualState(nextState);
-
-                        if (changed) {
-                            typewriterTarget = nextLine;
-                            typewriterText = '';
-                            typewriterIndex = 0;
-                        } else {
-                            if (!typewriterTarget || typewriterTarget !== nextLine) {
-                                typewriterTarget = nextLine;
-                                typewriterText = '';
-                                typewriterIndex = 0;
-                            }
-                        }
                     } catch (err) {
                         console.error('fetchStatus apply error', err);
-                        typewriterTarget = t('statusUpdateErr');
-                        typewriterText = '';
-                        typewriterIndex = 0;
                     }
                 })
                 .catch(error => {
-                    typewriterTarget = t('connFail');
-                    typewriterText = '';
-                    typewriterIndex = 0;
+                    console.debug('fetchStatus fetch failed', error);
                 });
         }
 
