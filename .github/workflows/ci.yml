@@ -58,8 +58,22 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Check frontend/game.js syntax
-        run: node --check frontend/game.js
-
-      - name: Check frontend/layout.js syntax
-        run: node --check frontend/layout.js
+      - name: Check inline JS syntax in index.html
+        run: |
+          python3 - <<'PY'
+          import re, subprocess, sys, tempfile, os
+          html = open('frontend/index.html', encoding='utf-8').read()
+          scripts = re.findall(r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>', html, re.S | re.I)
+          if not scripts:
+              print('No inline <script> block found in frontend/index.html'); sys.exit(1)
+          fail = False
+          for i, s in enumerate(scripts):
+              with tempfile.NamedTemporaryFile('w', suffix='.js', delete=False, encoding='utf-8') as f:
+                  f.write(s.replace('{{VERSION_TIMESTAMP}}', '0')); path = f.name
+              r = subprocess.run(['node', '--check', path], capture_output=True, text=True)
+              os.unlink(path)
+              if r.returncode != 0:
+                  print(f'Inline script block {i} syntax error:\n{r.stderr}'); fail = True
+          print('OK' if not fail else 'FAILED')
+          sys.exit(1 if fail else 0)
+          PY
